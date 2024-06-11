@@ -37,7 +37,7 @@ export const Login = () => {
                         alt="Your Company"
                     />
                     <h2 className="mt-6 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-                        Sign in to your account
+                        Login into your admin dashboard
                     </h2>
                 </div>
 
@@ -89,11 +89,11 @@ export const Login = () => {
                                     </label>
                                 </div>
 
-                                <div className="text-sm leading-6">
-                                    <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">
-                                        Forgot password?
-                                    </a>
-                                </div>
+                                {/*<div className="text-sm leading-6">*/}
+                                {/*    <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">*/}
+                                {/*        Forgot password?*/}
+                                {/*    </a>*/}
+                                {/*</div>*/}
                             </div>
 
                             <div>
@@ -107,24 +107,24 @@ export const Login = () => {
                             {error && <p>{error}</p>}
                         </form>
 
-                        <div>
-                            <div className="relative mt-10">
-                                <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                                    <div className="w-full border-t border-gray-200"/>
-                                </div>
-                                <div className="relative flex justify-center text-sm font-medium leading-6">
-                                    <span className="bg-white px-6 text-gray-900">Or</span>
-                                </div>
-                            </div>
+                        {/*<div>*/}
+                        {/*    <div className="relative mt-10">*/}
+                        {/*        <div className="absolute inset-0 flex items-center" aria-hidden="true">*/}
+                        {/*            <div className="w-full border-t border-gray-200"/>*/}
+                        {/*        </div>*/}
+                        {/*        <div className="relative flex justify-center text-sm font-medium leading-6">*/}
+                        {/*            <span className="bg-white px-6 text-gray-900">Or</span>*/}
+                        {/*        </div>*/}
+                        {/*    </div>*/}
 
-                            <p className="mt-10 text-center text-sm text-gray-500">
-                                Not a vendor?{' '}
-                                <a href="#" className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
-                                    Sign Up
-                                </a>
-                            </p>
+                        {/*    <p className="mt-10 text-center text-sm text-gray-500">*/}
+                        {/*        Not a vendor?{' '}*/}
+                        {/*        <a href="#" className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">*/}
+                        {/*            Sign Up*/}
+                        {/*        </a>*/}
+                        {/*    </p>*/}
 
-                        </div>
+                        {/*</div>*/}
                     </div>
 
 
