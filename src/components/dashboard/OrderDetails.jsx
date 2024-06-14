@@ -1,6 +1,9 @@
 import { Fragment, useState, useEffect } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import {
+    Cog6ToothIcon,
+} from '@heroicons/react/24/outline'
+import {
     FolderIcon,
     GlobeAltIcon,
     XMarkIcon,
@@ -17,7 +20,7 @@ import axios from "axios";
 import {server} from "../../server.js";
 import {assetServer} from "../../../assetServer.js";
 import banknotesIcon from "@heroicons/react/16/solid/esm/BanknotesIcon.js";
-import {Link} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import {ArrowRightStartOnRectangleIcon} from "@heroicons/react/20/solid/index.js";
 
 
@@ -46,28 +49,37 @@ function classNames(...classes) {
 }
 
 
-export const Orders = () => {
+export const OrderDetails = () => {
     const dispatch = useDispatch();
     const [sidebarOpen, setSidebarOpen] = useState(false)
     const user = JSON.parse(localStorage.getItem('user'));
 
-    const [orders, setOrders] = useState([]);
+    const { id } = useParams();
+    const [order, setOrder] = useState(null);
 
     useEffect(() => {
-        const fetchOrders = async () => {
+        const fetchOrder = async () => {
             try {
-                const response = await axios.get(`${server}/admin/orders`);
+                const response = await axios.get(`${server}/admin/orders/${id}`);
                 // Flatten the array structure
-                const flattenedOrders = response.data.orders;
-                setOrders(flattenedOrders);
+                const flattenedOrders = response.data.flat()[0];
+                setOrder(flattenedOrders);
             } catch (error) {
                 console.error('Failed to fetch orders:', error);
             }
         };
 
-        fetchOrders();
+        fetchOrder();
     }, []);
 
+    const statusToStep = {
+        'pending': 1,
+        'processing': 2,
+        'shipped': 3,
+        'completed': 4,
+    };
+
+    const step = order ? statusToStep[order.status] || 0 : 0;
 
     return (
         <>
@@ -298,103 +310,192 @@ export const Orders = () => {
                         <div className="bg-white">
 
 
-                            <main className="pb-14 sm:px-6 sm:pb-20 sm:pt-10 lg:px-8">
-                                <div className="px-4 sm:px-6 lg:px-8">
-                                    <header
-                                        className="border-b border-white/5 px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
-                                        <div className="md:flex md:items-center md:justify-between">
-                                            <div className="min-w-0 flex-1">
-                                                <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
-                                                    Orders
-                                                </h2>
-                                            </div>
-                                        </div>
-                                    </header>
-                                    <div className="mt-8 flow-root">
-                                        <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                                            <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-                                                <table className="min-w-full divide-y divide-gray-300">
-                                                    <thead>
-                                                    <tr>
-                                                        <th scope="col"
-                                                            className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                            Product
-                                                        </th>
-                                                        <th scope="col"
-                                                            className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                            Price and Quantity
-                                                        </th>
-                                                        <th scope="col"
-                                                            className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                            Customer and Vendor
-                                                        </th>
-                                                        <th scope="col"
-                                                            className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                            Delivery Status
-                                                        </th>
-                                                        <th scope="col"
-                                                            className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                            Date
-                                                        </th>
-                                                        <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-0">
-                                                            <span className="sr-only">View</span>
-                                                        </th>
-                                                    </tr>
-                                                    </thead>
-                                                    <tbody className="divide-y divide-gray-200 bg-white">
-                                                    {orders.map((order) => (
-                                                        <tr key={order.id}>
-                                                            <td className="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0">
-                                                                <div className="flex items-center">
-                                                                    <div className="h-11 w-11 flex-shrink-0">
-                                                                        <img className="h-11 w-11 rounded-full"
-                                                                             src={`${assetServer}/images/products/${order.image}`} alt=""/>
-                                                                    </div>
-                                                                    <div className="ml-4">
-                                                                        <div
-                                                                            className="font-medium text-gray-900">{order.product_name}</div>
-                                                                        <div
-                                                                            className="mt-1 text-gray-500">#{order.id}</div>
-                                                                    </div>
-                                                                </div>
-                                                            </td>
-                                                            <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                                                <div className="text-gray-900">$ {order.total_price}</div>
-                                                                <div
-                                                                    className="mt-1 text-gray-500">{order.quantity}
-                                                                </div>
-                                                            </td>
+                            <div className="pb-14 sm:px-6 sm:pb-20 sm:pt-10 lg:px-8">
+                                <div className="bg-gray-50">
+                                    <div className="mx-auto max-w-2xl pt-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
+                                        <div
+                                            className="space-y-2 px-4 sm:flex sm:items-baseline sm:justify-between sm:space-y-0 sm:px-0">
+                                            <div className="flex sm:items-baseline sm:space-x-4">
+                                                <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">Order
+                                                    #{id}</h1>
 
-                                                            <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                                                <div className="text-gray-900">{order.user_name}</div>
+                                            </div>
+                                            <p className="text-sm text-gray-600">
+                                                Order placed{' '}
+                                                <time dateTime="2021-03-22" className="font-medium text-gray-900">
+                                                    {order && new Date(order.created_at).toLocaleDateString()}
+                                                </time>
+                                            </p>
+                                        </div>
+
+                                        {/* Products */}
+                                        <div className="mt-6">
+                                            <h2 className="sr-only">Products purchased</h2>
+                                            <div className="space-y-8">
+                                                {order && (
+                                                    <div
+                                                        className="border-b border-t border-gray-200 bg-white shadow-sm sm:rounded-lg sm:border"
+                                                    >
+                                                        <div
+                                                            className="px-4 py-6 sm:px-6 lg:grid lg:grid-cols-12 lg:gap-x-8 lg:p-8">
+                                                            <div className="sm:flex lg:col-span-7">
                                                                 <div
-                                                                    className="mt-1 text-gray-500">{order.store_name}
+                                                                    className="aspect-h-1 aspect-w-1 w-full flex-shrink-0 overflow-hidden rounded-lg sm:aspect-none sm:h-40 sm:w-40">
+                                                                    <img
+                                                                        src={`${assetServer}/images/products/${order.image}`}
+                                                                        alt={order.product_name}
+                                                                        className="h-full w-full object-cover object-center sm:h-full sm:w-full"
+                                                                    />
                                                                 </div>
-                                                            </td>
-                                                            <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                                              <span
-                                                                  className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
-                                                                {order.status}
-                                                              </span>
-                                                            </td>
-                                                            <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                                              {new Date(order.created_at).toLocaleDateString()}
-                                                            </td>
-                                                            <td className="relative whitespace-nowrap py-5 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-                                                                <Link to={`/order-details/${order.id}`}
-                                                                      className="text-indigo-600 hover:text-indigo-900">
-                                                                    View<span className="sr-only">, {order.id}</span>
-                                                                </Link>
-                                                            </td>
-                                                        </tr>
-                                                    ))}
-                                                    </tbody>
-                                                </table>
+
+                                                                <div className="mt-6 sm:ml-6 sm:mt-0">
+                                                                    <h3 className="text-base font-medium text-gray-900">
+                                                                        <a href="#">{order.product_name}</a>
+                                                                    </h3>
+                                                                    <p className="mt-2 text-sm font-medium text-gray-900">Price - ${order.price}</p>
+                                                                    <p className="mt-3 text-sm text-gray-500">Vendor - {order.store_name}</p>
+                                                                </div>
+                                                            </div>
+
+                                                            <div className="mt-6 lg:col-span-5 lg:mt-0">
+                                                                <dl className="grid grid-cols-2 gap-x-6 text-sm">
+                                                                    <div>
+                                                                        <dt className="font-medium text-gray-900">Delivery
+                                                                            address
+                                                                        </dt>
+                                                                        <dd className="mt-3 text-gray-500">
+                                                                            <span
+                                                                                className="block">{order.shipping_address}
+                                                                            </span>
+
+                                                                        </dd>
+                                                                        <dt className="mt-3 font-medium text-gray-900">Delivery
+                                                                            Person
+                                                                        </dt>
+                                                                        <dd className="mt-3 text-gray-500">
+                                                                            <span
+                                                                                className="block">{order.deliverer}
+                                                                            </span>
+
+                                                                        </dd>
+                                                                    </div>
+                                                                    <div>
+                                                                        <dt className="font-medium text-gray-900">Customer Details
+                                                                        </dt>
+                                                                        <dd className="mt-3 space-y-3 text-gray-500">
+                                                                            <p>{order.name}</p>
+                                                                            <p>{order.phone}</p>
+                                                                            <p>{order.email}</p>
+                                                                            {/*<button type="button"*/}
+                                                                            {/*        className="font-medium text-primary hover:text-indigo-500">*/}
+                                                                            {/*    Edit*/}
+                                                                            {/*</button>*/}
+                                                                        </dd>
+                                                                    </div>
+                                                                </dl>
+                                                            </div>
+                                                        </div>
+
+                                                        <div
+                                                            className="border-t border-gray-200 px-4 py-6 sm:px-6 lg:p-8">
+                                                            <h4 className="sr-only">Status</h4>
+                                                            <p className="text-sm font-medium text-gray-900">
+                                                                {order.status} on -
+                                                                <time dateTime="2021-03-22"
+                                                                                        className="font-medium text-gray-900">
+                                                                 {new Date(order.updated_at).toLocaleDateString()}
+                                                            </time>
+                                                            </p>
+                                                            <div className="mt-6" aria-hidden="true">
+                                                                <div
+                                                                    className="overflow-hidden rounded-full bg-gray-200">
+                                                                    <div
+                                                                        className="h-2 rounded-full bg-primary"
+                                                                        style={{width: `calc((${step} * 2 + 1) / 8 * 100%)`}}
+                                                                    />
+                                                                </div>
+                                                                <div
+                                                                    className="mt-6 hidden grid-cols-4 text-sm font-medium text-gray-600 sm:grid">
+                                                                    <div className="text-primary">Order placed</div>
+                                                                    <div
+                                                                        className={classNames(order.status === 'pending' ? 'text-primary' : '', 'text-center')}>
+                                                                        Processing
+                                                                    </div>
+                                                                    <div
+                                                                        className={classNames(order.status === 'shipped' ? 'text-primary' : '', 'text-center')}>
+                                                                        Shipped
+                                                                    </div>
+                                                                    <div
+                                                                        className={classNames(order.status === 'completed' ? 'text-primary' : '', 'text-right')}>
+                                                                        Delivered
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
+
+                                        {/*/!* Billing *!/*/}
+                                        {/*<div className="mt-16">*/}
+                                        {/*    <h2 className="sr-only">Billing Summary</h2>*/}
+
+                                        {/*    <div*/}
+                                        {/*        className="bg-gray-100 px-4 py-6 sm:rounded-lg sm:px-6 lg:grid lg:grid-cols-12 lg:gap-x-8 lg:px-8 lg:py-8">*/}
+                                        {/*        <table*/}
+                                        {/*            className="table-auto text-sm sm:grid-cols-2 md:gap-x-8 lg:col-span-7">*/}
+                                        {/*            <tbody>*/}
+                                        {/*            <tr>*/}
+                                        {/*                <td className="font-medium text-gray-900">Billing address</td>*/}
+                                        {/*                <td className="mt-3 text-gray-500">*/}
+                                        {/*                    <div>Floyd Miles</div>*/}
+                                        {/*                    <div>7363 Cynthia Pass</div>*/}
+                                        {/*                    <div>Toronto, ON N3Y 4H8</div>*/}
+                                        {/*                </td>*/}
+                                        {/*            </tr>*/}
+                                        {/*            <tr>*/}
+                                        {/*                <td className="font-medium text-gray-900">Payment information*/}
+                                        {/*                </td>*/}
+                                        {/*                <td className="-ml-4 -mt-1 flex flex-wrap">*/}
+                                        {/*                    <div className="ml-4 mt-4 flex-shrink-0">*/}
+                                        {/*                        /!* SVG for Visa logo *!/*/}
+                                        {/*                    </div>*/}
+                                        {/*                    <div className="ml-4 mt-4">*/}
+                                        {/*                        <div className="text-gray-900">Ending with 4242</div>*/}
+                                        {/*                        <div className="text-gray-600">Expires 02 / 24</div>*/}
+                                        {/*                    </div>*/}
+                                        {/*                </td>*/}
+                                        {/*            </tr>*/}
+                                        {/*            </tbody>*/}
+                                        {/*        </table>*/}
+
+                                        {/*        <table*/}
+                                        {/*            className="mt-8 divide-y divide-gray-200 text-sm lg:col-span-5 lg:mt-0">*/}
+                                        {/*            <tbody>*/}
+                                        {/*            <tr>*/}
+                                        {/*                <td className="text-gray-600">Subtotal</td>*/}
+                                        {/*                <td className="font-medium text-gray-900">$72</td>*/}
+                                        {/*            </tr>*/}
+                                        {/*            <tr>*/}
+                                        {/*                <td className="text-gray-600">Shipping</td>*/}
+                                        {/*                <td className="font-medium text-gray-900">$5</td>*/}
+                                        {/*            </tr>*/}
+                                        {/*            <tr>*/}
+                                        {/*                <td className="text-gray-600">Tax</td>*/}
+                                        {/*                <td className="font-medium text-gray-900">$6.16</td>*/}
+                                        {/*            </tr>*/}
+                                        {/*            <tr>*/}
+                                        {/*                <td className="font-medium text-gray-900">Order total</td>*/}
+                                        {/*                <td className="font-medium text-primary">$83.16</td>*/}
+                                        {/*            </tr>*/}
+                                        {/*            </tbody>*/}
+                                        {/*        </table>*/}
+                                        {/*    </div>*/}
+                                        {/*</div>*/}
                                     </div>
                                 </div>
-                            </main>
+                            </div>
 
 
                         </div>
@@ -406,4 +507,4 @@ export const Orders = () => {
     )
 }
 
-export default Orders
+export default OrderDetails

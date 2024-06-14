@@ -1,6 +1,9 @@
 import { Fragment, useState, useEffect } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import {
+    Cog6ToothIcon,
+} from '@heroicons/react/24/outline'
+import {
     FolderIcon,
     GlobeAltIcon,
     XMarkIcon,
@@ -17,14 +20,12 @@ import axios from "axios";
 import {server} from "../../server.js";
 import {assetServer} from "../../../assetServer.js";
 import banknotesIcon from "@heroicons/react/16/solid/esm/BanknotesIcon.js";
-import {Link} from "react-router-dom";
-import {ArrowRightStartOnRectangleIcon} from "@heroicons/react/20/solid/index.js";
 
 
 
 const navigation = [
     { name: 'Overview', href: '/dashboard', icon: FolderIcon, current: false },
-    { name: 'Orders', href: '/orders', icon: ShoppingCartIcon, current: true },
+    { name: 'Orders', href: '/orders', icon: ShoppingCartIcon, current: false },
     { name: 'Products', href: '/products', icon: ShoppingBagIcon, current: false },
     { name: 'Categories', href: '/categories', icon: ListBulletIcon, current: false },
     { name: 'Ads', href: '/ads', icon: GlobeAltIcon, current: false },
@@ -32,7 +33,7 @@ const navigation = [
     { name: 'Payment History', href: '/payments', icon: banknotesIcon, current: false },
     { name: 'Payment Request', href: '/payments-requests', icon: WalletIcon, current: false },
     { name: 'Messages', href: '/messages', icon: InboxStackIcon, current: false },
-    { name: 'Users', href: '/users', icon: UserGroupIcon, current: false },
+    { name: 'Users', href: '/users', icon: UserGroupIcon, current: true },
     { name: 'Vendors', href: '/vendors', icon: BuildingStorefrontIcon, current: false },
     { name: 'Admins', href: '/admins', icon: IdentificationIcon, current: false },
     { name: 'Coupons', href: '/coupons', icon: TagIcon, current: false },
@@ -46,28 +47,26 @@ function classNames(...classes) {
 }
 
 
-export const Orders = () => {
+export const Users = () => {
     const dispatch = useDispatch();
     const [sidebarOpen, setSidebarOpen] = useState(false)
-    const user = JSON.parse(localStorage.getItem('user'));
 
-    const [orders, setOrders] = useState([]);
+    const [users, setUsers] = useState([]);
 
     useEffect(() => {
-        const fetchOrders = async () => {
+        const fetchUsers = async () => {
             try {
-                const response = await axios.get(`${server}/admin/orders`);
+                const response = await axios.get(`${server}/admin/users`);
                 // Flatten the array structure
-                const flattenedOrders = response.data.orders;
-                setOrders(flattenedOrders);
+                const flattenedUsers = response.data.flat();
+                setUsers(flattenedUsers);
             } catch (error) {
-                console.error('Failed to fetch orders:', error);
+                console.error('Failed to fetch users:', error);
             }
         };
 
-        fetchOrders();
+        fetchUsers();
     }, []);
-
 
     return (
         <>
@@ -156,28 +155,27 @@ export const Orders = () => {
                                                             dispatch(logout()); // dispatch the logout action when the link is clicked
                                                         }}
                                                         className={classNames(
-                                                            'text-gray-400 hover:bg-red-800 hover:secondary',
+                                                            'text-gray-400 hover:text-white hover:bg-gray-800',
                                                             'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
                                                         )}
                                                     >
-                                                        <ArrowRightStartOnRectangleIcon className="h-6 w-6 shrink-0"
-                                                                                        aria-hidden="true"/>
+                                                        <Cog6ToothIcon className="h-6 w-6 shrink-0" aria-hidden="true"/>
                                                         Log out
                                                     </a>
                                                 </li>
 
                                                 <li className="-mx-6 mt-auto">
                                                     <a
-                                                        href="/profile"
-                                                        className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-secondary hover:secondary"
+                                                        href="/"
+                                                        className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-secondary hover:bg-gray-800"
                                                     >
                                                         <img
                                                             className="h-8 w-8 rounded-full bg-gray-800"
-                                                            src={`${assetServer}/images/users/${user.user.image}`}
+                                                            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
                                                             alt=""
                                                         />
                                                         <span className="sr-only">Your profile</span>
-                                                        <span aria-hidden="true">{user.user.name}</span>
+                                                        <span aria-hidden="true">Tom Cook</span>
                                                     </a>
                                                 </li>
                                             </ul>
@@ -237,8 +235,7 @@ export const Orders = () => {
                                             'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
                                         )}
                                     >
-                                        <ArrowRightStartOnRectangleIcon className="h-6 w-6 shrink-0"
-                                                                        aria-hidden="true"/>
+                                        <Cog6ToothIcon className="h-6 w-6 shrink-0" aria-hidden="true"/>
                                         Log out
                                     </a>
                                 </li>
@@ -246,15 +243,15 @@ export const Orders = () => {
                                 <li className="-mx-6 mt-auto">
                                     <a
                                         href="/profile"
-                                        className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-secondary hover:secondary"
+                                        className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-secondary hover:bg-gray-800"
                                     >
                                         <img
                                             className="h-8 w-8 rounded-full bg-gray-800"
-                                            src={`${assetServer}/images/users/${user.user.image}`}
+                                            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
                                             alt=""
                                         />
                                         <span className="sr-only">Your profile</span>
-                                        <span aria-hidden="true">{user.user.name}</span>
+                                        <span aria-hidden="true">Tom Cook</span>
                                     </a>
                                 </li>
                             </ul>
@@ -269,7 +266,7 @@ export const Orders = () => {
                         <button type="button" className="-m-2.5 p-2.5 text-white xl:hidden"
                                 onClick={() => setSidebarOpen(true)}>
                             <span className="sr-only">Open sidebar</span>
-                            <Bars3Icon className="h-5 w-5" aria-hidden="true"/>
+                            <Bars3Icon className="h-5 w-5" aria-hidden="true" />
                         </button>
 
                         <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
@@ -305,7 +302,7 @@ export const Orders = () => {
                                         <div className="md:flex md:items-center md:justify-between">
                                             <div className="min-w-0 flex-1">
                                                 <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
-                                                    Orders
+                                                    Users
                                                 </h2>
                                             </div>
                                         </div>
@@ -318,23 +315,19 @@ export const Orders = () => {
                                                     <tr>
                                                         <th scope="col"
                                                             className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                            Product
+                                                            User
                                                         </th>
                                                         <th scope="col"
                                                             className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                            Price and Quantity
+                                                            Email & Phone
                                                         </th>
                                                         <th scope="col"
                                                             className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                            Customer and Vendor
+                                                            Status
                                                         </th>
                                                         <th scope="col"
                                                             className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                            Delivery Status
-                                                        </th>
-                                                        <th scope="col"
-                                                            className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                            Date
+                                                            Created Date
                                                         </th>
                                                         <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-0">
                                                             <span className="sr-only">View</span>
@@ -342,49 +335,43 @@ export const Orders = () => {
                                                     </tr>
                                                     </thead>
                                                     <tbody className="divide-y divide-gray-200 bg-white">
-                                                    {orders.map((order) => (
-                                                        <tr key={order.id}>
+                                                    {users.map((users) => (
+                                                        <tr key={users.id}>
                                                             <td className="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0">
                                                                 <div className="flex items-center">
                                                                     <div className="h-11 w-11 flex-shrink-0">
                                                                         <img className="h-11 w-11 rounded-full"
-                                                                             src={`${assetServer}/images/products/${order.image}`} alt=""/>
+                                                                             src={`${assetServer}/images/users/${users.image}`} alt=""/>
                                                                     </div>
                                                                     <div className="ml-4">
                                                                         <div
-                                                                            className="font-medium text-gray-900">{order.product_name}</div>
+                                                                            className="font-medium text-gray-900">{users.name}</div>
                                                                         <div
-                                                                            className="mt-1 text-gray-500">#{order.id}</div>
+                                                                            className="mt-1 text-gray-500">#{users.id}</div>
                                                                     </div>
                                                                 </div>
                                                             </td>
                                                             <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                                                <div className="text-gray-900">$ {order.total_price}</div>
+                                                                <div className="text-gray-900">{users.email}</div>
                                                                 <div
-                                                                    className="mt-1 text-gray-500">{order.quantity}
+                                                                    className="mt-1 text-gray-500">{users.phone}
                                                                 </div>
                                                             </td>
 
                                                             <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                                                <div className="text-gray-900">{order.user_name}</div>
-                                                                <div
-                                                                    className="mt-1 text-gray-500">{order.store_name}
-                                                                </div>
-                                                            </td>
-                                                            <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
                                                               <span
                                                                   className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
-                                                                {order.status}
+                                                                {users.status}
                                                               </span>
                                                             </td>
                                                             <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                                              {new Date(order.created_at).toLocaleDateString()}
+                                                                {new Date(users.created_at).toLocaleDateString()}
                                                             </td>
                                                             <td className="relative whitespace-nowrap py-5 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-                                                                <Link to={`/order-details/${order.id}`}
-                                                                      className="text-indigo-600 hover:text-indigo-900">
-                                                                    View<span className="sr-only">, {order.id}</span>
-                                                                </Link>
+                                                                <a href="#"
+                                                                   className="text-indigo-600 hover:text-indigo-900">
+                                                                    Suspend<span className="sr-only">, {users.id}</span>
+                                                                </a>
                                                             </td>
                                                         </tr>
                                                     ))}
@@ -406,4 +393,4 @@ export const Orders = () => {
     )
 }
 
-export default Orders
+export default Users

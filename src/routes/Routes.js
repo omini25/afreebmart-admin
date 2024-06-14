@@ -10,6 +10,13 @@ import {OrdersPage} from "../pages/account/OrdersPage.jsx";
 import {PaymentsHistoryPage} from "../pages/account/PaymentsHistoryPage.jsx";
 import {ProfilePage} from "../pages/account/ProfilePage.jsx";
 import {ProductPage} from "../pages/account/ProductPage.jsx";
+import {CategoryPage} from "../pages/account/CategoryPage.jsx";
+import {PaymentRequestsPage} from "../pages/account/PaymentRequestsPage.jsx";
+import {UsersPage} from "../pages/account/UsersPage.jsx";
+import {VendorsPage} from "../pages/account/VendorsPage.jsx";
+import {AdminsPage} from "../pages/account/AdminsPage.jsx";
+import {CouponsPage} from "../pages/account/CouponsPage.jsx";
+import {OrderDetailsPage} from "../pages/account/OrderDetailsPage.jsx";
 
 export {
     HomePage,
@@ -24,5 +31,12 @@ export {
     PaymentsHistoryPage,
     ProfilePage,
     ProductPage,
+    CategoryPage,
+    PaymentRequestsPage,
+    UsersPage,
+    VendorsPage,
+    AdminsPage,
+    CouponsPage,
+    OrderDetailsPage,
 };
 

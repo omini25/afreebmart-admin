@@ -1,30 +1,43 @@
-import { Fragment, useState } from 'react'
+import {Fragment, useEffect, useState} from 'react'
 import { Dialog, Menu, Transition } from '@headlessui/react'
+import { useDispatch } from 'react-redux';
+import { logout } from '../../redux/actions/actions';
 import {
-    ChartBarSquareIcon,
     Cog6ToothIcon,
     FolderIcon,
     GlobeAltIcon,
-    ServerIcon,
-    SignalIcon, UserIcon,
     XMarkIcon,
-} from '@heroicons/react/24/outline'
-import { Bars3Icon, ChevronRightIcon, ChevronUpDownIcon, MagnifyingGlassIcon } from '@heroicons/react/20/solid'
-import { ArrowDownIcon, ArrowUpIcon } from '@heroicons/react/20/solid'
-import { CursorArrowRaysIcon, EnvelopeOpenIcon, UsersIcon } from '@heroicons/react/24/outline'
-import { useDispatch } from 'react-redux';
-import { logout } from '../../redux/actions/actions';
+    Bars3Icon, MagnifyingGlassIcon,
+    BuildingStorefrontIcon, IdentificationIcon,
+    InboxStackIcon,
+    ListBulletIcon,
+    ShoppingBagIcon,
+    ShoppingCartIcon, TagIcon,
+    TruckIcon, UserCircleIcon, UserGroupIcon,
+    WalletIcon
+} from "@heroicons/react/20/solid/index.js";
+import banknotesIcon from "@heroicons/react/16/solid/esm/BanknotesIcon.js";
+import {server} from "../../server.js";
+import axios from "axios";
+import {assetServer} from "../../../assetServer.js";
 
 
 
 const navigation = [
-    { name: 'Overview', href: '/dashboard', icon: FolderIcon, current: true },
-    { name: 'Orders', href: '/orders', icon: ServerIcon, current: false },
-    { name: 'Wishlist', href: '/wishlist', icon: SignalIcon, current: false },
-    { name: 'Groups', href: '/account/groups', icon: GlobeAltIcon, current: false },
-    { name: 'Messages', href: '/messages', icon: ChartBarSquareIcon, current: false },
-    { name: 'Payment History', href: '/payments', icon: Cog6ToothIcon, current: false },
-    { name: 'Profile', href: '/profile', icon: UserIcon, current: false },
+    { name: 'Overview', href: '/dashboard', icon: FolderIcon, current: false },
+    { name: 'Orders', href: '/orders', icon: ShoppingCartIcon, current: false },
+    { name: 'Products', href: '/products', icon: ShoppingBagIcon, current: false },
+    { name: 'Categories', href: '/categories', icon: ListBulletIcon, current: false },
+    { name: 'Ads', href: '/ads', icon: GlobeAltIcon, current: false },
+    { name: 'Deliveries', href: '/deliveries', icon: TruckIcon, current: false },
+    { name: 'Payment History', href: '/payments', icon: banknotesIcon, current: true },
+    { name: 'Payment Request', href: '/payments-requests', icon: WalletIcon, current: false },
+    { name: 'Messages', href: '/messages', icon: InboxStackIcon, current: false },
+    { name: 'Users', href: '/users', icon: UserGroupIcon, current: false },
+    { name: 'Vendors', href: '/vendors', icon: BuildingStorefrontIcon, current: false },
+    { name: 'Admins', href: '/admins', icon: IdentificationIcon, current: false },
+    { name: 'Coupons', href: '/coupons', icon: TagIcon, current: false },
+    { name: 'Profile', href: '/profile', icon: UserCircleIcon, current: false },
 ]
 
 
@@ -33,15 +46,29 @@ function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
-const people = [
-    { name: 'Lindsay Walton', title: 'Front-end Developer', email: 'lindsay.walton@example.com', role: 'Member' },
-    // More people...
-]
 
 
 export const PaymentHistory = () => {
     const dispatch = useDispatch();
     const [sidebarOpen, setSidebarOpen] = useState(false)
+    const [payments, setPayments] = useState([]);
+
+    useEffect(() => {
+        const fetchPayments = async () => {
+            try {
+                const response = await axios.get(`${server}/admin/payments`);
+
+                setPayments(response.data.flat());
+            } catch (error) {
+                console.error('Failed to fetch payments:', error);
+            }
+        };
+
+        fetchPayments();
+    }, []);
+
+    console.log(payments);
+
 
     return (
         <>
@@ -91,11 +118,11 @@ export const PaymentHistory = () => {
                                     <div
                                         className="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 ring-1 ring-white/10">
                                         <div className="flex h-16 shrink-0 items-center">
-                                            <a href="/">
+                                            <a href="/dashboard">
                                                 <img
                                                     className="h-8 w-auto"
-                                                    src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-                                                    alt="Your Company"
+                                                    src="src/assets/afreemart-logo.png"
+                                                    alt="Afreebmart Admin"
                                                 />
                                             </a>
                                         </div>
@@ -109,8 +136,8 @@ export const PaymentHistory = () => {
                                                                     href={item.href}
                                                                     className={classNames(
                                                                         item.current
-                                                                            ? 'bg-gray-800 text-white'
-                                                                            : 'text-gray-400 hover:text-white hover:primary',
+                                                                            ? 'bg-primary text-white'
+                                                                            : 'text-gray-400 hover:text-white hover:bg-secondary',
                                                                         'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
                                                                     )}
                                                                 >
@@ -171,8 +198,8 @@ export const PaymentHistory = () => {
                             <a href="/">
                                 <img
                                     className="h-8 w-auto"
-                                    src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-                                    alt="Your Company"
+                                    src="src/assets/afreemart-logo.png"
+                                    alt="Afreebmart Admin"
                                 />
                             </a>
                         </div>
@@ -272,48 +299,24 @@ export const PaymentHistory = () => {
                             <div className="md:flex md:items-center md:justify-between">
                                 <div className="min-w-0 flex-1">
                                     <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
-                                        Dashboard
+                                        Payment History
                                     </h2>
                                 </div>
-                                <div className="mt-4 flex md:ml-4 md:mt-0">
-                                    <button
-                                        type="button"
-                                        className="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-                                    >
-                                        Request Refund
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className="ml-3 inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                                    >
-                                        Make Complain
-                                    </button>
-                                </div>
+
                             </div>
 
+                            <div className="sm:flex-auto">
 
+                                <p className="mt-2 text-sm text-gray-700">
+                                    A list of all the users payment for orders
+                                </p>
+                            </div>
                         </header>
 
                         <div>
 
                             <div className="px-4 sm:px-6 lg:px-8">
-                                <div className="sm:flex sm:items-center">
-                                    <div className="sm:flex-auto">
-                                        <h1 className="text-base font-semibold leading-6 text-gray-900">Users</h1>
-                                        <p className="mt-2 text-sm text-gray-700">
-                                            A list of all the users in your account including their name, title, email
-                                            and role.
-                                        </p>
-                                    </div>
-                                    <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-                                        <button
-                                            type="button"
-                                            className="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                                        >
-                                            Add user
-                                        </button>
-                                    </div>
-                                </div>
+
                                 <div className="mt-8 flow-root">
                                     <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                                         <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
@@ -322,39 +325,65 @@ export const PaymentHistory = () => {
                                                 <tr>
                                                     <th scope="col"
                                                         className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">
-                                                        Name
+                                                        Product Name & Payment Id
                                                     </th>
                                                     <th scope="col"
                                                         className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                        Title
+                                                        User & Total Price
                                                     </th>
                                                     <th scope="col"
                                                         className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                        Email
+                                                        Vendor $ Product Price
                                                     </th>
                                                     <th scope="col"
                                                         className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                        Role
+                                                        Status
                                                     </th>
-                                                    <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-0">
-                                                        <span className="sr-only">Edit</span>
+
+                                                    <th scope="col"
+                                                        className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                                        Order Status
                                                     </th>
+
                                                 </tr>
                                                 </thead>
                                                 <tbody className="divide-y divide-gray-200">
-                                                {people.map((person) => (
-                                                    <tr key={person.email}>
-                                                        <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
-                                                            {person.name}
+                                                {payments.map((payment) => (
+                                                    <tr key={payment.id}>
+                                                        <td className="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0">
+                                                            <div className="flex items-center">
+
+                                                                <div className="ml-4">
+                                                                    <div
+                                                                        className="font-medium text-gray-900">{payment.product_name}</div>
+                                                                    <div
+                                                                        className="mt-1 text-gray-500">#{payment.id}</div>
+                                                                </div>
+                                                            </div>
                                                         </td>
-                                                        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{person.title}</td>
-                                                        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{person.email}</td>
-                                                        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{person.role}</td>
-                                                        <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-                                                            <a href="#"
-                                                               className="text-indigo-600 hover:text-indigo-900">
-                                                                Edit<span className="sr-only">, {person.name}</span>
-                                                            </a>
+                                                        <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                                                            <div className="text-gray-900">{payment.user_name}</div>
+                                                            <div className="mt-1 text-gray-500">
+                                                                $ {payment.total_cost}
+                                                            </div>
+                                                        </td>
+
+                                                        <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                                                            <div className="text-gray-900">{payment.store_name}</div>
+                                                            <div
+                                                                className="mt-1 text-gray-500">#{payment.product_cost}
+                                                            </div>
+                                                        </td>
+                                                        <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                                                                <span
+                                                                    className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
+                                                                    {payment.payment_status}
+                                                                </span>
+                                                        </td>
+                                                        <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                                                            <div
+                                                                className="text-gray-900">{payment.order_status} id: {payment.order_id}</div>
+
                                                         </td>
                                                     </tr>
                                                 ))}

@@ -59,8 +59,8 @@ export const login = (email, password) => {
             const data = response.data;
 
             // Check if the user's role is 'vendor'
-            if (data.user.role !== 'vendor') {
-                throw new Error('Access denied. You must be a vendor to log in.');
+            if (data.user.role !== 'admin') {
+                throw new Error('Access denied. You must be an Admin to log in.');
             }
 
             // Save user's details in Redux store

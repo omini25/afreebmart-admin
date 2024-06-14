@@ -1,29 +1,48 @@
 import { Fragment, useState } from 'react'
 import { Dialog, Menu, Transition } from '@headlessui/react'
 import {
-    ChartBarSquareIcon,
     Cog6ToothIcon,
     FolderIcon,
     GlobeAltIcon,
-    ServerIcon,
-    SignalIcon, UserIcon,
     XMarkIcon,
 } from '@heroicons/react/24/outline'
-import { Bars3Icon, ChevronRightIcon, ChevronUpDownIcon, MagnifyingGlassIcon } from '@heroicons/react/20/solid'
+import { Bars3Icon, MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 import { useDispatch } from 'react-redux';
 import { logout } from '../../redux/actions/actions';
+import {
+    ArrowRightStartOnRectangleIcon,
+    BuildingStorefrontIcon, IdentificationIcon,
+    InboxStackIcon,
+    ListBulletIcon,
+    ShoppingBagIcon,
+    ShoppingCartIcon, TagIcon,
+    TruckIcon, UserCircleIcon, UserGroupIcon,
+    WalletIcon
+} from "@heroicons/react/20/solid/index.js";
+import banknotesIcon from "@heroicons/react/16/solid/esm/BanknotesIcon.js";
+import {assetServer} from "../../../assetServer.js";
+import axios from "axios";
+import {server} from "../../server.js";
 
 
 
 const navigation = [
-    { name: 'Overview', href: '/dashboard', icon: FolderIcon, current: true },
-    { name: 'Orders', href: '/orders', icon: ServerIcon, current: false },
-    { name: 'Wishlist', href: '/wishlist', icon: SignalIcon, current: false },
-    { name: 'Groups', href: '/account/groups', icon: GlobeAltIcon, current: false },
-    { name: 'Messages', href: '/messages', icon: ChartBarSquareIcon, current: false },
-    { name: 'Payment History', href: '/payments', icon: Cog6ToothIcon, current: false },
-    { name: 'Profile', href: '/profile', icon: UserIcon, current: false },
+    { name: 'Overview', href: '/dashboard', icon: FolderIcon, current: false },
+    { name: 'Orders', href: '/orders', icon: ShoppingCartIcon, current: false },
+    { name: 'Products', href: '/products', icon: ShoppingBagIcon, current: false },
+    { name: 'Categories', href: '/categories', icon: ListBulletIcon, current: false },
+    { name: 'Ads', href: '/ads', icon: GlobeAltIcon, current: false },
+    { name: 'Deliveries', href: '/deliveries', icon: TruckIcon, current: false },
+    { name: 'Payment History', href: '/payments', icon: banknotesIcon, current: false },
+    { name: 'Payment Request', href: '/payments-requests', icon: WalletIcon, current: false },
+    { name: 'Messages', href: '/messages', icon: InboxStackIcon, current: false },
+    { name: 'Users', href: '/users', icon: UserGroupIcon, current: false },
+    { name: 'Vendors', href: '/vendors', icon: BuildingStorefrontIcon, current: false },
+    { name: 'Admins', href: '/admins', icon: IdentificationIcon, current: false },
+    { name: 'Coupons', href: '/coupons', icon: TagIcon, current: false },
+    { name: 'Profile', href: '/profile', icon: UserCircleIcon, current: true },
 ]
+
 
 
 
@@ -38,6 +57,34 @@ function classNames(...classes) {
 export const Profile = () => {
     const dispatch = useDispatch();
     const [sidebarOpen, setSidebarOpen] = useState(false)
+
+    const user = JSON.parse(localStorage.getItem('user'));
+
+    const [email, setEmail] = useState(user ? user.user.email : '');
+    const [name, setName] = useState(user? user.user.name : '');
+    const [phone, setPhone] = useState(user? user.user.phone : '');
+    const [image, setImage] = useState(user? user.user.image : '');
+    const [password, setPassword] = useState('');
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+
+        const userData = {
+            name: name,
+            phone: phone,
+            email: email,
+            password: password,
+            image: image
+        };
+
+        try {
+            const response = await axios.put(`${server}/user/${user.user.id}`, userData);
+            console.log(response.data);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
 
     return (
         <>
@@ -87,11 +134,11 @@ export const Profile = () => {
                                     <div
                                         className="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 ring-1 ring-white/10">
                                         <div className="flex h-16 shrink-0 items-center">
-                                            <a href="/">
+                                            <a href="/dashboard">
                                                 <img
                                                     className="h-8 w-auto"
-                                                    src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-                                                    alt="Your Company"
+                                                    src="src/assets/afreemart-logo.png"
+                                                    alt="Afreebmart Admin"
                                                 />
                                             </a>
                                         </div>
@@ -105,8 +152,8 @@ export const Profile = () => {
                                                                     href={item.href}
                                                                     className={classNames(
                                                                         item.current
-                                                                            ? 'bg-gray-800 text-white'
-                                                                            : 'text-gray-400 hover:text-white hover:primary',
+                                                                            ? 'bg-primary text-white'
+                                                                            : 'text-gray-400 hover:text-white hover:bg-secondary',
                                                                         'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
                                                                     )}
                                                                 >
@@ -126,27 +173,27 @@ export const Profile = () => {
                                                             dispatch(logout()); // dispatch the logout action when the link is clicked
                                                         }}
                                                         className={classNames(
-                                                            'text-gray-400 hover:text-white hover:bg-gray-800',
+                                                            'text-gray-400 hover:bg-red-800 hover:secondary',
                                                             'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
                                                         )}
                                                     >
-                                                        <Cog6ToothIcon className="h-6 w-6 shrink-0" aria-hidden="true"/>
+                                                        <ArrowRightStartOnRectangleIcon className="h-6 w-6 shrink-0" aria-hidden="true"/>
                                                         Log out
                                                     </a>
                                                 </li>
 
                                                 <li className="-mx-6 mt-auto">
                                                     <a
-                                                        href="/"
-                                                        className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-secondary hover:bg-gray-800"
+                                                        href="/profile"
+                                                        className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-secondary hover:bg-secondary"
                                                     >
                                                         <img
                                                             className="h-8 w-8 rounded-full bg-gray-800"
-                                                            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                                                            src={`${assetServer}/images/users/${image}`}
                                                             alt=""
                                                         />
                                                         <span className="sr-only">Your profile</span>
-                                                        <span aria-hidden="true">Tom Cook</span>
+                                                        <span aria-hidden="true">{user.user.name}</span>
                                                     </a>
                                                 </li>
                                             </ul>
@@ -164,11 +211,11 @@ export const Profile = () => {
                     <div
                         className="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 ring-1 ring-white/5 border border-primary">
                         <div className="flex h-16 shrink-0 items-center">
-                            <a href="/">
+                            <a href="/dashboard">
                                 <img
                                     className="h-8 w-auto"
-                                    src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-                                    alt="Your Company"
+                                    src="src/assets/afreemart-logo.png"
+                                    alt="Afreebmart Admin"
                                 />
                             </a>
                         </div>
@@ -206,7 +253,7 @@ export const Profile = () => {
                                             'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
                                         )}
                                     >
-                                        <Cog6ToothIcon className="h-6 w-6 shrink-0" aria-hidden="true"/>
+                                        <ArrowRightStartOnRectangleIcon className="h-6 w-6 shrink-0" aria-hidden="true"/>
                                         Log out
                                     </a>
                                 </li>
@@ -218,11 +265,11 @@ export const Profile = () => {
                                     >
                                         <img
                                             className="h-8 w-8 rounded-full bg-gray-800"
-                                            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                                            src={`${assetServer}/images/users/${image}`}
                                             alt=""
                                         />
                                         <span className="sr-only">Your profile</span>
-                                        <span aria-hidden="true">Tom Cook</span>
+                                        <span aria-hidden="true">{user.user.name}</span>
                                     </a>
                                 </li>
                             </ul>
@@ -234,7 +281,7 @@ export const Profile = () => {
                     {/* Sticky search header */}
                     <div
                         className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-6 border-b border-white/5 bg-white px-4 shadow-sm sm:px-6 lg:px-8">
-                        <button type="button" className="-m-2.5 p-2.5 text-white xl:hidden"
+                        <button type="button" className="-m-2.5 p-2.5 text-black xl:hidden"
                                 onClick={() => setSidebarOpen(true)}>
                             <span className="sr-only">Open sidebar</span>
                             <Bars3Icon className="h-5 w-5" aria-hidden="true" />
@@ -265,238 +312,195 @@ export const Profile = () => {
                     <main className="lg:pr-10 lg:pl-10">
                         {/* Settings forms */}
                         <div className="divide-y divide-white/5">
-                            <div className="grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 px-4 py-16 sm:px-6 md:grid-cols-3 lg:px-8">
-                                <div>
-                                    <h2 className="text-base font-semibold leading-7 text-white">Personal Information</h2>
-                                    <p className="mt-1 text-sm leading-6 text-gray-400">
-                                        Use a permanent address where you can receive mail.
-                                    </p>
-                                </div>
+                            <form onSubmit={handleSubmit}>
+                                <div
+                                    className="grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 px-4 py-16 sm:px-6 md:grid-cols-3 lg:px-8">
+                                    <div>
+                                        <h2 className="text-base font-semibold leading-7 text-black">Personal
+                                            Information</h2>
+                                        <p className="mt-1 text-sm leading-6 text-gray-400">
+                                            Use a permanent address where you can receive mail.
+                                        </p>
+                                    </div>
 
-                                <form className="md:col-span-2">
-                                    <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:max-w-xl sm:grid-cols-6">
-                                        <div className="col-span-full flex items-center gap-x-8">
-                                            <img
-                                                src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                                                alt=""
-                                                className="h-24 w-24 flex-none rounded-lg bg-gray-800 object-cover"
-                                            />
-                                            <div>
-                                                <button
-                                                    type="button"
-                                                    className="rounded-md bg-white/10 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-white/20"
-                                                >
-                                                    Change avatar
-                                                </button>
-                                                <p className="mt-2 text-xs leading-5 text-gray-400">JPG, GIF or PNG. 1MB max.</p>
-                                            </div>
-                                        </div>
-
-                                        <div className="sm:col-span-3">
-                                            <label htmlFor="first-name" className="block text-sm font-medium leading-6 text-white">
-                                                First name
-                                            </label>
-                                            <div className="mt-2">
-                                                <input
-                                                    type="text"
-                                                    name="first-name"
-                                                    id="first-name"
-                                                    autoComplete="given-name"
-                                                    className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+                                    <div className="md:col-span-2">
+                                        <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:max-w-xl sm:grid-cols-6">
+                                            <div className="col-span-full flex items-center gap-x-8">
+                                                <img
+                                                    src={`${assetServer}/images/users/${image}`}
+                                                    alt=""
+                                                    className="h-24 w-24 flex-none rounded-lg bg-gray-800 object-cover"
                                                 />
+                                                <div>
+                                                    <input
+                                                        type="file"
+                                                        id="avatar"
+                                                        name="avatar"
+                                                        accept="image/png, image/jpeg"
+                                                        onChange={e => setImage(e.target.files[0])}
+                                                        className="hidden"
+                                                    />
+                                                    <label
+                                                        htmlFor="avatar"
+                                                        className="rounded-md bg-white/10 px-3 py-2 text-sm font-semibold text-black shadow-sm hover:bg-white/20 cursor-pointer"
+                                                    >
+                                                        Change avatar
+                                                    </label>
+                                                    <p className="mt-2 text-xs leading-5 text-gray-400">JPG, GIF or PNG.
+                                                        1MB max.</p>
+                                                </div>
                                             </div>
-                                        </div>
 
-                                        <div className="sm:col-span-3">
-                                            <label htmlFor="last-name" className="block text-sm font-medium leading-6 text-white">
-                                                Last name
-                                            </label>
-                                            <div className="mt-2">
-                                                <input
-                                                    type="text"
-                                                    name="last-name"
-                                                    id="last-name"
-                                                    autoComplete="family-name"
-                                                    className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
-                                                />
-                                            </div>
-                                        </div>
-
-                                        <div className="col-span-full">
-                                            <label htmlFor="email" className="block text-sm font-medium leading-6 text-white">
-                                                Email address
-                                            </label>
-                                            <div className="mt-2">
-                                                <input
-                                                    id="email"
-                                                    name="email"
-                                                    type="email"
-                                                    autoComplete="email"
-                                                    className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
-                                                />
-                                            </div>
-                                        </div>
-
-                                        <div className="col-span-full">
-                                            <label htmlFor="username" className="block text-sm font-medium leading-6 text-white">
-                                                Username
-                                            </label>
-                                            <div className="mt-2">
-                                                <div className="flex rounded-md bg-white/5 ring-1 ring-inset ring-white/10 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500">
-                          <span className="flex select-none items-center pl-3 text-gray-400 sm:text-sm">
-                            example.com/
-                          </span>
+                                            <div className="sm:col-span-3">
+                                                <label htmlFor="first-name"
+                                                       className="block text-sm font-medium leading-6 text-black">
+                                                    Name
+                                                </label>
+                                                <div className="mt-2">
                                                     <input
                                                         type="text"
-                                                        name="username"
-                                                        id="username"
-                                                        autoComplete="username"
-                                                        className="flex-1 border-0 bg-transparent py-1.5 pl-1 text-white focus:ring-0 sm:text-sm sm:leading-6"
-                                                        placeholder="janesmith"
+                                                        name="name"
+                                                        id="name"
+                                                        autoComplete="name"
+                                                        value={name}
+                                                        onChange={e => setName(e.target.value)}
+                                                        className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-black shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6"
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div className="sm:col-span-3">
+                                                <label htmlFor="last-name"
+                                                       className="block text-sm font-medium leading-6 text-black">
+                                                    Phone Number
+                                                </label>
+                                                <div className="mt-2">
+                                                    <input
+                                                        type="tel"
+                                                        name="phone"
+                                                        id="phone"
+                                                        autoComplete="phone"
+                                                        value={phone}
+                                                        onChange={e => setPhone(e.target.value)}
+                                                        className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-black shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6"
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div className="col-span-full">
+                                                <label htmlFor="email"
+                                                       className="block text-sm font-medium leading-6 text-black">
+                                                    Email address
+                                                </label>
+                                                <div className="mt-2">
+                                                    <input
+                                                        id="email"
+                                                        name="email"
+                                                        type="email"
+                                                        autoComplete="email"
+                                                        value={email}
+                                                        onChange={e => setEmail(e.target.value)}
+                                                        className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-black shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6"
+                                                    />
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                        <div className="mt-8 flex">
+                                            <button
+                                                type="submit"
+                                                className="rounded-md bg-primary px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-secondary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                                            >
+                                                Save
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div
+                                    className="grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 px-4 py-16 sm:px-6 md:grid-cols-3 lg:px-8">
+                                    <div>
+                                        <h2 className="text-base font-semibold leading-7 text-black">Change
+                                            password</h2>
+                                        <p className="mt-1 text-sm leading-6 text-gray-400">
+                                            Update your password associated with your account.
+                                        </p>
+                                    </div>
+
+                                    <div className="md:col-span-2">
+                                        <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:max-w-xl sm:grid-cols-6">
+                                            <div className="col-span-full">
+                                                <label htmlFor="current-password"
+                                                       className="block text-sm font-medium leading-6 text-black">
+                                                    Current password
+                                                </label>
+                                                <div className="mt-2">
+                                                    <input
+                                                        id="current-password"
+                                                        name="current_password"
+                                                        type="password"
+                                                        autoComplete="current-password"
+                                                        className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-black shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6"
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div className="col-span-full">
+                                                <label htmlFor="new-password"
+                                                       className="block text-sm font-medium leading-6 text-black">
+                                                    New password
+                                                </label>
+                                                <div className="mt-2">
+                                                    <input
+                                                        id="new-password"
+                                                        name="password"
+                                                        type="password"
+                                                        autoComplete="new-password"
+                                                        value={password}
+                                                        onChange={e => setPassword(e.target.value)}
+                                                        className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-black shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6"
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div className="col-span-full">
+                                                <label htmlFor="confirm-password"
+                                                       className="block text-sm font-medium leading-6 text-black">
+                                                    Confirm password
+                                                </label>
+                                                <div className="mt-2">
+                                                    <input
+                                                        id="confirm-password"
+                                                        name="confirm_password"
+                                                        type="password"
+                                                        autoComplete="new-password"
+                                                        className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-black shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6"
                                                     />
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <div className="col-span-full">
-                                            <label htmlFor="timezone" className="block text-sm font-medium leading-6 text-white">
-                                                Timezone
-                                            </label>
-                                            <div className="mt-2">
-                                                <select
-                                                    id="timezone"
-                                                    name="timezone"
-                                                    className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 [&_*]:text-black"
-                                                >
-                                                    <option>Pacific Standard Time</option>
-                                                    <option>Eastern Standard Time</option>
-                                                    <option>Greenwich Mean Time</option>
-                                                </select>
-                                            </div>
+                                        <div className="mt-8 flex">
+                                            <button
+                                                type="submit"
+                                                className="rounded-md bg-primary px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-secondary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                                            >
+                                                Save
+                                            </button>
                                         </div>
                                     </div>
-
-                                    <div className="mt-8 flex">
-                                        <button
-                                            type="submit"
-                                            className="rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
-                                        >
-                                            Save
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-
-                            <div className="grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 px-4 py-16 sm:px-6 md:grid-cols-3 lg:px-8">
-                                <div>
-                                    <h2 className="text-base font-semibold leading-7 text-white">Change password</h2>
-                                    <p className="mt-1 text-sm leading-6 text-gray-400">
-                                        Update your password associated with your account.
-                                    </p>
                                 </div>
+                            </form>
 
-                                <form className="md:col-span-2">
-                                    <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:max-w-xl sm:grid-cols-6">
-                                        <div className="col-span-full">
-                                            <label htmlFor="current-password" className="block text-sm font-medium leading-6 text-white">
-                                                Current password
-                                            </label>
-                                            <div className="mt-2">
-                                                <input
-                                                    id="current-password"
-                                                    name="current_password"
-                                                    type="password"
-                                                    autoComplete="current-password"
-                                                    className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
-                                                />
-                                            </div>
-                                        </div>
 
-                                        <div className="col-span-full">
-                                            <label htmlFor="new-password" className="block text-sm font-medium leading-6 text-white">
-                                                New password
-                                            </label>
-                                            <div className="mt-2">
-                                                <input
-                                                    id="new-password"
-                                                    name="new_password"
-                                                    type="password"
-                                                    autoComplete="new-password"
-                                                    className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
-                                                />
-                                            </div>
-                                        </div>
-
-                                        <div className="col-span-full">
-                                            <label htmlFor="confirm-password" className="block text-sm font-medium leading-6 text-white">
-                                                Confirm password
-                                            </label>
-                                            <div className="mt-2">
-                                                <input
-                                                    id="confirm-password"
-                                                    name="confirm_password"
-                                                    type="password"
-                                                    autoComplete="new-password"
-                                                    className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="mt-8 flex">
-                                        <button
-                                            type="submit"
-                                            className="rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
-                                        >
-                                            Save
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-
-                            <div className="grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 px-4 py-16 sm:px-6 md:grid-cols-3 lg:px-8">
+                            <div
+                                className="grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 px-4 py-16 sm:px-6 md:grid-cols-3 lg:px-8">
                                 <div>
-                                    <h2 className="text-base font-semibold leading-7 text-white">Log out other sessions</h2>
+                                    <h2 className="text-base font-semibold leading-7 text-black">Delete account</h2>
                                     <p className="mt-1 text-sm leading-6 text-gray-400">
-                                        Please enter your password to confirm you would like to log out of your other sessions across all of
-                                        your devices.
-                                    </p>
-                                </div>
-
-                                <form className="md:col-span-2">
-                                    <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:max-w-xl sm:grid-cols-6">
-                                        <div className="col-span-full">
-                                            <label htmlFor="logout-password" className="block text-sm font-medium leading-6 text-white">
-                                                Your password
-                                            </label>
-                                            <div className="mt-2">
-                                                <input
-                                                    id="logout-password"
-                                                    name="password"
-                                                    type="password"
-                                                    autoComplete="current-password"
-                                                    className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="mt-8 flex">
-                                        <button
-                                            type="submit"
-                                            className="rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
-                                        >
-                                            Log out other sessions
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-
-                            <div className="grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 px-4 py-16 sm:px-6 md:grid-cols-3 lg:px-8">
-                                <div>
-                                    <h2 className="text-base font-semibold leading-7 text-white">Delete account</h2>
-                                    <p className="mt-1 text-sm leading-6 text-gray-400">
-                                        No longer want to use our service? You can delete your account here. This action is not reversible.
+                                        No longer want to use our service? You can delete your account here. This action
+                                        is not reversible.
                                         All information related to this account will be deleted permanently.
                                     </p>
                                 </div>

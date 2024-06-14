@@ -1,86 +1,42 @@
 import {Fragment, useEffect, useState} from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import {
-    ChartBarSquareIcon,
-    Cog6ToothIcon,
     FolderIcon,
     GlobeAltIcon,
-    ServerIcon,
-    SignalIcon,
     XMarkIcon,
-} from '@heroicons/react/24/outline'
-import { Bars3Icon, MagnifyingGlassIcon } from '@heroicons/react/20/solid'
-import { ArrowDownIcon, ArrowUpIcon } from '@heroicons/react/20/solid'
-import { CursorArrowRaysIcon, EnvelopeOpenIcon, UsersIcon } from '@heroicons/react/24/outline'
+    Bars3Icon,
+    BuildingStorefrontIcon, IdentificationIcon,
+    InboxStackIcon,
+    MagnifyingGlassIcon, TagIcon, UserCircleIcon,
+    UserGroupIcon,
+    ShoppingBagIcon, ShoppingCartIcon, TruckIcon, WalletIcon, ArrowRightStartOnRectangleIcon, ListBulletIcon,
+} from '@heroicons/react/20/solid'
 import { useDispatch } from 'react-redux';
 import { logout } from '../../redux/actions/actions';
 import { CheckIcon, HandThumbUpIcon, UserIcon } from '@heroicons/react/20/solid'
 import {server} from "../../server.js";
 import axios from "axios";
+import {assetServer} from "../../../assetServer.js";
+import banknotesIcon from "@heroicons/react/16/solid/esm/BanknotesIcon.js";
 
-const timeline = [
-    {
-        id: 1,
-        content: 'Applied to',
-        target: 'Front End Developer',
-        href: '#',
-        date: 'Sep 20',
-        datetime: '2020-09-20',
-        icon: UserIcon,
-        iconBackground: 'bg-gray-400',
-    },
-    {
-        id: 2,
-        content: 'Advanced to phone screening by',
-        target: 'Bethany Blake',
-        href: '#',
-        date: 'Sep 22',
-        datetime: '2020-09-22',
-        icon: HandThumbUpIcon,
-        iconBackground: 'bg-blue-500',
-    },
-    {
-        id: 3,
-        content: 'Completed phone screening with',
-        target: 'Martha Gardner',
-        href: '#',
-        date: 'Sep 28',
-        datetime: '2020-09-28',
-        icon: CheckIcon,
-        iconBackground: 'bg-green-500',
-    },
-    {
-        id: 4,
-        content: 'Advanced to interview by',
-        target: 'Bethany Blake',
-        href: '#',
-        date: 'Sep 30',
-        datetime: '2020-09-30',
-        icon: HandThumbUpIcon,
-        iconBackground: 'bg-blue-500',
-    },
-    {
-        id: 5,
-        content: 'Completed interview with',
-        target: 'Katherine Snyder',
-        href: '#',
-        date: 'Oct 4',
-        datetime: '2020-10-04',
-        icon: CheckIcon,
-        iconBackground: 'bg-green-500',
-    },
-]
 
 
 
 const navigation = [
     { name: 'Overview', href: '/dashboard', icon: FolderIcon, current: true },
-    { name: 'Orders', href: '/orders', icon: ServerIcon, current: false },
-    { name: 'Products', href: '/products', icon: SignalIcon, current: false },
-    { name: 'Ads', href: '/account/groups', icon: GlobeAltIcon, current: false },
-    { name: 'Messages', href: '/messages', icon: ChartBarSquareIcon, current: false },
-    { name: 'Payment History', href: '/payments', icon: Cog6ToothIcon, current: false },
-    { name: 'Profile', href: '/profile', icon: UserIcon, current: false },
+    { name: 'Orders', href: '/orders', icon: ShoppingCartIcon, current: false },
+    { name: 'Products', href: '/products', icon: ShoppingBagIcon, current: false },
+    { name: 'Categories', href: '/categories', icon: ListBulletIcon, current: false },
+    { name: 'Ads', href: '/ads', icon: GlobeAltIcon, current: false },
+    { name: 'Deliveries', href: '/deliveries', icon: TruckIcon, current: false },
+    { name: 'Payment History', href: '/payments', icon: banknotesIcon, current: false },
+    { name: 'Payment Request', href: '/payments-requests', icon: WalletIcon, current: false },
+    { name: 'Messages', href: '/messages', icon: InboxStackIcon, current: false },
+    { name: 'Users', href: '/users', icon: UserGroupIcon, current: false },
+    { name: 'Vendors', href: '/vendors', icon: BuildingStorefrontIcon, current: false },
+    { name: 'Admins', href: '/admins', icon: IdentificationIcon, current: false },
+    { name: 'Coupons', href: '/coupons', icon: TagIcon, current: false },
+    { name: 'Profile', href: '/profile', icon: UserCircleIcon, current: false },
 ]
 
 
@@ -89,56 +45,9 @@ function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
-const stats = [
-    { id: 1, name: 'Total Orders', stat: '71,897', icon: UsersIcon, change: '122', changeType: 'increase' },
-    { id: 2, name: 'Pending Orders', stat: '58.16%', icon: EnvelopeOpenIcon, change: '5.4%', changeType: 'increase' },
-    { id: 3, name: 'Total Earned', stat: '24.57%', icon: CursorArrowRaysIcon, change: '3.2%', changeType: 'decrease' },
-]
 
-const people = [
-    {
-        name: 'Leslie Alexander',
-        email: 'leslie.alexander@example.com',
-        imageUrl:
-            'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-        href: '#',
-    },
-    {
-        name: 'Michael Foster',
-        email: 'michael.foster@example.com',
-        imageUrl:
-            'https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-        href: '#',
-    },
-    {
-        name: 'Dries Vincent',
-        email: 'dries.vincent@example.com',
-        imageUrl:
-            'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-        href: '#',
-    },
-    {
-        name: 'Lindsay Walton',
-        email: 'lindsay.walton@example.com',
-        imageUrl:
-            'https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-        href: '#',
-    },
-    {
-        name: 'Courtney Henry',
-        email: 'courtney.henry@example.com',
-        imageUrl:
-            'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-        href: '#',
-    },
-    {
-        name: 'Tom Cook',
-        email: 'tom.cook@example.com',
-        imageUrl:
-            'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-        href: '#',
-    },
-]
+
+
 
 
 export const Dashboard = () => {
@@ -146,44 +55,70 @@ export const Dashboard = () => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [orders, setOrders] = useState([]);
     const user = JSON.parse(localStorage.getItem('user'));
+    const [userCount, setUserCount] = useState(0);
+    const pendingOrdersCount = orders.filter(order => order.status === 'pending').length;
+    const [totalRevenue, setTotalRevenue] = useState(0);
 
-    console.log(user.user.id);
-
-
-    const [stats, setStats] = useState([]);
 
     useEffect(() => {
-        const fetchStats = async () => {
+        const totalRevenue = async () => {
             try {
-                const response1 = await axios.get(`${server}/vendor/${user.user.id}/order-count`);
-                const response2 = await axios.get('https://api.example.com/stats/2');
-                const response3 = await axios.get('https://api.example.com/stats/3');
-
-                setStats([
-                    { id: 1, ...response1.data },
-                    { id: 2, ...response2.data },
-                    { id: 3, ...response3.data },
-                ]);
+                const response = await axios.get(`${server}/admin/orders`);
+                // Flatten the array structure
+                const totalRevenue = response.data.total_price;
+                setTotalRevenue(totalRevenue);
             } catch (error) {
-                console.error('Failed to fetch stats:', error);
+                console.error('Failed to fetch orders:', error);
             }
         };
 
-        fetchStats();
+        totalRevenue();
     }, []);
+
+
+
+    useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                const response = await axios.get(`${server}/admin/users`);
+                setUserCount(response.data.flat().length);
+            } catch (error) {
+                console.error('Failed to fetch users:', error);
+            }
+        };
+
+        fetchUsers();
+    }, []);
+
 
     useEffect(() => {
         const fetchOrders = async () => {
             try {
-                const response = await axios.get(`${server}/vendor/orders/${user.user.id}`);
-                console.log(response);
-                setOrders(response.data);
+                const response = await axios.get(`${server}/admin/orders`);
+                // Flatten the array structure
+                const flattenedOrders = response.data.orders;
+                setOrders(flattenedOrders);
             } catch (error) {
                 console.error('Failed to fetch orders:', error);
             }
         };
 
         fetchOrders();
+    }, []);
+
+    const [products, setProducts] = useState([]);
+
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const response = await axios.get(`${server}/admin/products`);
+                setProducts(response.data.flat());
+            } catch (error) {
+                console.error('Failed to fetch products:', error);
+            }
+        };
+
+        fetchProducts();
     }, []);
 
     return (
@@ -234,11 +169,11 @@ export const Dashboard = () => {
                                     <div
                                         className="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 ring-1 ring-white/10">
                                         <div className="flex h-16 shrink-0 items-center">
-                                            <a href="/">
+                                            <a href="/dashboard">
                                                 <img
                                                     className="h-8 w-auto"
-                                                    src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-                                                    alt="Your Company"
+                                                    src="src/assets/afreemart-logo.png"
+                                                    alt="Afreebmart Admin"
                                                 />
                                             </a>
                                         </div>
@@ -252,8 +187,8 @@ export const Dashboard = () => {
                                                                     href={item.href}
                                                                     className={classNames(
                                                                         item.current
-                                                                            ? 'bg-gray-800 text-white'
-                                                                            : 'text-gray-400 hover:text-white hover:primary',
+                                                                            ? 'bg-primary text-white'
+                                                                            : 'text-gray-400 hover:text-white hover:bg-secondary',
                                                                         'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
                                                                     )}
                                                                 >
@@ -273,27 +208,28 @@ export const Dashboard = () => {
                                                             dispatch(logout()); // dispatch the logout action when the link is clicked
                                                         }}
                                                         className={classNames(
-                                                            'text-gray-400 hover:text-white hover:bg-gray-800',
+                                                            'text-gray-400 hover:bg-red-800 hover:secondary',
                                                             'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
                                                         )}
                                                     >
-                                                        <Cog6ToothIcon className="h-6 w-6 shrink-0" aria-hidden="true"/>
+                                                        <ArrowRightStartOnRectangleIcon className="h-6 w-6 shrink-0"
+                                                                                        aria-hidden="true"/>
                                                         Log out
                                                     </a>
                                                 </li>
 
                                                 <li className="-mx-6 mt-auto">
                                                     <a
-                                                        href="/"
-                                                        className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-secondary hover:bg-gray-800"
+                                                        href="/profile"
+                                                        className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-secondary hover:bg-secondary"
                                                     >
                                                         <img
                                                             className="h-8 w-8 rounded-full bg-gray-800"
-                                                            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                                                            src={`${assetServer}/images/users/${user.user.image}`}
                                                             alt=""
                                                         />
                                                         <span className="sr-only">Your profile</span>
-                                                        <span aria-hidden="true">Tom Cook</span>
+                                                        <span aria-hidden="true">{user.user.name}</span>
                                                     </a>
                                                 </li>
                                             </ul>
@@ -311,11 +247,11 @@ export const Dashboard = () => {
                     <div
                         className="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 ring-1 ring-white/5 border border-primary">
                         <div className="flex h-16 shrink-0 items-center">
-                            <a href="/">
+                            <a href="/dashboard">
                                 <img
                                     className="h-8 w-auto"
-                                    src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-                                    alt="Your Company"
+                                    src="src/assets/afreemart-logo.png"
+                                    alt="Afreebmart Admin"
                                 />
                             </a>
                         </div>
@@ -353,7 +289,8 @@ export const Dashboard = () => {
                                             'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
                                         )}
                                     >
-                                        <Cog6ToothIcon className="h-6 w-6 shrink-0" aria-hidden="true"/>
+                                        <ArrowRightStartOnRectangleIcon className="h-6 w-6 shrink-0"
+                                                                        aria-hidden="true"/>
                                         Log out
                                     </a>
                                 </li>
@@ -361,15 +298,15 @@ export const Dashboard = () => {
                                 <li className="-mx-6 mt-auto">
                                     <a
                                         href="/profile"
-                                        className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-secondary hover:bg-gray-800"
+                                        className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-secondary hover:secondary"
                                     >
                                         <img
                                             className="h-8 w-8 rounded-full bg-gray-800"
-                                            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                                            src={`${assetServer}/images/users/${user.user.image}`}
                                             alt=""
                                         />
                                         <span className="sr-only">Your profile</span>
-                                        <span aria-hidden="true">Tom Cook</span>
+                                        <span aria-hidden="true">{user.user.name}</span>
                                     </a>
                                 </li>
                             </ul>
@@ -384,7 +321,7 @@ export const Dashboard = () => {
                         <button type="button" className="-m-2.5 p-2.5 text-white xl:hidden"
                                 onClick={() => setSidebarOpen(true)}>
                             <span className="sr-only">Open sidebar</span>
-                            <Bars3Icon className="h-5 w-5" aria-hidden="true" />
+                            <Bars3Icon className="h-5 w-5 text-primary" aria-hidden="true"/>
                         </button>
 
                         <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
@@ -418,72 +355,62 @@ export const Dashboard = () => {
                                         Dashboard
                                     </h2>
                                 </div>
-                                <div className="mt-4 flex md:ml-4 md:mt-0">
-                                    <button
-                                        type="button"
-                                        className="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-                                    >
-                                        Add a product
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className="ml-3 inline-flex items-center rounded-md bg-primary px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-secondary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                                    >
-                                        Request payment
-                                    </button>
-                                </div>
+                                {/*<div className="mt-4 flex md:ml-4 md:mt-0">*/}
+                                {/*    <button*/}
+                                {/*        type="button"*/}
+                                {/*        className="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"*/}
+                                {/*    >*/}
+                                {/*        Add a product*/}
+                                {/*    </button>*/}
+                                {/*    <button*/}
+                                {/*        type="button"*/}
+                                {/*        className="ml-3 inline-flex items-center rounded-md bg-primary px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-secondary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"*/}
+                                {/*    >*/}
+                                {/*        Request payment*/}
+                                {/*    </button>*/}
+                                {/*</div>*/}
                             </div>
-
-
                         </header>
 
                         <div>
 
-                            <dl className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                                {stats.map((item) => (
-                                    <div
-                                        key={item.id}
-                                        className="relative overflow-hidden rounded-lg bg-white px-4 pb-12 pt-5 shadow sm:px-6 sm:pt-6"
-                                    >
-                                        <dt>
-                                            <div className="absolute rounded-md bg-primary p-3">
-                                                <item.icon className="h-6 w-6 text-white" aria-hidden="true"/>
-                                            </div>
-                                            <p className="ml-16 truncate text-sm font-medium text-gray-500">{item.name}</p>
-                                        </dt>
-                                        <dd className="ml-16 flex items-baseline pb-6 sm:pb-7">
-                                            <p className="text-2xl font-semibold text-gray-900">{item.stat}</p>
-                                            <p
-                                                className={classNames(
-                                                    item.changeType === 'increase' ? 'text-green-600' : 'text-red-600',
-                                                    'ml-2 flex items-baseline text-sm font-semibold'
-                                                )}
-                                            >
-                                                {item.changeType === 'increase' ? (
-                                                    <ArrowUpIcon
-                                                        className="h-5 w-5 flex-shrink-0 self-center text-green-500"
-                                                        aria-hidden="true"/>
-                                                ) : (
-                                                    <ArrowDownIcon
-                                                        className="h-5 w-5 flex-shrink-0 self-center text-red-500"
-                                                        aria-hidden="true"/>
-                                                )}
-
-                                                <span
-                                                    className="sr-only"> {item.changeType === 'increase' ? 'Increased' : 'Decreased'} by </span>
-                                                {item.change}
-                                            </p>
-                                            <div className="absolute inset-x-0 bottom-0 bg-gray-50 px-4 py-4 sm:px-6">
-                                                <div className="text-sm">
-                                                    <a href="#"
-                                                       className="font-medium text-primary hover:text-secondary">
-                                                        View all<span className="sr-only"> {item.name} stats</span>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </dd>
-                                    </div>
-                                ))}
+                            <dl className="mx-auto grid grid-cols-1 gap-px bg-gray-900/5 sm:grid-cols-2 lg:grid-cols-4">
+                                <div
+                                    className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2 bg-white px-4 py-10 sm:px-6 xl:px-8">
+                                    <dt className="text-sm font-medium leading-6 text-gray-500">Total Revenue</dt>
+                                    {/*<dd className="text-xs font-medium text-gray-700">+4.75%</dd>*/}
+                                    <dd className="w-full flex-none text-3xl font-medium leading-10 tracking-tight text-gray-900">
+                                        ${totalRevenue}
+                                    </dd>
+                                </div>
+                                <div
+                                    className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2 bg-white px-4 py-10 sm:px-6 xl:px-8">
+                                    <dt className="text-sm font-medium leading-6 text-gray-500">
+                                        Orders
+                                    </dt>
+                                    {/*<dd className="text-xs font-medium text-rose-600">+54.02%</dd>*/}
+                                    <dd className="w-full flex-none text-3xl font-medium leading-10 tracking-tight text-gray-900">
+                                        {orders.length}
+                                    </dd>
+                                </div>
+                                <div
+                                    className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2 bg-white px-4 py-10 sm:px-6 xl:px-8">
+                                    <dt className="text-sm font-medium leading-6 text-gray-500">
+                                        Pending Orders
+                                    </dt>
+                                    {/*<dd className="text-xs font-medium text-gray-700">-1.39%</dd>*/}
+                                    <dd className="w-full flex-none text-3xl font-medium leading-10 tracking-tight text-gray-900">
+                                        {pendingOrdersCount}
+                                    </dd>
+                                </div>
+                                <div
+                                    className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2 bg-white px-4 py-10 sm:px-6 xl:px-8">
+                                    <dt className="text-sm font-medium leading-6 text-gray-500">All Customers</dt>
+                                    {/*<dd className="text-xs font-medium text-rose-600">+10.18%</dd>*/}
+                                    <dd className="w-full flex-none text-3xl font-medium leading-10 tracking-tight text-gray-900">
+                                        {userCount}
+                                    </dd>
+                                </div>
                             </dl>
 
 
@@ -499,16 +426,17 @@ export const Dashboard = () => {
                                             <div className="p-6">
                                                 <div>
                                                     <ul role="list" className="divide-y divide-gray-100">
-                                                        {orders.map((order) => (
+                                                        {orders.slice(0, 4).map((order) => (
                                                             <li key={order.id}
                                                                 className="flex items-center justify-between gap-x-6 py-5">
                                                                 <div className="flex gap-x-4">
                                                                     <img
                                                                         className="h-12 w-12 flex-none rounded-full bg-gray-50"
-                                                                        src={order.imageUrl} alt=""/>
+                                                                        src={`${assetServer}/images/products/${order.image}`}
+                                                                        alt=""/>
                                                                     <div className="min-w-0 flex-auto">
-                                                                        <p className="text-sm font-semibold leading-6 text-gray-900">{order.name}</p>
-                                                                        <p className="mt-1 truncate text-xs leading-5 text-gray-500">{order.email}</p>
+                                                                        <p className="text-sm font-semibold leading-6 text-gray-900">{order.product_name}</p>
+                                                                        <p className="mt-1 truncate text-xs leading-5 text-gray-500">{new Date(order.created_at).toLocaleString()}</p>
                                                                     </div>
                                                                 </div>
                                                                 <a
@@ -537,51 +465,30 @@ export const Dashboard = () => {
                                 <div className="grid grid-cols-1 gap-4">
                                     <section aria-labelledby="section-2-title">
                                         <h2 className="text-primary" id="section-2-title">
-                                            Notifications
+                                            Recent Products
                                         </h2>
                                         <div className="overflow-hidden rounded-lg bg-white shadow">
                                             <div className="p-6">
                                                 <div className="flow-root">
                                                     <ul role="list" className="-mb-8">
-                                                        {timeline.map((event, eventIdx) => (
-                                                            <li key={event.id}>
-                                                                <div className="relative pb-8">
-                                                                    {eventIdx !== timeline.length - 1 ? (
-                                                                        <span
-                                                                            className="absolute left-4 top-4 -ml-px h-full w-0.5 bg-gray-200"
-                                                                            aria-hidden="true"/>
-                                                                    ) : null}
-                                                                    <div className="relative flex space-x-3">
-                                                                        <div>
-                                                                          <span
-                                                                              className={classNames(
-                                                                                  event.iconBackground,
-                                                                                  'h-8 w-8 rounded-full flex items-center justify-center ring-8 ring-white'
-                                                                              )}
-                                                                          >
-                                                                            <event.icon className="h-5 w-5 text-white" aria-hidden="true"/>
-                                                                          </span>
+                                                        {products.slice(0, 4).map((product) => (
+                                                            <tr key={product.id}>
+                                                                <td className="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0">
+                                                                    <div className="flex items-center">
+                                                                        <div className="h-11 w-11 flex-shrink-0">
+                                                                            <img className="h-11 w-11 rounded-full"
+                                                                                 src={`${assetServer}/images/products/${product.image}`}
+                                                                                 alt=""/>
                                                                         </div>
-                                                                        <div
-                                                                            className="flex min-w-0 flex-1 justify-between space-x-4 pt-1.5">
-                                                                            <div>
-                                                                                <p className="text-sm text-gray-500">
-                                                                                    {event.content}{' '}
-                                                                                    <a href={event.href}
-                                                                                       className="font-medium text-gray-900">
-                                                                                        {event.target}
-                                                                                    </a>
-                                                                                </p>
-                                                                            </div>
+                                                                        <div className="ml-4">
                                                                             <div
-                                                                                className="whitespace-nowrap text-right text-sm text-gray-500">
-                                                                                <time
-                                                                                    dateTime={event.datetime}>{event.date}</time>
-                                                                            </div>
+                                                                                className="font-medium text-gray-900">{product.product_name}</div>
+                                                                            <div
+                                                                                className="mt-1 text-gray-500">$ {product.price}</div>
                                                                         </div>
                                                                     </div>
-                                                                </div>
-                                                            </li>
+                                                                </td>
+                                                            </tr>
                                                         ))}
                                                     </ul>
                                                 </div>

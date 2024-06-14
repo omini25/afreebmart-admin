@@ -5,14 +5,26 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import {
     DashboardPage,
     AdsPage,
-    LoginPage, MessagesPage, OrdersPage, PaymentsHistoryPage,
+    LoginPage,
+    MessagesPage,
+    OrdersPage,
+    PaymentsHistoryPage,
     ProfilePage,
     ShopPage,
-    SignupPage, ProductPage
+    SignupPage,
+    ProductPage,
+    CategoryPage,
+    PaymentRequestsPage,
+    UsersPage,
+    VendorsPage,
+    AdminsPage,
+    CouponsPage,
+    OrderDetailsPage
 } from "./routes/Routes.js";
 import {ToastContainer} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import {CartPreview} from "./components/CartPreview.jsx";
+import {Switch} from "@headlessui/react";
 
 
 function App() {
@@ -22,20 +34,28 @@ function App() {
     return (
         <Provider store={store}>
             <Router>
-                <Routes>
-                    <Route path="/signup" element={<SignupPage />} />
-                    <Route path="/" element={<LoginPage />} />
-                    {/*<Route path="/product/:productName" element={<ProductPage />} />*/}
-                    {/*<Route path="/shop" element={<ShopPage />} />*/}
-                    <Route path="/dashboard" element={<DashboardPage />} />
-                    <Route path="/account/groups" element={<AdsPage />} />
-                    <Route path="messages" element={<MessagesPage />} />
-                    <Route path="/orders" element={<OrdersPage />} />
-                    <Route path="/payments" element={<PaymentsHistoryPage />} />
-                    <Route path="/products" element={<ProductPage />} />
-                    <Route path="/profile" element={<ProfilePage />} />
-
-                </Routes>
+                {/*<Switch>*/}
+                    <Routes>
+                        <Route path="/signup" element={<SignupPage />} />
+                        <Route path="/" element={<LoginPage />} />
+                        {/*<Route path="/product/:productName" element={<ProductPage />} />*/}
+                        {/*<Route path="/shop" element={<ShopPage />} />*/}
+                        <Route path="/dashboard" element={<DashboardPage />} />
+                        <Route path="/ads" element={<AdsPage />} />
+                        <Route path="messages" element={<MessagesPage />} />
+                        <Route path="/orders" element={<OrdersPage />} />
+                        <Route path="/payments" element={<PaymentsHistoryPage />} />
+                        <Route path="/products" element={<ProductPage />} />
+                        <Route path="/profile" element={<ProfilePage />} />
+                        <Route path="/categories" element={<CategoryPage />} />
+                        <Route path="/payments-requests" element={<PaymentRequestsPage />} />
+                        <Route path="/users" element={<UsersPage />} />
+                        <Route path="/vendors" element={<VendorsPage />} />
+                        <Route path="/admins" element={<AdminsPage />} />
+                        <Route path="/coupons" element={<CouponsPage />} />
+                        <Route path="/order-details/:id" element={<OrderDetailsPage />} />
+                    </Routes>
+                {/*</Switch>*/}
             </Router>
 
             <ToastContainer

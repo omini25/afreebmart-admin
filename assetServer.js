@@ -1,0 +1,1 @@
+export const assetServer = "http://localhost:8000";

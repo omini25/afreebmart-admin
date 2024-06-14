@@ -92,11 +92,11 @@ export const Dashboard = () => {
                                     <div
                                         className="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 ring-1 ring-white/10">
                                         <div className="flex h-16 shrink-0 items-center">
-                                            <a href="/">
+                                            <a href="/dashboard">
                                                 <img
                                                     className="h-8 w-auto"
-                                                    src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-                                                    alt="Your Company"
+                                                    src="src/assets/afreemart-logo.png"
+                                                    alt="Afreebmart Admin"
                                                 />
                                             </a>
                                         </div>
@@ -110,8 +110,8 @@ export const Dashboard = () => {
                                                                     href={item.href}
                                                                     className={classNames(
                                                                         item.current
-                                                                            ? 'bg-gray-800 text-white'
-                                                                            : 'text-gray-400 hover:text-white hover:primary',
+                                                                            ? 'bg-primary text-white'
+                                                                            : 'text-gray-400 hover:text-white hover:bg-secondary',
                                                                         'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
                                                                     )}
                                                                 >
@@ -172,8 +172,8 @@ export const Dashboard = () => {
                             <a href="/">
                                 <img
                                     className="h-8 w-auto"
-                                    src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-                                    alt="Your Company"
+                                    src="src/assets/afreemart-logo.png"
+                                    alt="Afreebmart Admin"
                                 />
                             </a>
                         </div>

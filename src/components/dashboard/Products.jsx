@@ -1,44 +1,43 @@
-import { Fragment, useState } from 'react'
+import {Fragment, useEffect, useState} from 'react'
 import { Dialog, Menu, Transition } from '@headlessui/react'
 import {
-    ChartBarSquareIcon,
-    Cog6ToothIcon,
     FolderIcon,
     GlobeAltIcon,
-    ServerIcon,
-    SignalIcon, UserIcon,
     XMarkIcon,
-} from '@heroicons/react/24/outline'
-import { Bars3Icon, ChevronRightIcon, ChevronUpDownIcon, MagnifyingGlassIcon } from '@heroicons/react/20/solid'
-import { CheckIcon } from '@heroicons/react/24/outline'
+    Bars3Icon,
+    BuildingStorefrontIcon, IdentificationIcon,
+    InboxStackIcon,
+    MagnifyingGlassIcon, TagIcon, UserCircleIcon,
+    UserGroupIcon,
+    ShoppingBagIcon, ShoppingCartIcon, TruckIcon, WalletIcon, ListBulletIcon,
+} from '@heroicons/react/20/solid'
 import { useDispatch } from 'react-redux';
 import { logout } from '../../redux/actions/actions';
+import axios from 'axios';
+import {server} from "../../server.js";
+import {assetServer} from "../../../assetServer.js";
+import banknotesIcon from "@heroicons/react/16/solid/esm/BanknotesIcon.js";
+import {ArrowRightStartOnRectangleIcon} from "@heroicons/react/20/solid/index.js";
+
 
 
 
 const navigation = [
     { name: 'Overview', href: '/dashboard', icon: FolderIcon, current: false },
-    { name: 'Orders', href: '/orders', icon: ServerIcon, current: false },
-    { name: 'Products', href: '/products', icon: SignalIcon, current: true },
-    { name: 'Ads', href: '/account/groups', icon: GlobeAltIcon, current: false },
-    { name: 'Messages', href: '/messages', icon: ChartBarSquareIcon, current: false },
-    { name: 'Payment History', href: '/payments', icon: Cog6ToothIcon, current: false },
-    { name: 'Profile', href: '/profile', icon: UserIcon, current: false },
+    { name: 'Orders', href: '/orders', icon: ShoppingCartIcon, current: false },
+    { name: 'Products', href: '/products', icon: ShoppingBagIcon, current: true },
+    { name: 'Categories', href: '/categories', icon: ListBulletIcon, current: false },
+    { name: 'Ads', href: '/ads', icon: GlobeAltIcon, current: false },
+    { name: 'Deliveries', href: '/deliveries', icon: TruckIcon, current: false },
+    { name: 'Payment History', href: '/payments', icon: banknotesIcon, current: false },
+    { name: 'Payment Request', href: '/payments-requests', icon: WalletIcon, current: false },
+    { name: 'Messages', href: '/messages', icon: InboxStackIcon, current: false },
+    { name: 'Users', href: '/users', icon: UserGroupIcon, current: false },
+    { name: 'Vendors', href: '/vendors', icon: BuildingStorefrontIcon, current: false },
+    { name: 'Admins', href: '/admins', icon: IdentificationIcon, current: false },
+    { name: 'Coupons', href: '/coupons', icon: TagIcon, current: false },
+    { name: 'Profile', href: '/profile', icon: UserCircleIcon, current: false },
 ]
-
-const people = [
-    {
-        name: 'Lindsay Walton',
-        title: 'Front-end Developer',
-        department: 'Optimization',
-        email: 'lindsay.walton@example.com',
-        role: 'Member',
-        image:
-            'https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    },
-    // More people...
-]
-
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -49,6 +48,22 @@ function classNames(...classes) {
 export const Products = () => {
     const dispatch = useDispatch();
     const [sidebarOpen, setSidebarOpen] = useState(false)
+
+    const [products, setProducts] = useState([]);
+
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const response = await axios.get(`${server}/admin/products`);
+
+                setProducts(response.data.flat());
+            } catch (error) {
+                console.error('Failed to fetch products:', error);
+            }
+        };
+
+        fetchProducts();
+    }, []);
 
     return (
         <>
@@ -98,11 +113,11 @@ export const Products = () => {
                                     <div
                                         className="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 ring-1 ring-white/10">
                                         <div className="flex h-16 shrink-0 items-center">
-                                            <a href="/">
+                                            <a href="/dashboard">
                                                 <img
                                                     className="h-8 w-auto"
-                                                    src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-                                                    alt="Your Company"
+                                                    src="src/assets/afreemart-logo.png"
+                                                    alt="Afreebmart Admin"
                                                 />
                                             </a>
                                         </div>
@@ -116,8 +131,8 @@ export const Products = () => {
                                                                     href={item.href}
                                                                     className={classNames(
                                                                         item.current
-                                                                            ? 'bg-gray-800 text-white'
-                                                                            : 'text-gray-400 hover:text-white hover:primary',
+                                                                            ? 'bg-primary text-white'
+                                                                            : 'text-gray-400 hover:text-white hover:bg-secondary',
                                                                         'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
                                                                     )}
                                                                 >
@@ -141,7 +156,8 @@ export const Products = () => {
                                                             'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
                                                         )}
                                                     >
-                                                        <Cog6ToothIcon className="h-6 w-6 shrink-0" aria-hidden="true"/>
+                                                        <ArrowRightStartOnRectangleIcon className="h-6 w-6 shrink-0"
+                                                                                        aria-hidden="true"/>
                                                         Log out
                                                     </a>
                                                 </li>
@@ -178,8 +194,8 @@ export const Products = () => {
                             <a href="/">
                                 <img
                                     className="h-8 w-auto"
-                                    src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-                                    alt="Your Company"
+                                    src="src/assets/afreemart-logo.png"
+                                    alt="Afreebmart Admin"
                                 />
                             </a>
                         </div>
@@ -213,11 +229,12 @@ export const Products = () => {
                                             dispatch(logout()); // dispatch the logout action when the link is clicked
                                         }}
                                         className={classNames(
-                                            'text-gray-400 hover:bg-red-800 hover:secondary',
+                                            'text-gray-400 hover:text-white hover:bg-gray-800',
                                             'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
                                         )}
                                     >
-                                        <Cog6ToothIcon className="h-6 w-6 shrink-0" aria-hidden="true"/>
+                                        <ArrowRightStartOnRectangleIcon className="h-6 w-6 shrink-0"
+                                                                        aria-hidden="true"/>
                                         Log out
                                     </a>
                                 </li>
@@ -248,7 +265,7 @@ export const Products = () => {
                         <button type="button" className="-m-2.5 p-2.5 text-white xl:hidden"
                                 onClick={() => setSidebarOpen(true)}>
                             <span className="sr-only">Open sidebar</span>
-                            <Bars3Icon className="h-5 w-5" aria-hidden="true" />
+                            <Bars3Icon className="h-5 w-5" aria-hidden="true"/>
                         </button>
 
                         <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
@@ -279,27 +296,29 @@ export const Products = () => {
 
                             <main className="pb-14 sm:px-6 sm:pb-20 sm:pt-10 lg:px-8">
                                 <div className="px-4 sm:px-6 lg:px-8">
-                                    <div className="sm:flex sm:items-center">
-                                        <div className="sm:flex-auto">
-                                            <h1 className="text-base font-semibold leading-6 text-gray-900">Products</h1>
-                                            <p className="mt-2 text-sm text-gray-700">
-                                                A list of all the products you have added
-                                            </p>
+                                    <header
+                                        className="border-b border-white/5 px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
+                                        <div className="md:flex md:items-center md:justify-between">
+                                            <div className="min-w-0 flex-1">
+                                                <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
+                                                    All Products
+                                                </h2>
+                                            </div>
+                                            <div className="mt-4 flex md:ml-4 md:mt-0">
+                                                <button
+                                                    type="button"
+                                                    className="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                                                >
+                                                    Add a product
+                                                </button>
+                                            </div>
                                         </div>
-                                        <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-                                            <button
-                                                type="button"
-                                                className="block rounded-md bg-primary px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-secondary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                                            >
-                                                Add product
-                                            </button>
-                                        </div>
-                                    </div>
+                                    </header>
                                     <div className="mt-8 flow-root">
                                         <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                                             <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
                                                 <table className="min-w-full divide-y divide-gray-300">
-                                                <thead>
+                                                    <thead>
                                                     <tr>
                                                         <th scope="col"
                                                             className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">
@@ -307,7 +326,11 @@ export const Products = () => {
                                                         </th>
                                                         <th scope="col"
                                                             className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                            Customer
+                                                            Vendor & Price
+                                                        </th>
+                                                        <th scope="col"
+                                                            className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                                            Category
                                                         </th>
                                                         <th scope="col"
                                                             className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
@@ -315,7 +338,7 @@ export const Products = () => {
                                                         </th>
                                                         <th scope="col"
                                                             className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                            Date
+                                                            Stock & Type
                                                         </th>
                                                         <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-0">
                                                             <span className="sr-only">Action</span>
@@ -323,38 +346,54 @@ export const Products = () => {
                                                     </tr>
                                                     </thead>
                                                     <tbody className="divide-y divide-gray-200 bg-white">
-                                                    {people.map((person) => (
-                                                        <tr key={person.email}>
+                                                    {products.map((product) => (
+                                                        <tr key={product.id}>
                                                             <td className="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0">
                                                                 <div className="flex items-center">
                                                                     <div className="h-11 w-11 flex-shrink-0">
                                                                         <img className="h-11 w-11 rounded-full"
-                                                                             src={person.image} alt=""/>
+                                                                             src={`${assetServer}/images/products/${product.image}`}
+                                                                             alt=""/>
                                                                     </div>
                                                                     <div className="ml-4">
                                                                         <div
-                                                                            className="font-medium text-gray-900">{person.name}</div>
+                                                                            className="font-medium text-gray-900">{product.product_name}</div>
                                                                         <div
-                                                                            className="mt-1 text-gray-500">{person.email}</div>
+                                                                            className="mt-1 text-gray-500">#{product.id}</div>
                                                                     </div>
                                                                 </div>
                                                             </td>
                                                             <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                                                <div className="text-gray-900">{person.title}</div>
+                                                                <div className="text-gray-900">{product.store_name}</div>
+                                                                <div className="mt-1 text-gray-500">
+                                                                  $ {product.group === "1" ? product.group_price : product.price}
+                                                                </div>
+                                                            </td>
+
+                                                            <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                                                                <div className="text-gray-900">{product.category}</div>
                                                                 <div
-                                                                    className="mt-1 text-gray-500">{person.department}</div>
+                                                                    className="mt-1 text-gray-500">{product.subcategory}
+                                                                </div>
                                                             </td>
                                                             <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                                              <span
-                                                                  className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
-                                                                Active
-                                                              </span>
+                                                                <span
+                                                                    className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
+                                                                    {product.status}
+                                                                </span>
                                                             </td>
-                                                            <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">{person.role}</td>
+                                                            <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                                                                <div
+                                                                    className="text-gray-900">{product.stock_status} Qty: {product.quantity}</div>
+                                                                <div className="mt-1 text-gray-500">
+                                                                  {product.group === "1" ? 'Bulk Product' : 'Main Product'}
+                                                                </div>
+                                                            </td>
                                                             <td className="relative whitespace-nowrap py-5 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
                                                                 <a href="#"
                                                                    className="text-indigo-600 hover:text-indigo-900">
-                                                                    View/Edit<span className="sr-only">, {person.name}</span>
+                                                                    View/Edit<span
+                                                                    className="sr-only">, {product.name}</span>
                                                                 </a>
                                                             </td>
                                                         </tr>
