@@ -1,6 +1,5 @@
 import {HomePage} from "../pages/HomePage.jsx";
 import {SignupPage} from "../pages/SignupPage.jsx";
-// import {ProductPage} from "../pages/ProductPage.jsx";
 import {ShopPage} from "../pages/ShopPage.jsx";
 import {LoginPage} from "../pages/LoginPage.jsx";
 import {DashboardPage} from "../pages/account/DashboardPage.jsx";
@@ -17,6 +16,10 @@ import {VendorsPage} from "../pages/account/VendorsPage.jsx";
 import {AdminsPage} from "../pages/account/AdminsPage.jsx";
 import {CouponsPage} from "../pages/account/CouponsPage.jsx";
 import {OrderDetailsPage} from "../pages/account/OrderDetailsPage.jsx";
+import {ProductEditPage} from "../pages/account/ProductEditPage.jsx";
+import {CategoryEditPage} from "../pages/account/CategoryEditPage.jsx";
+import {CouponEditPage} from "../pages/account/CouponEditPage.jsx";
+import {DeliveryPage} from "../pages/account/DeliveryPage.jsx";
 
 export {
     HomePage,
@@ -38,5 +41,9 @@ export {
     AdminsPage,
     CouponsPage,
     OrderDetailsPage,
+    ProductEditPage,
+    CategoryEditPage,
+    CouponEditPage,
+    DeliveryPage,
 };
 

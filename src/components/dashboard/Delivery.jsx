@@ -1,4 +1,4 @@
-import {Fragment, useEffect, useState} from 'react'
+import { Fragment, useState, useEffect } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import {
     FolderIcon,
@@ -13,25 +13,22 @@ import {
 } from '@heroicons/react/20/solid'
 import { useDispatch } from 'react-redux';
 import { logout } from '../../redux/actions/actions';
-import axios from 'axios';
+import axios from "axios";
 import {server} from "../../server.js";
 import {assetServer} from "../../../assetServer.js";
 import banknotesIcon from "@heroicons/react/16/solid/esm/BanknotesIcon.js";
-import {ArrowRightStartOnRectangleIcon} from "@heroicons/react/20/solid/index.js";
-import AddProduct from "./AddProduct.jsx";
 import {Link} from "react-router-dom";
-
-
+import {ArrowRightStartOnRectangleIcon} from "@heroicons/react/20/solid/index.js";
 
 
 
 const navigation = [
     { name: 'Overview', href: '/dashboard', icon: FolderIcon, current: false },
     { name: 'Orders', href: '/orders', icon: ShoppingCartIcon, current: false },
-    { name: 'Products', href: '/products', icon: ShoppingBagIcon, current: true },
+    { name: 'Products', href: '/products', icon: ShoppingBagIcon, current: false },
     { name: 'Categories', href: '/categories', icon: ListBulletIcon, current: false },
     { name: 'Ads', href: '/ads', icon: GlobeAltIcon, current: false },
-    { name: 'Deliveries', href: '/deliveries', icon: TruckIcon, current: false },
+    { name: 'Deliveries', href: '/deliveries', icon: TruckIcon, current: true },
     { name: 'Payment History', href: '/payments', icon: banknotesIcon, current: false },
     { name: 'Payment Request', href: '/payments-requests', icon: WalletIcon, current: false },
     { name: 'Messages', href: '/messages', icon: InboxStackIcon, current: false },
@@ -42,32 +39,35 @@ const navigation = [
     { name: 'Profile', href: '/profile', icon: UserCircleIcon, current: false },
 ]
 
+
+
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
 
-
-export const Products = () => {
+export const Delivery = () => {
     const dispatch = useDispatch();
     const [sidebarOpen, setSidebarOpen] = useState(false)
     const user = JSON.parse(localStorage.getItem('user'));
-    const [products, setProducts] = useState([]);
-    const [isAddProductOpen, setIsAddProductOpen] = useState(false);
+
+    const [orders, setOrders] = useState([]);
 
     useEffect(() => {
-        const fetchProducts = async () => {
+        const fetchOrders = async () => {
             try {
-                const response = await axios.get(`${server}/admin/products`);
-
-                setProducts(response.data.flat());
+                const response = await axios.get(`${server}/admin/deliveries`);
+                // Flatten the array structure
+                const flattenedOrders = response.data.orders;
+                setOrders(flattenedOrders);
             } catch (error) {
-                console.error('Failed to fetch products:', error);
+                console.error('Failed to fetch orders:', error);
             }
         };
 
-        fetchProducts();
+        fetchOrders();
     }, []);
+
 
     return (
         <>
@@ -265,7 +265,7 @@ export const Products = () => {
                 <div className="xl:pl-72">
                     {/* Sticky search header */}
                     <div
-                        className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-6 border-b border-white/5 bg-transparent px-4 shadow-sm sm:px-6 lg:px-8">
+                        className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-6 border-b border-white/5 bg-white px-4 shadow-sm sm:px-6 lg:px-8">
                         <button type="button" className="-m-2.5 p-2.5 text-black xl:hidden"
                                 onClick={() => setSidebarOpen(true)}>
                             <span className="sr-only">Open sidebar</span>
@@ -305,104 +305,85 @@ export const Products = () => {
                                         <div className="md:flex md:items-center md:justify-between">
                                             <div className="min-w-0 flex-1">
                                                 <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
-                                                    All Products
+                                                    Deliveries
                                                 </h2>
-                                            </div>
-                                            <div className="mt-4 flex md:ml-4 md:mt-0">
-                                                <button
-                                                    type="button"
-                                                    className="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-                                                    onClick={() => setIsAddProductOpen(true)}
-                                                >
-                                                    Add a product
-                                                </button>
-                                            </div>
-
-                                            <div className="fixed top-0 left-0 z-50">
-                                                {isAddProductOpen && <AddProduct onClose={() => setIsAddProductOpen(false)} />}
                                             </div>
                                         </div>
                                     </header>
                                     <div className="mt-8 flow-root">
                                         <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                                             <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-                                            <table className="min-w-full divide-y divide-gray-300">
+                                                <table className="min-w-full divide-y divide-gray-300">
                                                     <thead>
                                                     <tr>
                                                         <th scope="col"
-                                                            className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">
+                                                            className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                                                             Product
                                                         </th>
                                                         <th scope="col"
                                                             className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                            Vendor & Price
+                                                            Address and Deliverer
                                                         </th>
                                                         <th scope="col"
                                                             className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                            Category
+                                                            Customer and Vendor
                                                         </th>
                                                         <th scope="col"
                                                             className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                            Status
+                                                            Delivery Status
                                                         </th>
                                                         <th scope="col"
                                                             className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                            Stock & Type
+                                                            Date
                                                         </th>
                                                         <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-0">
-                                                            <span className="sr-only">Action</span>
+                                                            <span className="sr-only">View</span>
                                                         </th>
                                                     </tr>
                                                     </thead>
                                                     <tbody className="divide-y divide-gray-200 bg-white">
-                                                    {products.map((product) => (
-                                                        <tr key={product.id}>
+                                                    {orders.map((order) => (
+                                                        <tr key={order.id}>
                                                             <td className="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0">
                                                                 <div className="flex items-center">
                                                                     <div className="h-11 w-11 flex-shrink-0">
                                                                         <img className="h-11 w-11 rounded-full"
-                                                                             src={`${assetServer}/images/products/${product.image}`}
-                                                                             alt=""/>
+                                                                             src={`${assetServer}/images/products/${order.image}`} alt=""/>
                                                                     </div>
                                                                     <div className="ml-4">
                                                                         <div
-                                                                            className="font-medium text-gray-900">{product.product_name}</div>
+                                                                            className="font-medium text-gray-900">{order.product_name}</div>
                                                                         <div
-                                                                            className="mt-1 text-gray-500">#{product.id}</div>
+                                                                            className="mt-1 text-gray-500">#{order.id}</div>
                                                                     </div>
                                                                 </div>
                                                             </td>
                                                             <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                                                <div className="text-gray-900">{product.store_name}</div>
-                                                                <div className="mt-1 text-gray-500">
-                                                                  $ {product.group === "1" ? product.group_price : product.price}
+                                                                <div className="text-gray-900">$ {order.total_price}</div>
+                                                                <div
+                                                                    className="mt-1 text-gray-500">{order.quantity}
                                                                 </div>
                                                             </td>
 
                                                             <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                                                <div className="text-gray-900">{product.category}</div>
+                                                                <div className="text-gray-900">{order.user_name}</div>
                                                                 <div
-                                                                    className="mt-1 text-gray-500">{product.subcategory}
+                                                                    className="mt-1 text-gray-500">{order.store_name}
                                                                 </div>
                                                             </td>
                                                             <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                                                <span
-                                                                    className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
-                                                                    {product.status}
-                                                                </span>
+                                                              <span
+                                                                  className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
+                                                                {order.status}
+                                                              </span>
                                                             </td>
                                                             <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                                                <div
-                                                                    className="text-gray-900">{product.stock_status} Qty: {product.quantity}</div>
-                                                                <div className="mt-1 text-gray-500">
-                                                                  {product.group === "1" ? 'Bulk Product' : 'Main Product'}
-                                                                </div>
+                                                                {new Date(order.created_at).toLocaleDateString()}
                                                             </td>
                                                             <td className="relative whitespace-nowrap py-5 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-                                                                <Link to={`/product/${product.id}`}
-                                                                   className="text-indigo-600 hover:text-indigo-900">
-                                                                    View/Edit<span
-                                                                    className="sr-only">, {product.name}</span>
+                                                                <Link to={`/order-details/${order.id}`}
+                                                                      className="text-indigo-600 hover:text-indigo-900">
+                                                                    View<span className="sr-only">, {order.id}</span>
                                                                 </Link>
                                                             </td>
                                                         </tr>
@@ -425,4 +406,4 @@ export const Products = () => {
     )
 }
 
-export default Products
+export default Delivery

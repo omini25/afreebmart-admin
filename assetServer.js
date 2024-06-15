@@ -1,1 +1,1 @@
-export const assetServer = "http://localhost:8000";
+export const assetServer = "https://afreebmart.com";

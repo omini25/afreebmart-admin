@@ -18,6 +18,8 @@ import {server} from "../../server.js";
 import {assetServer} from "../../../assetServer.js";
 import banknotesIcon from "@heroicons/react/16/solid/esm/BanknotesIcon.js";
 import {ArrowRightStartOnRectangleIcon} from "@heroicons/react/20/solid/index.js";
+import AddCategory from "./AddCategory.jsx";
+import {Link} from "react-router-dom";
 
 
 
@@ -47,8 +49,9 @@ function classNames(...classes) {
 
 export const Category = () => {
     const dispatch = useDispatch();
+    const user = JSON.parse(localStorage.getItem('user'));
     const [sidebarOpen, setSidebarOpen] = useState(false)
-
+    const [isAddCategoryOpen, setIsAddCategoryOpen] = useState(false);
     const [categories, setCategories] = useState([]);
 
     useEffect(() => {
@@ -153,7 +156,7 @@ export const Category = () => {
                                                             dispatch(logout()); // dispatch the logout action when the link is clicked
                                                         }}
                                                         className={classNames(
-                                                            'text-gray-400 hover:text-white hover:bg-gray-800',
+                                                            'text-gray-400 hover:bg-red-800 hover:secondary',
                                                             'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
                                                         )}
                                                     >
@@ -165,16 +168,16 @@ export const Category = () => {
 
                                                 <li className="-mx-6 mt-auto">
                                                     <a
-                                                        href="/"
-                                                        className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-secondary hover:bg-gray-800"
+                                                        href="/profile"
+                                                        className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-secondary hover:secondary"
                                                     >
                                                         <img
                                                             className="h-8 w-8 rounded-full bg-gray-800"
-                                                            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                                                            src={`${assetServer}/images/users/${user.user.image}`}
                                                             alt=""
                                                         />
                                                         <span className="sr-only">Your profile</span>
-                                                        <span aria-hidden="true">Tom Cook</span>
+                                                        <span aria-hidden="true">{user.user.name}</span>
                                                     </a>
                                                 </li>
                                             </ul>
@@ -230,7 +233,7 @@ export const Category = () => {
                                             dispatch(logout()); // dispatch the logout action when the link is clicked
                                         }}
                                         className={classNames(
-                                            'text-gray-400 hover:text-white hover:bg-gray-800',
+                                            'text-gray-400 hover:bg-red-800 hover:secondary',
                                             'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
                                         )}
                                     >
@@ -243,15 +246,15 @@ export const Category = () => {
                                 <li className="-mx-6 mt-auto">
                                     <a
                                         href="/profile"
-                                        className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-secondary hover:bg-gray-800"
+                                        className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-secondary hover:secondary"
                                     >
                                         <img
                                             className="h-8 w-8 rounded-full bg-gray-800"
-                                            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                                            src={`${assetServer}/images/users/${user.user.image}`}
                                             alt=""
                                         />
                                         <span className="sr-only">Your profile</span>
-                                        <span aria-hidden="true">Tom Cook</span>
+                                        <span aria-hidden="true">{user.user.name}</span>
                                     </a>
                                 </li>
                             </ul>
@@ -262,8 +265,8 @@ export const Category = () => {
                 <div className="xl:pl-72">
                     {/* Sticky search header */}
                     <div
-                        className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-6 border-b border-white/5 bg-white px-4 shadow-sm sm:px-6 lg:px-8">
-                        <button type="button" className="-m-2.5 p-2.5 text-white xl:hidden"
+                        className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-6 border-b border-white/5 bg-transparent px-4 shadow-sm sm:px-6 lg:px-8">
+                        <button type="button" className="-m-2.5 p-2.5 text-black xl:hidden"
                                 onClick={() => setSidebarOpen(true)}>
                             <span className="sr-only">Open sidebar</span>
                             <Bars3Icon className="h-5 w-5" aria-hidden="true"/>
@@ -309,9 +312,15 @@ export const Category = () => {
                                                 <button
                                                     type="button"
                                                     className="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                                                    onClick={() => setIsAddCategoryOpen(true)}
                                                 >
                                                     Add a category
                                                 </button>
+                                            </div>
+
+                                            <div className="fixed top-0 left-0 z-50">
+                                                {isAddCategoryOpen &&
+                                                    <AddCategory onClose={() => setIsAddCategoryOpen(false)}/>}
                                             </div>
                                         </div>
                                     </header>
@@ -359,10 +368,10 @@ export const Category = () => {
 
                                                             </td>
                                                             <td className="relative whitespace-nowrap py-5 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-                                                                <a href="#"
+                                                                <Link to={`/category/${category.id}`}
                                                                    className="text-indigo-600 hover:text-indigo-900">
                                                                     View<span className="sr-only">, {category.id}</span>
-                                                                </a>
+                                                                </Link>
                                                             </td>
                                                         </tr>
                                                     ))}

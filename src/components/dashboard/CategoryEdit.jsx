@@ -1,5 +1,5 @@
 import {Fragment, useEffect, useState} from 'react'
-import { Dialog, Transition } from '@headlessui/react'
+import { Dialog, Menu, Transition } from '@headlessui/react'
 import {
     FolderIcon,
     GlobeAltIcon,
@@ -9,7 +9,7 @@ import {
     InboxStackIcon,
     MagnifyingGlassIcon, TagIcon, UserCircleIcon,
     UserGroupIcon,
-    ShoppingBagIcon, ShoppingCartIcon, TruckIcon, WalletIcon, ListBulletIcon,
+    ShoppingBagIcon, ShoppingCartIcon, TruckIcon, WalletIcon, ListBulletIcon, PhotoIcon,
 } from '@heroicons/react/20/solid'
 import { useDispatch } from 'react-redux';
 import { logout } from '../../redux/actions/actions';
@@ -18,9 +18,8 @@ import {server} from "../../server.js";
 import {assetServer} from "../../../assetServer.js";
 import banknotesIcon from "@heroicons/react/16/solid/esm/BanknotesIcon.js";
 import {ArrowRightStartOnRectangleIcon} from "@heroicons/react/20/solid/index.js";
-import AddProduct from "./AddProduct.jsx";
-import {Link} from "react-router-dom";
-
+import AddCategory from "./AddCategory.jsx";
+import {Link, useParams} from "react-router-dom";
 
 
 
@@ -28,8 +27,8 @@ import {Link} from "react-router-dom";
 const navigation = [
     { name: 'Overview', href: '/dashboard', icon: FolderIcon, current: false },
     { name: 'Orders', href: '/orders', icon: ShoppingCartIcon, current: false },
-    { name: 'Products', href: '/products', icon: ShoppingBagIcon, current: true },
-    { name: 'Categories', href: '/categories', icon: ListBulletIcon, current: false },
+    { name: 'Products', href: '/products', icon: ShoppingBagIcon, current: false },
+    { name: 'Categories', href: '/categories', icon: ListBulletIcon, current: true },
     { name: 'Ads', href: '/ads', icon: GlobeAltIcon, current: false },
     { name: 'Deliveries', href: '/deliveries', icon: TruckIcon, current: false },
     { name: 'Payment History', href: '/payments', icon: banknotesIcon, current: false },
@@ -48,26 +47,30 @@ function classNames(...classes) {
 
 
 
-export const Products = () => {
+export const CategoryEdit = () => {
     const dispatch = useDispatch();
-    const [sidebarOpen, setSidebarOpen] = useState(false)
     const user = JSON.parse(localStorage.getItem('user'));
-    const [products, setProducts] = useState([]);
-    const [isAddProductOpen, setIsAddProductOpen] = useState(false);
+    const [sidebarOpen, setSidebarOpen] = useState(false)
+    const [isAddCategoryOpen, setIsAddCategoryOpen] = useState(false);
+    const [categories, setCategories] = useState([]);
+    const { id } = useParams();
 
     useEffect(() => {
-        const fetchProducts = async () => {
+        const fetchCategories = async () => {
             try {
-                const response = await axios.get(`${server}/admin/products`);
+                const response = await axios.get(`${server}/admin/categories/${id}`);
 
-                setProducts(response.data.flat());
+                setCategories(response.data[0]);
             } catch (error) {
-                console.error('Failed to fetch products:', error);
+                console.error('Failed to fetch categories:', error);
             }
         };
 
-        fetchProducts();
+        fetchCategories();
     }, []);
+
+    console.log('categories:', categories);
+
 
     return (
         <>
@@ -265,7 +268,7 @@ export const Products = () => {
                 <div className="xl:pl-72">
                     {/* Sticky search header */}
                     <div
-                        className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-6 border-b border-white/5 bg-transparent px-4 shadow-sm sm:px-6 lg:px-8">
+                        className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-6 border-b border-white/5 bg-white px-4 shadow-sm sm:px-6 lg:px-8">
                         <button type="button" className="-m-2.5 p-2.5 text-black xl:hidden"
                                 onClick={() => setSidebarOpen(true)}>
                             <span className="sr-only">Open sidebar</span>
@@ -303,119 +306,103 @@ export const Products = () => {
                                     <header
                                         className="border-b border-white/5 px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
                                         <div className="md:flex md:items-center md:justify-between">
-                                            <div className="min-w-0 flex-1">
+                                            <div className="min-w-0">
                                                 <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
-                                                    All Products
+                                                    Categories {id}
                                                 </h2>
-                                            </div>
-                                            <div className="mt-4 flex md:ml-4 md:mt-0">
-                                                <button
-                                                    type="button"
-                                                    className="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-                                                    onClick={() => setIsAddProductOpen(true)}
-                                                >
-                                                    Add a product
-                                                </button>
-                                            </div>
-
-                                            <div className="fixed top-0 left-0 z-50">
-                                                {isAddProductOpen && <AddProduct onClose={() => setIsAddProductOpen(false)} />}
                                             </div>
                                         </div>
                                     </header>
-                                    <div className="mt-8 flow-root">
-                                        <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                                            <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-                                            <table className="min-w-full divide-y divide-gray-300">
-                                                    <thead>
-                                                    <tr>
-                                                        <th scope="col"
-                                                            className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">
-                                                            Product
-                                                        </th>
-                                                        <th scope="col"
-                                                            className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                            Vendor & Price
-                                                        </th>
-                                                        <th scope="col"
-                                                            className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                            Category
-                                                        </th>
-                                                        <th scope="col"
-                                                            className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                            Status
-                                                        </th>
-                                                        <th scope="col"
-                                                            className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                            Stock & Type
-                                                        </th>
-                                                        <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-0">
-                                                            <span className="sr-only">Action</span>
-                                                        </th>
-                                                    </tr>
-                                                    </thead>
-                                                    <tbody className="divide-y divide-gray-200 bg-white">
-                                                    {products.map((product) => (
-                                                        <tr key={product.id}>
-                                                            <td className="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0">
-                                                                <div className="flex items-center">
-                                                                    <div className="h-11 w-11 flex-shrink-0">
-                                                                        <img className="h-11 w-11 rounded-full"
-                                                                             src={`${assetServer}/images/products/${product.image}`}
-                                                                             alt=""/>
-                                                                    </div>
-                                                                    <div className="ml-4">
-                                                                        <div
-                                                                            className="font-medium text-gray-900">{product.product_name}</div>
-                                                                        <div
-                                                                            className="mt-1 text-gray-500">#{product.id}</div>
-                                                                    </div>
-                                                                </div>
-                                                            </td>
-                                                            <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                                                <div className="text-gray-900">{product.store_name}</div>
-                                                                <div className="mt-1 text-gray-500">
-                                                                  $ {product.group === "1" ? product.group_price : product.price}
-                                                                </div>
-                                                            </td>
+                                    <form>
+                                        <div className="space-y-12">
+                                            <div className="border-b border-gray-900/10 pb-12">
+                                                <h2 className="text-base font-semibold leading-7 text-gray-900">Category Information</h2>
 
-                                                            <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                                                <div className="text-gray-900">{product.category}</div>
+                                                <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                                                    <div className="sm:col-span-4">
+                                                        <label htmlFor="username"
+                                                               className="block text-sm font-medium leading-6 text-gray-900">
+                                                            Category Name
+                                                        </label>
+                                                        <div className="mt-2">
+                                                            <div
+                                                                className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-primary sm:max-w-md">
+                                                                <input
+                                                                    type="text"
+                                                                    name="username"
+                                                                    id="username"
+                                                                    autoComplete="username"
+                                                                    className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                                                                    placeholder={`${categories.category_name}`}
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="col-span-full">
+                                                        <label htmlFor="about"
+                                                               className="block text-sm font-medium leading-6 text-gray-900">
+                                                            Sub Category
+                                                        </label>
+                                                        <div className="mt-2">
+                                                            <textarea
+                                                                id="about"
+                                                                name="about"
+                                                                rows={3}
+                                                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6"
+                                                                defaultValue={''}
+                                                                placeholder={`${categories.sub_categories}`}
+                                                            />
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="col-span-full">
+                                                        <label htmlFor="cover-photo"
+                                                               className="block text-sm font-medium leading-6 text-gray-900">
+                                                            Image
+                                                        </label>
+                                                        <div
+                                                            className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
+                                                            <div className="text-center">
+                                                                <PhotoIcon className="mx-auto h-12 w-12 text-gray-300"
+                                                                           aria-hidden="true"/>
                                                                 <div
-                                                                    className="mt-1 text-gray-500">{product.subcategory}
+                                                                    className="mt-4 flex text-sm leading-6 text-gray-600">
+                                                                    <label
+                                                                        htmlFor="file-upload"
+                                                                        className="relative cursor-pointer rounded-md bg-white font-semibold text-primary focus-within:outline-none focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2 hover:text-indigo-500"
+                                                                    >
+                                                                        <span>Upload a file</span>
+                                                                        <input id="file-upload" name="file-upload"
+                                                                               type="file" className="sr-only"/>
+                                                                    </label>
+                                                                    <p className="pl-1">or drag and drop</p>
                                                                 </div>
-                                                            </td>
-                                                            <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                                                <span
-                                                                    className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
-                                                                    {product.status}
-                                                                </span>
-                                                            </td>
-                                                            <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                                                <div
-                                                                    className="text-gray-900">{product.stock_status} Qty: {product.quantity}</div>
-                                                                <div className="mt-1 text-gray-500">
-                                                                  {product.group === "1" ? 'Bulk Product' : 'Main Product'}
-                                                                </div>
-                                                            </td>
-                                                            <td className="relative whitespace-nowrap py-5 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-                                                                <Link to={`/product/${product.id}`}
-                                                                   className="text-indigo-600 hover:text-indigo-900">
-                                                                    View/Edit<span
-                                                                    className="sr-only">, {product.name}</span>
-                                                                </Link>
-                                                            </td>
-                                                        </tr>
-                                                    ))}
-                                                    </tbody>
-                                                </table>
+                                                                <p className="text-xs leading-5 text-gray-600">PNG, JPG,
+                                                                    GIF up to 10MB</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
+                                            
                                         </div>
-                                    </div>
+
+                                        <div className="mt-6 flex items-center justify-end gap-x-6">
+                                            <button type="button"
+                                                    className="text-sm font-semibold leading-6 text-gray-900">
+                                                Cancel
+                                            </button>
+                                            <button
+                                                type="submit"
+                                                className="rounded-md bg-primary px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                                            >
+                                                Save
+                                            </button>
+                                        </div>
+                                    </form>
                                 </div>
                             </main>
-
-
                         </div>
                     </main>
 
@@ -425,4 +412,4 @@ export const Products = () => {
     )
 }
 
-export default Products
+export default CategoryEdit

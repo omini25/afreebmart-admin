@@ -14,7 +14,7 @@ import {
     ShoppingBagIcon,
     ShoppingCartIcon, TagIcon,
     TruckIcon, UserCircleIcon, UserGroupIcon,
-    WalletIcon
+    WalletIcon, ArrowRightStartOnRectangleIcon
 } from "@heroicons/react/20/solid/index.js";
 import banknotesIcon from "@heroicons/react/16/solid/esm/BanknotesIcon.js";
 import {server} from "../../server.js";
@@ -51,6 +51,7 @@ function classNames(...classes) {
 export const PaymentHistory = () => {
     const dispatch = useDispatch();
     const [sidebarOpen, setSidebarOpen] = useState(false)
+    const user = JSON.parse(localStorage.getItem('user'));
     const [payments, setPayments] = useState([]);
 
     useEffect(() => {
@@ -157,27 +158,28 @@ export const PaymentHistory = () => {
                                                             dispatch(logout()); // dispatch the logout action when the link is clicked
                                                         }}
                                                         className={classNames(
-                                                            'text-gray-400 hover:text-white hover:bg-gray-800',
+                                                            'text-gray-400 hover:bg-red-800 hover:secondary',
                                                             'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
                                                         )}
                                                     >
-                                                        <Cog6ToothIcon className="h-6 w-6 shrink-0" aria-hidden="true"/>
+                                                        <ArrowRightStartOnRectangleIcon className="h-6 w-6 shrink-0"
+                                                                                        aria-hidden="true"/>
                                                         Log out
                                                     </a>
                                                 </li>
 
                                                 <li className="-mx-6 mt-auto">
                                                     <a
-                                                        href="/"
-                                                        className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-secondary hover:bg-gray-800"
+                                                        href="/profile"
+                                                        className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-secondary hover:bg-secondary"
                                                     >
                                                         <img
                                                             className="h-8 w-8 rounded-full bg-gray-800"
-                                                            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                                                            src={`${assetServer}/images/users/${user.user.image}`}
                                                             alt=""
                                                         />
                                                         <span className="sr-only">Your profile</span>
-                                                        <span aria-hidden="true">Tom Cook</span>
+                                                        <span aria-hidden="true">{user.user.name}</span>
                                                     </a>
                                                 </li>
                                             </ul>
@@ -237,7 +239,8 @@ export const PaymentHistory = () => {
                                             'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
                                         )}
                                     >
-                                        <Cog6ToothIcon className="h-6 w-6 shrink-0" aria-hidden="true"/>
+                                        <ArrowRightStartOnRectangleIcon className="h-6 w-6 shrink-0"
+                                                                        aria-hidden="true"/>
                                         Log out
                                     </a>
                                 </li>
@@ -245,15 +248,15 @@ export const PaymentHistory = () => {
                                 <li className="-mx-6 mt-auto">
                                     <a
                                         href="/profile"
-                                        className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-secondary hover:bg-gray-800"
+                                        className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-secondary hover:bg-secondary"
                                     >
                                         <img
                                             className="h-8 w-8 rounded-full bg-gray-800"
-                                            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                                            src={`${assetServer}/images/users/${user.user.image}`}
                                             alt=""
                                         />
                                         <span className="sr-only">Your profile</span>
-                                        <span aria-hidden="true">Tom Cook</span>
+                                        <span aria-hidden="true">{user.user.name}</span>
                                     </a>
                                 </li>
                             </ul>
@@ -265,10 +268,10 @@ export const PaymentHistory = () => {
                     {/* Sticky search header */}
                     <div
                         className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-6 border-b border-white/5 bg-white px-4 shadow-sm sm:px-6 lg:px-8">
-                        <button type="button" className="-m-2.5 p-2.5 text-white xl:hidden"
+                        <button type="button" className="-m-2.5 p-2.5 text-black xl:hidden"
                                 onClick={() => setSidebarOpen(true)}>
                             <span className="sr-only">Open sidebar</span>
-                            <Bars3Icon className="h-5 w-5" aria-hidden="true" />
+                            <Bars3Icon className="h-5 w-5" aria-hidden="true"/>
                         </button>
 
                         <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
@@ -299,7 +302,7 @@ export const PaymentHistory = () => {
                             <div className="md:flex md:items-center md:justify-between">
                                 <div className="min-w-0 flex-1">
                                     <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
-                                        Payment History
+                                    Payment History
                                     </h2>
                                 </div>
 

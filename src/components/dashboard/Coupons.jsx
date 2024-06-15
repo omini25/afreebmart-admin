@@ -12,7 +12,7 @@ import {
     InboxStackIcon,
     MagnifyingGlassIcon, TagIcon, UserCircleIcon,
     UserGroupIcon,
-    ShoppingBagIcon, ShoppingCartIcon, TruckIcon, WalletIcon, ListBulletIcon,
+    ShoppingBagIcon, ShoppingCartIcon, TruckIcon, WalletIcon, ListBulletIcon, ArrowRightStartOnRectangleIcon,
 } from '@heroicons/react/20/solid'
 import { useDispatch } from 'react-redux';
 import { logout } from '../../redux/actions/actions';
@@ -20,6 +20,8 @@ import axios from "axios";
 import {server} from "../../server.js";
 import {assetServer} from "../../../assetServer.js";
 import banknotesIcon from "@heroicons/react/16/solid/esm/BanknotesIcon.js";
+import {AddCoupons} from "./AddCoupons.jsx";
+import {Link} from "react-router-dom";
 
 
 
@@ -49,8 +51,9 @@ function classNames(...classes) {
 
 export const Coupons = () => {
     const dispatch = useDispatch();
+    const user = JSON.parse(localStorage.getItem('user'));
     const [sidebarOpen, setSidebarOpen] = useState(false)
-
+    const [isAddCouponsOpen, setIsAddCouponsOpen] = useState(false);
     const [coupons, setCoupons] = useState([]);
 
     useEffect(() => {
@@ -157,27 +160,28 @@ export const Coupons = () => {
                                                             dispatch(logout()); // dispatch the logout action when the link is clicked
                                                         }}
                                                         className={classNames(
-                                                            'text-gray-400 hover:text-white hover:bg-gray-800',
+                                                            'text-gray-400 hover:bg-red-800 hover:secondary',
                                                             'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
                                                         )}
                                                     >
-                                                        <Cog6ToothIcon className="h-6 w-6 shrink-0" aria-hidden="true"/>
+                                                        <ArrowRightStartOnRectangleIcon className="h-6 w-6 shrink-0"
+                                                                                        aria-hidden="true"/>
                                                         Log out
                                                     </a>
                                                 </li>
 
                                                 <li className="-mx-6 mt-auto">
                                                     <a
-                                                        href="/"
-                                                        className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-secondary hover:bg-gray-800"
+                                                        href="/profile"
+                                                        className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-secondary hover:secondary"
                                                     >
                                                         <img
                                                             className="h-8 w-8 rounded-full bg-gray-800"
-                                                            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                                                            src={`${assetServer}/images/users/${user.user.image}`}
                                                             alt=""
                                                         />
                                                         <span className="sr-only">Your profile</span>
-                                                        <span aria-hidden="true">Tom Cook</span>
+                                                        <span aria-hidden="true">{user.user.name}</span>
                                                     </a>
                                                 </li>
                                             </ul>
@@ -237,7 +241,8 @@ export const Coupons = () => {
                                             'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
                                         )}
                                     >
-                                        <Cog6ToothIcon className="h-6 w-6 shrink-0" aria-hidden="true"/>
+                                        <ArrowRightStartOnRectangleIcon className="h-6 w-6 shrink-0"
+                                                                        aria-hidden="true"/>
                                         Log out
                                     </a>
                                 </li>
@@ -245,15 +250,15 @@ export const Coupons = () => {
                                 <li className="-mx-6 mt-auto">
                                     <a
                                         href="/profile"
-                                        className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-secondary hover:bg-gray-800"
+                                        className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-secondary hover:secondary"
                                     >
                                         <img
                                             className="h-8 w-8 rounded-full bg-gray-800"
-                                            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                                            src={`${assetServer}/images/users/${user.user.image}`}
                                             alt=""
                                         />
                                         <span className="sr-only">Your profile</span>
-                                        <span aria-hidden="true">Tom Cook</span>
+                                        <span aria-hidden="true">{user.user.name}</span>
                                     </a>
                                 </li>
                             </ul>
@@ -264,11 +269,11 @@ export const Coupons = () => {
                 <div className="xl:pl-72">
                     {/* Sticky search header */}
                     <div
-                        className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-6 border-b border-white/5 bg-white px-4 shadow-sm sm:px-6 lg:px-8">
-                        <button type="button" className="-m-2.5 p-2.5 text-white xl:hidden"
+                        className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-6 border-b border-white/5 bg-transparent px-4 shadow-sm sm:px-6 lg:px-8">
+                        <button type="button" className="-m-2.5 p-2.5 text-black xl:hidden"
                                 onClick={() => setSidebarOpen(true)}>
                             <span className="sr-only">Open sidebar</span>
-                            <Bars3Icon className="h-5 w-5" aria-hidden="true" />
+                            <Bars3Icon className="h-5 w-5" aria-hidden="true"/>
                         </button>
 
                         <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
@@ -311,9 +316,15 @@ export const Coupons = () => {
                                                 <button
                                                     type="button"
                                                     className="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                                                    onClick={() => setIsAddCouponsOpen(true)}
                                                 >
                                                     Add a coupon
                                                 </button>
+                                            </div>
+
+                                            <div className="fixed top-0 left-0 z-50">
+                                                {isAddCouponsOpen &&
+                                                    <AddCoupons onClose={() => setIsAddCouponsOpen(false)}/>}
                                             </div>
                                         </div>
 
@@ -326,23 +337,23 @@ export const Coupons = () => {
                                                     <tr>
                                                         <th scope="col"
                                                             className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                            Product
+                                                            Coupon Name & Code
                                                         </th>
                                                         <th scope="col"
                                                             className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                            Price and Quantity
+                                                            Type and Quantity
                                                         </th>
                                                         <th scope="col"
                                                             className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                            Customer and Vendor
+                                                            Limits
                                                         </th>
                                                         <th scope="col"
                                                             className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                            Delivery Status
+                                                            Status
                                                         </th>
                                                         <th scope="col"
                                                             className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                            Date
+                                                            Date Start and End
                                                         </th>
                                                         <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-0">
                                                             <span className="sr-only">View</span>
@@ -350,52 +361,64 @@ export const Coupons = () => {
                                                     </tr>
                                                     </thead>
                                                     <tbody className="divide-y divide-gray-200 bg-white">
-                                                    {coupons.map((coupon) => (
-                                                        <tr key={coupon.id}>
-                                                            <td className="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0">
-                                                                <div className="flex items-center">
-                                                                    <div className="h-11 w-11 flex-shrink-0">
-                                                                        <img className="h-11 w-11 rounded-full"
-                                                                             src={`${assetServer}/images/products/${coupon.image}`} alt=""/>
+                                                    {coupons.length > 0 ? (
+                                                        coupons.map((coupon) => (
+                                                            <tr key={coupon.id}>
+                                                                <td className="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0">
+                                                                    <div className="flex items-center">
+                                                                        <div className="h-11 w-11 flex-shrink-0">
+                                                                            <img className="h-11 w-11 rounded-full"
+                                                                                 src={`${assetServer}/images/products/${coupon.image}`}
+                                                                                 alt=""/>
+                                                                        </div>
+                                                                        <div className="ml-4">
+                                                                            <div
+                                                                                className="font-medium text-gray-900">{coupon.product_name}</div>
+                                                                            <div
+                                                                                className="mt-1 text-gray-500">#{coupon.id}</div>
+                                                                        </div>
                                                                     </div>
-                                                                    <div className="ml-4">
-                                                                        <div
-                                                                            className="font-medium text-gray-900">{coupon.product_name}</div>
-                                                                        <div
-                                                                            className="mt-1 text-gray-500">#{coupon.id}</div>
+                                                                </td>
+                                                                <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                                                                    <div
+                                                                        className="text-gray-900">$ {coupon.total_price}</div>
+                                                                    <div
+                                                                        className="mt-1 text-gray-500">{coupon.quantity}
                                                                     </div>
-                                                                </div>
-                                                            </td>
-                                                            <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                                                <div className="text-gray-900">$ {coupon.total_price}</div>
-                                                                <div
-                                                                    className="mt-1 text-gray-500">{coupon.quantity}
-                                                                </div>
-                                                            </td>
+                                                                </td>
 
-                                                            <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                                                <div className="text-gray-900">{coupon.user_name}</div>
-                                                                <div
-                                                                    className="mt-1 text-gray-500">{coupon.store_name}
-                                                                </div>
-                                                            </td>
-                                                            <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                                                                <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                                                                    <div
+                                                                        className="text-gray-900">{coupon.user_name}</div>
+                                                                    <div
+                                                                        className="mt-1 text-gray-500">{coupon.store_name}
+                                                                    </div>
+                                                                </td>
+                                                                <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
                                                               <span
                                                                   className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
                                                                 {coupon.status}
                                                               </span>
-                                                            </td>
-                                                            <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                                                {new Date(coupon.created_at).toLocaleDateString()}
-                                                            </td>
-                                                            <td className="relative whitespace-nowrap py-5 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-                                                                <a href="#"
-                                                                   className="text-indigo-600 hover:text-indigo-900">
-                                                                    View<span className="sr-only">, {coupon.id}</span>
-                                                                </a>
+                                                                </td>
+                                                                <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                                                                    {new Date(coupon.created_at).toLocaleDateString()}
+                                                                </td>
+                                                                <td className="relative whitespace-nowrap py-5 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
+                                                                    <Link to={`/coupon/${coupon.id}`}
+                                                                          className="text-indigo-600 hover:text-indigo-900">
+                                                                        View<span
+                                                                        className="sr-only">, {coupon.id}</span>
+                                                                    </Link>
+                                                                </td>
+                                                            </tr>
+                                                        ))
+                                                    ) : (
+                                                        <tr>
+                                                            <td colSpan={6} className="text-center py-5">
+                                                                No coupons
                                                             </td>
                                                         </tr>
-                                                    ))}
+                                                    )}
                                                     </tbody>
                                                 </table>
                                             </div>

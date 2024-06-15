@@ -265,7 +265,7 @@ export const Ads = () => {
                     {/* Sticky search header */}
                     <div
                         className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-6 border-b border-white/5 bg-white px-4 shadow-sm sm:px-6 lg:px-8">
-                        <button type="button" className="-m-2.5 p-2.5 text-white xl:hidden"
+                        <button type="button" className="-m-2.5 p-2.5 text-black xl:hidden"
                                 onClick={() => setSidebarOpen(true)}>
                             <span className="sr-only">Open sidebar</span>
                             <Bars3Icon className="h-5 w-5" aria-hidden="true"/>
@@ -381,7 +381,7 @@ export const Ads = () => {
                                                             <td className="relative whitespace-nowrap py-5 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
                                                                 <a href="#"
                                                                    className="text-indigo-600 hover:text-indigo-900">
-                                                                    View<span className="sr-only">, {ad.id}</span>
+                                                                    Change Status<span className="sr-only">, {ad.id}</span>
                                                                 </a>
                                                             </td>
                                                         </tr>
