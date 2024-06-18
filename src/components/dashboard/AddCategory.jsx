@@ -1,11 +1,43 @@
 import { Fragment, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import {PhotoIcon} from "@heroicons/react/20/solid/index.js";
+import axios from "axios";
+import {server} from "../../server.js";
 
 
 export function AddCategory({onClose}) {
     const [open, setOpen] = useState(true)
-    const [product_name, setProduct_Name] = useState('');
+    const [category_name, setCategory_name] = useState('');
+    const [sub_categories, setSub_categories] = useState('');
+    const [category_icon, setCategory_icon] = useState('');
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+
+        const formData = new FormData();
+        formData.append('category_name', category_name);
+        formData.append('sub_categories', sub_categories.split(',').map(sub => sub.trim()).join(','));
+        formData.append('category_icon', document.querySelector('#category_icon').files[0]);
+
+        try {
+            const response = await axios.post(`${server}/admin/add-categories`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+
+            if (response.status === 200) {
+                // Handle successful response here
+                console.log(response.data);
+            } else {
+                // Handle error here
+                console.error('Error submitting form');
+            }
+        } catch (error) {
+            console.error('Error submitting form', error);
+        }
+    }
+
 
 
     return (
@@ -26,13 +58,15 @@ export function AddCategory({onClose}) {
                                 leaveTo="translate-x-full"
                             >
                                 <Dialog.Panel className="pointer-events-auto w-screen max-w-2xl">
-                                    <form className="flex h-full flex-col overflow-y-scroll bg-white shadow-xl">
+                                    <form className="flex h-full flex-col overflow-y-scroll bg-white shadow-xl"
+                                          onSubmit={handleSubmit}>
                                         <div className="flex-1">
 
                                             <div className="bg-gray-50 px-4 py-6 sm:px-6">
                                                 <div className="flex items-start justify-between space-x-3">
                                                     <div className="space-y-1">
-                                                        <Dialog.Title className="text-base font-semibold leading-6 text-gray-900">
+                                                        <Dialog.Title
+                                                            className="text-base font-semibold leading-6 text-gray-900">
                                                             New Category
                                                         </Dialog.Title>
                                                         <p className="text-sm text-gray-500">
@@ -60,7 +94,7 @@ export function AddCategory({onClose}) {
                                                     className="space-y-2 px-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:space-y-0 sm:px-6 sm:py-5">
                                                     <div>
                                                         <label
-                                                            htmlFor="project-name"
+                                                            htmlFor="category_name"
                                                             className="block text-sm font-medium leading-6 text-gray-900 sm:mt-1.5"
                                                         >
                                                             Category Name
@@ -69,10 +103,10 @@ export function AddCategory({onClose}) {
                                                     <div className="sm:col-span-2">
                                                         <input
                                                             type="text"
-                                                            name="project-name"
-                                                            id="project-name"
-                                                            value={product_name}
-                                                            onChange={(e) => setProduct_name(e.target.value)}
+                                                            name="category_name"
+                                                            id="category_name"
+                                                            value={category_name}
+                                                            onChange={(e) => setCategory_name(e.target.value)}
                                                             className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6"
                                                         />
                                                     </div>
@@ -82,19 +116,19 @@ export function AddCategory({onClose}) {
                                                     className="space-y-2 px-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:space-y-0 sm:px-6 sm:py-5">
                                                     <div>
                                                         <label
-                                                            htmlFor="project-name"
+                                                            htmlFor="sub_categories"
                                                             className="block text-sm font-medium leading-6 text-gray-900 sm:mt-1.5"
                                                         >
-                                                            Sub Category
+                                                            Sub Categories
                                                         </label>
                                                     </div>
                                                     <div className="sm:col-span-2">
-                                                        <input
-                                                            type="text"
-                                                            name="project-name"
-                                                            id="project-name"
-                                                            value={product_name}
-                                                            onChange={(e) => setProduct_name(e.target.value)}
+                                                        <textarea
+                                                            name="sub_categories"
+                                                            id="sub_categories"
+                                                            value={sub_categories}
+                                                            onChange={(e) => setSub_categories(e.target.value)}
+                                                            placeholder="Enter sub-categories separated by commas"
                                                             className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6"
                                                         />
                                                     </div>
@@ -114,11 +148,11 @@ export function AddCategory({onClose}) {
                                                             <div
                                                                 className="mt-4 flex text-sm leading-6 text-gray-600">
                                                                 <label
-                                                                    htmlFor="file-upload"
+                                                                    htmlFor="category_icon"
                                                                     className="relative cursor-pointer rounded-md bg-white font-semibold text-primary focus-within:outline-none focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2 hover:text-primary"
                                                                 >
                                                                     <span>Upload a file</span>
-                                                                    <input id="file-upload" name="file-upload"
+                                                                    <input id="category_icon" name="category_icon"
                                                                            type="file" className="sr-only"/>
                                                                 </label>
                                                                 <p className="pl-1">or drag and drop</p>
@@ -141,7 +175,7 @@ export function AddCategory({onClose}) {
                                                     className="rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
                                                     onClick={onClose} // Call the onClose prop function when the button is clicked
                                                 >
-                                                    Cancel
+                                                Cancel
                                                 </button>
                                                 <button
                                                     type="submit"

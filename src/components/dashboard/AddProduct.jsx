@@ -1,11 +1,72 @@
-import { Fragment, useState } from 'react'
+import {Fragment, useEffect, useState} from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import {PhotoIcon} from "@heroicons/react/20/solid/index.js";
+import {server} from "../../server.js";
+import axios from "axios";
+import {toast} from "react-toastify";
 
 
 export function AddProduct({onClose}) {
     const [open, setOpen] = useState(true)
-    const [product_name, setProduct_Name] = useState('');
+    const [categories, setCategories] = useState([]);
+    const [subCategories, setSubCategories] = useState([]);
+    const user = JSON.parse(localStorage.getItem('user'));
+    const [file, setFile] = useState(null);
+
+    const handleFileChange = (event) => {
+        if (event.target.files.length > 0) {
+            setFile(event.target.files[0]);
+        }
+    };
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+
+        const formData = new FormData();
+        for (const pair of new FormData(event.target)) {
+            formData.append(pair[0], pair[1]);
+        }
+        formData.append('image', file);
+
+        try {
+            const response = await axios.post(`${server}/admin/products`, formData);
+            console.log(response.data);
+            toast('Product added successfully', {type: 'success', autoClose: 2000});
+
+            // Refresh the page
+            window.location.reload();
+        } catch (error) {
+            console.error('Failed to submit form:', error);
+            // handle error
+        }
+    };
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const response = await axios.get(`${server}/admin/categories`);
+
+                setCategories(response.data.flat());
+            } catch (error) {
+                console.error('Failed to fetch categories:', error);
+            }
+        };
+
+        fetchCategories();
+    }, []);
+
+    const handleCategoryChange = (event) => {
+        const selectedCategory = categories.find(category => category.category_name === event.target.value);
+        if (selectedCategory) {
+            // Split the sub_categories string into an array
+            const subCategoriesArray = selectedCategory.sub_categories.split(',');
+            setSubCategories(subCategoriesArray);
+        } else {
+            setSubCategories([]);
+        }
+    };
+
+
 
     return (
         <Transition.Root show={open} as={Fragment}>
@@ -25,7 +86,7 @@ export function AddProduct({onClose}) {
                                 leaveTo="translate-x-full"
                             >
                                 <Dialog.Panel className="pointer-events-auto w-screen max-w-2xl">
-                                    <form className="flex h-full flex-col overflow-y-scroll bg-white shadow-xl">
+                                    <form onSubmit={handleSubmit} className="flex h-full flex-col overflow-y-scroll bg-white shadow-xl">
                                         <div className="flex-1">
 
                                             <div className="bg-gray-50 px-4 py-6 sm:px-6">
@@ -59,7 +120,7 @@ export function AddProduct({onClose}) {
                                                     className="space-y-2 px-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:space-y-0 sm:px-6 sm:py-5">
                                                     <div>
                                                         <label
-                                                            htmlFor="project-name"
+                                                            htmlFor="product_name"
                                                             className="block text-sm font-medium leading-6 text-gray-900 sm:mt-1.5"
                                                         >
                                                             Product name
@@ -68,10 +129,8 @@ export function AddProduct({onClose}) {
                                                     <div className="sm:col-span-2">
                                                         <input
                                                             type="text"
-                                                            name="project-name"
-                                                            id="project-name"
-                                                            value={product_name}
-                                                            onChange={(e) => setProduct_name(e.target.value)}
+                                                            name="product_name"
+                                                            id="product_name"
                                                             className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                                         />
                                                     </div>
@@ -81,22 +140,29 @@ export function AddProduct({onClose}) {
                                                     className="space-y-2 px-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:space-y-0 sm:px-6 sm:py-5">
                                                     <div>
                                                         <label
-                                                            htmlFor="project-name"
+                                                            htmlFor="category"
                                                             className="block text-sm font-medium leading-6 text-gray-900 sm:mt-1.5"
                                                         >
                                                             Category
                                                         </label>
                                                     </div>
-                                                    <select
-                                                        id="country"
-                                                        name="country"
-                                                        autoComplete="country-name"
-                                                        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
-                                                    >
-                                                        <option>Fresh Food</option>
-                                                        <option>Foodie (Hot Food)</option>
-                                                        <option>Frozen Food</option>
-                                                    </select>
+                                                    <div className="sm:col-span-2">
+                                                        <select
+                                                            id="category"
+                                                            name="category"
+                                                            autoComplete="category"
+                                                            onChange={handleCategoryChange}
+                                                            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+                                                        >
+                                                            <option>Select a category</option>
+                                                            {categories.map(category => (
+                                                                <option key={category.id}
+                                                                        value={category.category_name}>
+                                                                    {category.category_name}
+                                                                </option>
+                                                            ))}
+                                                        </select>
+                                                    </div>
                                                 </div>
 
                                                 <div
@@ -110,14 +176,18 @@ export function AddProduct({onClose}) {
                                                         </label>
                                                     </div>
                                                     <div className="sm:col-span-2">
-                                                        <input
-                                                            type="text"
-                                                            name="project-name"
-                                                            id="project-name"
-                                                            value={product_name}
-                                                            onChange={(e) => setProduct_name(e.target.value)}
-                                                            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                                        />
+                                                        <select
+                                                            id="sub-category"
+                                                            name="sub_category"
+                                                            autoComplete="sub-category"
+                                                            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+                                                        >
+                                                            {subCategories.map((subCategory, index) => (
+                                                                <option key={index} value={subCategory}>
+                                                                    {subCategory}
+                                                                </option>
+                                                            ))}
+                                                        </select>
                                                     </div>
                                                 </div>
 
@@ -125,21 +195,24 @@ export function AddProduct({onClose}) {
                                                     className="space-y-2 px-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:space-y-0 sm:px-6 sm:py-5">
                                                     <div>
                                                         <label
-                                                            htmlFor="project-name"
+                                                            htmlFor="unit"
                                                             className="block text-sm font-medium leading-6 text-gray-900 sm:mt-1.5"
                                                         >
                                                             Unit
                                                         </label>
                                                     </div>
                                                     <div className="sm:col-span-2">
-                                                        <input
-                                                            type="text"
-                                                            name="project-name"
-                                                            id="project-name"
-                                                            value={product_name}
-                                                            onChange={(e) => setProduct_name(e.target.value)}
+                                                        <select
+                                                            name="unit"
+                                                            id="unit"
                                                             className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                                        />
+                                                        >
+                                                            <option value={`KG`}>KG</option>
+                                                            <option value={`Litre`}>Litre</option>
+                                                            <option value={`Gram`}>Gram</option>
+                                                            <option value={`Millilitre`}>Millilitre</option>
+                                                            <option value={`Piece`}>Piece</option>
+                                                        </select>
                                                     </div>
                                                 </div>
 
@@ -147,7 +220,7 @@ export function AddProduct({onClose}) {
                                                     className="space-y-2 px-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:space-y-0 sm:px-6 sm:py-5">
                                                     <div>
                                                         <label
-                                                            htmlFor="project-name"
+                                                            htmlFor="tag"
                                                             className="block text-sm font-medium leading-6 text-gray-900 sm:mt-1.5"
                                                         >
                                                             Tags
@@ -156,10 +229,9 @@ export function AddProduct({onClose}) {
                                                     <div className="sm:col-span-2">
                                                         <input
                                                             type="text"
-                                                            name="project-name"
-                                                            id="project-name"
-                                                            value={product_name}
-                                                            onChange={(e) => setProduct_name(e.target.value)}
+                                                            name="tags"
+                                                            id="tag"
+
                                                             className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                                         />
                                                     </div>
@@ -169,7 +241,7 @@ export function AddProduct({onClose}) {
                                                     className="space-y-2 px-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:space-y-0 sm:px-6 sm:py-5">
                                                     <div>
                                                         <label
-                                                            htmlFor="project-name"
+                                                            htmlFor="Bulk Product"
                                                             className="block text-sm font-medium leading-6 text-gray-900 sm:mt-1.5"
                                                         >
                                                             Bulk Product
@@ -177,13 +249,13 @@ export function AddProduct({onClose}) {
                                                     </div>
                                                     <div className="sm:col-span-2">
                                                         <select
-                                                            id="country"
-                                                            name="country"
-                                                            autoComplete="country-name"
+                                                            id="bulk-product"
+                                                            name="group"
+                                                            autoComplete="bulk-product"
                                                             className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
                                                         >
-                                                            <option>No</option>
-                                                            <option>Yes</option>
+                                                            <option value={0}>No</option>
+                                                            <option value={1}>Yes</option>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -193,7 +265,7 @@ export function AddProduct({onClose}) {
                                                     className="space-y-2 px-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:space-y-0 sm:px-6 sm:py-5">
                                                     <div>
                                                         <label
-                                                            htmlFor="project-description"
+                                                            htmlFor="description"
                                                             className="block text-sm font-medium leading-6 text-gray-900 sm:mt-1.5"
                                                         >
                                                             Description
@@ -201,8 +273,8 @@ export function AddProduct({onClose}) {
                                                     </div>
                                                     <div className="sm:col-span-2">
                                                         <textarea
-                                                            id="project-description"
-                                                            name="project-description"
+                                                            id="description"
+                                                            name="description"
                                                             rows={3}
                                                             className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                                             defaultValue={''}
@@ -210,32 +282,15 @@ export function AddProduct({onClose}) {
                                                     </div>
                                                 </div>
 
-                                                <div className="space-y-2 px-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:space-y-0 sm:px-6 sm:py-5">
-                                                    <label htmlFor="cover-photo"
-                                                           className="block text-sm font-medium leading-6 text-gray-900">
-                                                        Product Photo
+                                                <div className="mt-4 flex text-sm leading-6 text-gray-600">
+                                                    <label htmlFor="image"
+                                                           className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-primary">
+                                                        <span>Upload a file</span>
+                                                        <input id="image" name="image" type="file" accept="image/*"
+                                                               className="sr-only"
+                                                               onChange={handleFileChange}/>
                                                     </label>
-                                                    <div
-                                                        className="mt-2  justify-center rounded-lg border border-dashed border-gray-900/25 sm:col-span-2">
-                                                        <div className="text-center">
-                                                            <PhotoIcon className="mx-auto h-12 w-12 text-gray-300"
-                                                                       aria-hidden="true"/>
-                                                            <div
-                                                                className="mt-4 flex text-sm leading-6 text-gray-600">
-                                                                <label
-                                                                    htmlFor="file-upload"
-                                                                    className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-primary"
-                                                                >
-                                                                    <span>Upload a file</span>
-                                                                    <input id="file-upload" name="file-upload"
-                                                                           type="file" className="sr-only"/>
-                                                                </label>
-                                                                <p className="pl-1">or drag and drop</p>
-                                                            </div>
-                                                            <p className="text-xs leading-5 text-gray-600">PNG, JPG,
-                                                                GIF up to 10MB</p>
-                                                        </div>
-                                                    </div>
+                                                    <p className="pl-1">or drag and drop</p>
                                                 </div>
 
 
@@ -243,7 +298,7 @@ export function AddProduct({onClose}) {
                                                     className="space-y-2 px-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:space-y-0 sm:px-6 sm:py-5">
                                                     <div>
                                                         <label
-                                                            htmlFor="project-name"
+                                                            htmlFor="shipping_weight"
                                                             className="block text-sm font-medium leading-6 text-gray-900 sm:mt-1.5"
                                                         >
                                                             Weight (KG)
@@ -252,8 +307,8 @@ export function AddProduct({onClose}) {
                                                     <div className="sm:col-span-2">
                                                         <input
                                                             type="text"
-                                                            name="project-name"
-                                                            id="project-name"
+                                                            name="shipping_weight"
+                                                            id="shipping_weight"
                                                             className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                                         />
                                                     </div>
@@ -263,7 +318,7 @@ export function AddProduct({onClose}) {
                                                     className="space-y-2 px-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:space-y-0 sm:px-6 sm:py-5">
                                                     <div>
                                                         <label
-                                                            htmlFor="project-name"
+                                                            htmlFor="price"
                                                             className="block text-sm font-medium leading-6 text-gray-900 sm:mt-1.5"
                                                         >
                                                             Product Price
@@ -271,9 +326,9 @@ export function AddProduct({onClose}) {
                                                     </div>
                                                     <div className="sm:col-span-2">
                                                         <input
-                                                            type="text"
-                                                            name="project-name"
-                                                            id="project-name"
+                                                            type="number"
+                                                            name="price"
+                                                            id="price"
                                                             className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                                         />
                                                     </div>
@@ -283,7 +338,7 @@ export function AddProduct({onClose}) {
                                                     className="space-y-2 px-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:space-y-0 sm:px-6 sm:py-5">
                                                     <div>
                                                         <label
-                                                            htmlFor="project-name"
+                                                            htmlFor="group_price"
                                                             className="block text-sm font-medium leading-6 text-gray-900 sm:mt-1.5"
                                                         >
                                                             Bulk Price
@@ -291,9 +346,9 @@ export function AddProduct({onClose}) {
                                                     </div>
                                                     <div className="sm:col-span-2">
                                                         <input
-                                                            type="text"
-                                                            name="project-name"
-                                                            id="project-name"
+                                                            type="number"
+                                                            name="group_price"
+                                                            id="group_price"
                                                             className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                                         />
                                                     </div>
@@ -303,7 +358,7 @@ export function AddProduct({onClose}) {
                                                     className="space-y-2 px-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:space-y-0 sm:px-6 sm:py-5">
                                                     <div>
                                                         <label
-                                                            htmlFor="project-name"
+                                                            htmlFor="quantity"
                                                             className="block text-sm font-medium leading-6 text-gray-900 sm:mt-1.5"
                                                         >
                                                             Quantity
@@ -311,9 +366,9 @@ export function AddProduct({onClose}) {
                                                     </div>
                                                     <div className="sm:col-span-2">
                                                         <input
-                                                            type="text"
-                                                            name="project-name"
-                                                            id="project-name"
+                                                            type="number"
+                                                            name="quantity"
+                                                            id="quantity"
                                                             className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                                         />
                                                     </div>
@@ -323,17 +378,17 @@ export function AddProduct({onClose}) {
                                                     className="space-y-2 px-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:space-y-0 sm:px-6 sm:py-5">
                                                     <div>
                                                         <label
-                                                            htmlFor="project-name"
+                                                            htmlFor="vendor_id"
                                                             className="block text-sm font-medium leading-6 text-gray-900 sm:mt-1.5"
                                                         >
-                                                            Vendor id
+                                                            Vendor ID
                                                         </label>
                                                     </div>
                                                     <div className="sm:col-span-2">
                                                         <input
-                                                            type="text"
-                                                            name="project-name"
-                                                            id="project-name"
+                                                            type="number"
+                                                            name="vendor_id"
+                                                            id="vendor_id"
                                                             className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                                         />
                                                     </div>

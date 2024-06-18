@@ -49,7 +49,8 @@ function classNames(...classes) {
 
 export const CategoryEdit = () => {
     const dispatch = useDispatch();
-    const user = JSON.parse(localStorage.getItem('user'));
+    const userItem = localStorage.getItem('user');
+const user = userItem ? JSON.parse(userItem) : null;
     const [sidebarOpen, setSidebarOpen] = useState(false)
     const [isAddCategoryOpen, setIsAddCategoryOpen] = useState(false);
     const [categories, setCategories] = useState([]);
@@ -69,7 +70,6 @@ export const CategoryEdit = () => {
         fetchCategories();
     }, []);
 
-    console.log('categories:', categories);
 
 
     return (
@@ -311,12 +311,22 @@ export const CategoryEdit = () => {
                                                     Categories {id}
                                                 </h2>
                                             </div>
+                                            <div className="mt-4 flex md:ml-4 md:mt-0">
+                                                <button
+                                                    type="button"
+                                                    className="inline-flex items-center rounded-md bg-red-800 px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                                                    onClick={() => setIsAddCategoryOpen(true)}
+                                                >
+                                                    Delete category
+                                                </button>
+                                            </div>
                                         </div>
                                     </header>
                                     <form>
                                         <div className="space-y-12">
                                             <div className="border-b border-gray-900/10 pb-12">
-                                                <h2 className="text-base font-semibold leading-7 text-gray-900">Category Information</h2>
+                                                <h2 className="text-base font-semibold leading-7 text-gray-900">Category
+                                                    Information</h2>
 
                                                 <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                                                     <div className="sm:col-span-4">

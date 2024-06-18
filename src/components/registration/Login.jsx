@@ -20,10 +20,11 @@ export const Login = () => {
         event.preventDefault();
         try {
             const userData = await dispatch(login(email, password));
-            // toast.success('Login successful!');
+            toast.success('Login successful!');
             navigate('/dashboard');
         } catch (error) {
             toast.error('Login failed!');
+            navigate('/');
         }
     };
 

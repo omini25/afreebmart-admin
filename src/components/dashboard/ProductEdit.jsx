@@ -5,11 +5,17 @@ import {
     GlobeAltIcon,
     XMarkIcon,
     Bars3Icon,
-    BuildingStorefrontIcon, IdentificationIcon,
     InboxStackIcon,
-    MagnifyingGlassIcon, TagIcon, UserCircleIcon,
-    UserGroupIcon,
-    ShoppingBagIcon, ShoppingCartIcon, TruckIcon, WalletIcon, ListBulletIcon, PhotoIcon,
+    MagnifyingGlassIcon,
+    UserCircleIcon,
+    ShoppingBagIcon,
+    ShoppingCartIcon,
+    TruckIcon,
+    WalletIcon,
+    PhotoIcon,
+    TagIcon,
+    IdentificationIcon,
+    BuildingStorefrontIcon, UserGroupIcon, ListBulletIcon,
 } from '@heroicons/react/20/solid'
 import { useDispatch } from 'react-redux';
 import { logout } from '../../redux/actions/actions';
@@ -18,8 +24,8 @@ import {server} from "../../server.js";
 import {assetServer} from "../../../assetServer.js";
 import banknotesIcon from "@heroicons/react/16/solid/esm/BanknotesIcon.js";
 import {ArrowRightStartOnRectangleIcon} from "@heroicons/react/20/solid/index.js";
-import AddProduct from "./AddProduct.jsx";
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
+import {toast} from "react-toastify";
 
 
 
@@ -50,9 +56,83 @@ function classNames(...classes) {
 
 export const ProductEdit = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const [sidebarOpen, setSidebarOpen] = useState(false)
     const user = JSON.parse(localStorage.getItem('user'));
     const [products, setProducts] = useState([]);
+    const [categories, setCategories] = useState([]);
+    const [subCategories, setSubCategories] = useState([]);
+    const [productName, setProductName] = useState(products.product_name);
+    const [category, setCategory] = useState(products.category);
+    const [subCategory, setSubCategory] = useState(products.subcategory);
+    const [unit, setUnit] = useState(products.unit);
+    const [tags, setTags] = useState(products.tags);
+    const [description, setDescription] = useState(products.description);
+    const [image, setImage] = useState(products.image);
+    const [shippingWeight, setShippingWeight] = useState(products.shipping_weight);
+    const [price, setPrice] = useState(products.price);
+    const [groupPrice, setGroupPrice] = useState(products.group_price);
+    const [quantity, setQuantity] = useState(products.quantity);
+    const [vendorId, setVendorId] = useState(products.vendor_id);
+
+    const handleProductNameChange = (event) => {
+        setProductName(event.target.value);
+    };
+    const handleCategoryChange = (event) => {
+        setCategory(event.target.value);
+    };
+    const handleSubCategoryChange = (event) => {
+        setSubCategory(event.target.value);
+    }
+    const handleUnitChange = (event) => {
+        setUnit(event.target.value);
+    };
+    const handleTagsChange = (event) => {
+        setTags(event.target.value);
+    }
+    const handleDescriptionChange = (event) => {
+        setDescription(event.target.value);
+    }
+    const handleImageChange = (event) => {
+        setImage(event.target.value);
+    }
+    const handleShippingWeightChange = (event) => {
+        setShippingWeight(event.target.value);
+    }
+    const handlePriceChange = (event) => {
+        setPrice(event.target.value);
+    }
+    const handleGroupPriceChange = (event) => {
+        setGroupPrice(event.target.value);
+    }
+    const handleQuantityChange = (event) => {
+        setQuantity(event.target.value);
+    }
+
+    const handleVendorIdChange = (event) => {
+        setVendorId(event.target.value);
+    }
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+
+        const updatedFields = {};
+        if (productName !== products.product_name) updatedFields.product_name = productName;
+        if (category !== products.category) updatedFields.category = category;
+        // ... repeat for all form fields
+
+        try {
+            const response = await axios.put(`${server}/admin/products/${id}`, updatedFields);
+            console.log(response.data);
+            toast('Product updated successfully', {type: 'success', autoClose: 2000});
+
+            // Refresh the page
+            window.location.reload();
+        } catch (error) {
+            console.error('Failed to submit form:', error);
+            // handle error
+        }
+    };
 
     const { id } = useParams();
     useEffect(() => {
@@ -69,7 +149,32 @@ export const ProductEdit = () => {
         fetchProducts();
     }, []);
 
-    console.log('products', products);
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const response = await axios.get(`${server}/admin/categories`);
+
+                setCategories(response.data.flat());
+            } catch (error) {
+                console.error('Failed to fetch categories:', error);
+            }
+        };
+
+        fetchCategories();
+    }, []);
+
+    const handleCategoriesChange = (event) => {
+        const selectedCategory = categories.find(category => category.category_name === event.target.value);
+        if (selectedCategory) {
+            // Split the sub_categories string into an array
+            const subCategoriesArray = selectedCategory.sub_categories.split(',');
+            setSubCategories(subCategoriesArray);
+        } else {
+            setSubCategories([]);
+        }
+    };
+
 
 
     return (
@@ -172,7 +277,7 @@ export const ProductEdit = () => {
                                                 <li className="-mx-6 mt-auto">
                                                     <a
                                                         href="/profile"
-                                                        className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-secondary hover:secondary"
+                                                        className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-secondary hover:bg-secondary"
                                                     >
                                                         <img
                                                             className="h-8 w-8 rounded-full bg-gray-800"
@@ -249,7 +354,7 @@ export const ProductEdit = () => {
                                 <li className="-mx-6 mt-auto">
                                     <a
                                         href="/profile"
-                                        className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-secondary hover:secondary"
+                                        className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-secondary hover:bg-secondary"
                                     >
                                         <img
                                             className="h-8 w-8 rounded-full bg-gray-800"
@@ -313,7 +418,7 @@ export const ProductEdit = () => {
                                             </div>
                                         </div>
                                     </header>
-                                    <form>
+                                    <form onSubmit={handleSubmit}>
                                         <div className="space-y-12">
                                             <div className="border-b border-gray-900/10 pb-12">
                                                 <h2 className="text-base font-semibold leading-7 text-gray-900">Product</h2>
@@ -321,7 +426,7 @@ export const ProductEdit = () => {
 
                                                 <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                                                     <div className="sm:col-span-4">
-                                                        <label htmlFor="username"
+                                                        <label htmlFor="product_name"
                                                                className="block text-sm font-medium leading-6 text-gray-900">
                                                             Product Name
                                                         </label>
@@ -330,78 +435,104 @@ export const ProductEdit = () => {
                                                                 className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-primary sm:max-w-md">
                                                                 <input
                                                                     type="text"
-                                                                    name="username"
-                                                                    id="username"
-                                                                    autoComplete="username"
+                                                                    name="product_name"
+                                                                    id="product_name"
+                                                                    autoComplete="product_name"
                                                                     className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                                                                     placeholder={`${products.product_name}`}
+                                                                    value={productName}
+                                                                    onChange={handleProductNameChange}
                                                                 />
                                                             </div>
                                                         </div>
                                                     </div>
 
                                                     <div className="sm:col-span-4">
-                                                        <label htmlFor="username"
+                                                        <label htmlFor="category"
                                                                className="block text-sm font-medium leading-6 text-gray-900">
                                                             Category
                                                         </label>
                                                         <div className="mt-2">
                                                             <div
                                                                 className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-primary sm:max-w-md">
-                                                                <input
-                                                                    type="text"
-                                                                    name="username"
-                                                                    id="username"
-                                                                    autoComplete="username"
+                                                                <select
+                                                                    id="category"
+                                                                    name="category"
+                                                                    autoComplete="category"
+                                                                    onChange={handleCategoryChange}
+                                                                    value={category}
                                                                     className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                                                                    placeholder={`${products.category}`}
-                                                                />
+                                                                >
+                                                                    <option>{products.category}</option>
+                                                                    {categories.map(category => (
+                                                                        <option key={category.id}
+                                                                                value={category.category_name}>
+                                                                            {category.category_name}
+                                                                        </option>
+                                                                    ))}
+                                                                </select>
+
                                                             </div>
                                                         </div>
                                                     </div>
 
                                                     <div className="sm:col-span-4">
-                                                        <label htmlFor="username"
+                                                        <label htmlFor="sub_category"
                                                                className="block text-sm font-medium leading-6 text-gray-900">
                                                             Sub-Category
                                                         </label>
                                                         <div className="mt-2">
                                                             <div
                                                                 className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-primary sm:max-w-md">
-                                                                <input
-                                                                    type="text"
-                                                                    name="username"
-                                                                    id="username"
-                                                                    autoComplete="username"
+
+                                                                <select
+                                                                    id="sub-category"
+                                                                    name="sub_category"
+                                                                    autoComplete="sub-category"
+                                                                    onChange={handleCategoriesChange}
+                                                                    value={subCategory}
                                                                     className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                                                                    placeholder={`${products.subcategory}`}
-                                                                />
+                                                                >
+                                                                    <option>{products.subcategory}</option>
+                                                                    {subCategories.map((subCategory, index) => (
+                                                                        <option key={index} value={subCategory}>
+                                                                            {subCategory}
+                                                                        </option>
+                                                                    ))}
+                                                                </select>
                                                             </div>
                                                         </div>
                                                     </div>
 
                                                     <div className="sm:col-span-4">
-                                                        <label htmlFor="username"
+                                                        <label htmlFor="unit"
                                                                className="block text-sm font-medium leading-6 text-gray-900">
                                                             Unit
                                                         </label>
                                                         <div className="mt-2">
                                                             <div
                                                                 className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-primary sm:max-w-md">
-                                                                <input
-                                                                    type="text"
-                                                                    name="username"
-                                                                    id="username"
-                                                                    autoComplete="username"
+                                                                <select
+                                                                    name="unit"
+                                                                    id="unit"
+                                                                    autoComplete="unit"
+                                                                    value={unit}
+                                                                    onChange={handleUnitChange}
                                                                     className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                                                                    placeholder={`${products.unit}`}
-                                                                />
+                                                                >
+                                                                    <option value={`${products.unit}`}>{products.unit}</option>
+                                                                    <option value={`KG`}>KG</option>
+                                                                    <option value={`Litre`}>Litre</option>
+                                                                    <option value={`Gram`}>Gram</option>
+                                                                    <option value={`Millilitre`}>Millilitre</option>
+                                                                    <option value={`Piece`}>Piece</option>
+                                                                </select>
                                                             </div>
                                                         </div>
                                                     </div>
 
                                                     <div className="sm:col-span-4">
-                                                        <label htmlFor="username"
+                                                        <label htmlFor="tags"
                                                                className="block text-sm font-medium leading-6 text-gray-900">
                                                             Tags
                                                         </label>
@@ -410,29 +541,33 @@ export const ProductEdit = () => {
                                                                 className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-primary sm:max-w-md">
                                                                 <input
                                                                     type="text"
-                                                                    name="username"
-                                                                    id="username"
+                                                                    name="tags"
+                                                                    id="tags"
                                                                     autoComplete="username"
                                                                     className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                                                                     placeholder={`${products.tags}`}
+                                                                    value={tags}
+                                                                    onChange={handleTagsChange}
                                                                 />
                                                             </div>
                                                         </div>
                                                     </div>
 
                                                     <div className="col-span-full">
-                                                        <label htmlFor="about"
+                                                        <label htmlFor="description"
                                                                className="block text-sm font-medium leading-6 text-gray-900">
                                                             Description
                                                         </label>
                                                         <div className="mt-2">
                                                             <textarea
-                                                                id="about"
-                                                                name="about"
+                                                                id="description"
+                                                                name="description"
                                                                 rows={3}
                                                                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6"
                                                                 defaultValue={''}
                                                                 placeholder={`${products.description}`}
+                                                                value={description}
+                                                                onChange={handleDescriptionChange}
                                                             />
                                                         </div>
                                                     </div>
@@ -455,8 +590,12 @@ export const ProductEdit = () => {
                                                                         className="relative cursor-pointer rounded-md bg-white font-semibold text-primary focus-within:outline-none focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2 hover:text-indigo-500"
                                                                     >
                                                                         <span>Upload a file</span>
-                                                                        <input id="file-upload" name="file-upload"
-                                                                               type="file" className="sr-only"/>
+                                                                        <input id="image" name="image" type="file"
+                                                                               accept="image/*"
+                                                                               className="sr-only"
+                                                                               onChange={handleImageChange}
+                                                                               value={image}
+                                                                        />
                                                                     </label>
                                                                     <p className="pl-1">or drag and drop</p>
                                                                 </div>
@@ -467,7 +606,7 @@ export const ProductEdit = () => {
                                                     </div>
 
                                                     <div className="sm:col-span-4">
-                                                        <label htmlFor="username"
+                                                        <label htmlFor="shipping_weight"
                                                                className="block text-sm font-medium leading-6 text-gray-900">
                                                             Weight
                                                         </label>
@@ -475,19 +614,21 @@ export const ProductEdit = () => {
                                                             <div
                                                                 className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-primary sm:max-w-md">
                                                                 <input
-                                                                    type="text"
-                                                                    name="username"
-                                                                    id="username"
-                                                                    autoComplete="username"
+                                                                    type="number"
+                                                                    name="shipping_weight"
+                                                                    id="shipping_weight"
+                                                                    autoComplete="shipping_weight"
                                                                     className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                                                                     placeholder={`${products.shipping_weight}`}
+                                                                    value={shippingWeight}
+                                                                    onChange={handleShippingWeightChange}
                                                                 />
                                                             </div>
                                                         </div>
                                                     </div>
 
                                                     <div className="sm:col-span-4">
-                                                        <label htmlFor="username"
+                                                        <label htmlFor="price"
                                                                className="block text-sm font-medium leading-6 text-gray-900">
                                                             Price
                                                         </label>
@@ -495,19 +636,21 @@ export const ProductEdit = () => {
                                                             <div
                                                                 className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-primary sm:max-w-md">
                                                                 <input
-                                                                    type="text"
-                                                                    name="username"
-                                                                    id="username"
-                                                                    autoComplete="username"
+                                                                    type="number"
+                                                                    name="price"
+                                                                    id="price"
+                                                                    autoComplete="price"
                                                                     className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                                                                     placeholder={`${products.price}`}
+                                                                    value={price}
+                                                                    onChange={handlePriceChange}
                                                                 />
                                                             </div>
                                                         </div>
                                                     </div>
 
                                                     <div className="sm:col-span-4">
-                                                        <label htmlFor="username"
+                                                        <label htmlFor="group_price"
                                                                className="block text-sm font-medium leading-6 text-gray-900">
                                                             Bulk Price
                                                         </label>
@@ -515,12 +658,14 @@ export const ProductEdit = () => {
                                                             <div
                                                                 className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-primary sm:max-w-md">
                                                                 <input
-                                                                    type="text"
-                                                                    name="username"
-                                                                    id="username"
-                                                                    autoComplete="username"
+                                                                    type="number"
+                                                                    name="group_price"
+                                                                    id="group_price"
+                                                                    autoComplete="group_price"
                                                                     className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                                                                     placeholder={`${products.group_price}`}
+                                                                    value={groupPrice}
+                                                                    onChange={handleGroupPriceChange}
                                                                 />
                                                             </div>
                                                         </div>
@@ -535,19 +680,21 @@ export const ProductEdit = () => {
                                                             <div
                                                                 className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-primary sm:max-w-md">
                                                                 <input
-                                                                    type="text"
-                                                                    name="username"
-                                                                    id="username"
-                                                                    autoComplete="username"
+                                                                    type="number"
+                                                                    name="quantity"
+                                                                    id="quantity"
+                                                                    autoComplete="quantity"
                                                                     className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                                                                     placeholder={`${products.quantity}`}
+                                                                    value={quantity}
+                                                                    onChange={handleQuantityChange}
                                                                 />
                                                             </div>
                                                         </div>
                                                     </div>
 
                                                     <div className="sm:col-span-4">
-                                                        <label htmlFor="username"
+                                                        <label htmlFor="vendor_id"
                                                                className="block text-sm font-medium leading-6 text-gray-900">
                                                             Vendor id
                                                         </label>
@@ -555,12 +702,14 @@ export const ProductEdit = () => {
                                                             <div
                                                                 className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-primary sm:max-w-md">
                                                                 <input
-                                                                    type="text"
-                                                                    name="username"
-                                                                    id="username"
-                                                                    autoComplete="username"
+                                                                    type="number"
+                                                                    name="vendor_id"
+                                                                    id="vendor_id"
+                                                                    autoComplete="vendor_id"
                                                                     className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                                                                     placeholder={`${products.vendor_id}`}
+                                                                    value={vendorId}
+                                                                    onChange={handleVendorIdChange}
                                                                 />
                                                             </div>
                                                         </div>
@@ -569,7 +718,7 @@ export const ProductEdit = () => {
                                                 </div>
                                             </div>
 
-                                            
+
                                         </div>
 
                                         <div className="mt-6 flex items-center justify-end gap-x-6">

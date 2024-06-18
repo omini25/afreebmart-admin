@@ -51,7 +51,8 @@ function classNames(...classes) {
 export const Products = () => {
     const dispatch = useDispatch();
     const [sidebarOpen, setSidebarOpen] = useState(false)
-    const user = JSON.parse(localStorage.getItem('user'));
+    const userItem = localStorage.getItem('user');
+const user = userItem ? JSON.parse(userItem) : null;
     const [products, setProducts] = useState([]);
     const [isAddProductOpen, setIsAddProductOpen] = useState(false);
 

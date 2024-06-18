@@ -54,7 +54,8 @@ export const Dashboard = () => {
     const dispatch = useDispatch();
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [orders, setOrders] = useState([]);
-    const user = JSON.parse(localStorage.getItem('user'));
+    const userItem = localStorage.getItem('user');
+    const user = userItem ? JSON.parse(userItem) : null;
     const [userCount, setUserCount] = useState(0);
     const pendingOrdersCount = orders.filter(order => order.status === 'pending').length;
     const [totalRevenue, setTotalRevenue] = useState(0);

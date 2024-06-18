@@ -58,8 +58,11 @@ export const login = (email, password) => {
 
             const data = response.data;
 
+            // Log the response data to the console
+            console.log(data);
+
             // Check if the user's role is 'vendor'
-            if (data.user.role !== 'admin') {
+            if (data.user && data.user.role !== 'admin') {
                 throw new Error('Access denied. You must be an Admin to log in.');
             }
 
