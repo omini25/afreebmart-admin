@@ -19,7 +19,7 @@ import {assetServer} from "../../../assetServer.js";
 import banknotesIcon from "@heroicons/react/16/solid/esm/BanknotesIcon.js";
 import {ArrowRightStartOnRectangleIcon} from "@heroicons/react/20/solid/index.js";
 import AddCategory from "./AddCategory.jsx";
-import {Link, useParams} from "react-router-dom";
+import {Link, useNavigate, useParams} from "react-router-dom";
 
 
 
@@ -55,6 +55,7 @@ const user = userItem ? JSON.parse(userItem) : null;
     const [isAddCategoryOpen, setIsAddCategoryOpen] = useState(false);
     const [categories, setCategories] = useState([]);
     const { id } = useParams();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -156,7 +157,8 @@ const user = userItem ? JSON.parse(userItem) : null;
                                                         href="#"
                                                         onClick={(e) => {
                                                             e.preventDefault();
-                                                            dispatch(logout()); // dispatch the logout action when the link is clicked
+                                                            dispatch(logout());
+                                                            navigate('/'); // dispatch the logout action when the link is clicked
                                                         }}
                                                         className={classNames(
                                                             'text-gray-400 hover:bg-red-800 hover:secondary',
@@ -175,10 +177,10 @@ const user = userItem ? JSON.parse(userItem) : null;
                                                         className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-secondary hover:secondary"
                                                     >
                                                         <img
-    className="h-8 w-8 rounded-full bg-gray-800"
-    src={user && user.user && user.user.image ? `${assetServer}/images/users/${user.user.image}` : 'defaultImageURL'}
-    alt=""
-/>
+                                                            className="h-8 w-8 rounded-full bg-gray-800"
+                                                            src={user && user.user && user.user.image ? `${assetServer}/images/users/${user.user.image}` : 'defaultImageURL'}
+                                                            alt=""
+                                                        />
                                                         <span className="sr-only">Your profile</span>
                                                         <span aria-hidden="true">{user && user.user ? user.user.name : 'Default Name'}</span>
                                                     </a>
@@ -233,7 +235,8 @@ const user = userItem ? JSON.parse(userItem) : null;
                                         href="#"
                                         onClick={(e) => {
                                             e.preventDefault();
-                                            dispatch(logout()); // dispatch the logout action when the link is clicked
+                                            dispatch(logout());
+                                            navigate('/');// dispatch the logout action when the link is clicked
                                         }}
                                         className={classNames(
                                             'text-gray-400 hover:bg-red-800 hover:secondary',
@@ -253,7 +256,7 @@ const user = userItem ? JSON.parse(userItem) : null;
                                     >
                                         <img
                                             className="h-8 w-8 rounded-full bg-gray-800"
-                                            src={`${assetServer}/images/users/${user.user.image}`}
+                                            src={user && user.user && user.user.image ? `${assetServer}/images/users/${user.user.image}` : 'defaultImageURL'}
                                             alt=""
                                         />
                                         <span className="sr-only">Your profile</span>

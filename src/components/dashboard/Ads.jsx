@@ -18,6 +18,7 @@ import {server} from "../../server.js";
 import {assetServer} from "../../../assetServer.js";
 import banknotesIcon from "@heroicons/react/16/solid/esm/BanknotesIcon.js";
 import {ArrowRightStartOnRectangleIcon} from "@heroicons/react/20/solid/index.js";
+import {useNavigate} from "react-router-dom";
 
 
 
@@ -48,8 +49,8 @@ function classNames(...classes) {
 export const Ads = () => {
     const dispatch = useDispatch();
     const [sidebarOpen, setSidebarOpen] = useState(false)
-
     const [ads, setAds] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchads = async () => {
@@ -152,7 +153,8 @@ export const Ads = () => {
                                                         href="#"
                                                         onClick={(e) => {
                                                             e.preventDefault();
-                                                            dispatch(logout()); // dispatch the logout action when the link is clicked
+                                                            dispatch(logout());
+                                                            navigate('/');
                                                         }}
                                                         className={classNames(
                                                             'text-gray-400 hover:text-white hover:bg-gray-800',
@@ -229,7 +231,8 @@ export const Ads = () => {
                                         href="#"
                                         onClick={(e) => {
                                             e.preventDefault();
-                                            dispatch(logout()); // dispatch the logout action when the link is clicked
+        dispatch(logout());
+        navigate('/');// dispatch the logout action when the link is clicked
                                         }}
                                         className={classNames(
                                             'text-gray-400 hover:text-white hover:bg-gray-800',

@@ -14,6 +14,7 @@ import { ArrowDownIcon, ArrowUpIcon } from '@heroicons/react/20/solid'
 import { CursorArrowRaysIcon, EnvelopeOpenIcon, UsersIcon } from '@heroicons/react/24/outline'
 import { useDispatch } from 'react-redux';
 import { logout } from '../../redux/actions/actions';
+import {useNavigate} from "react-router-dom";
 
 
 
@@ -42,7 +43,8 @@ const stats = [
 
 export const Dashboard = () => {
     const dispatch = useDispatch();
-    const [sidebarOpen, setSidebarOpen] = useState(false)
+    const [sidebarOpen, setSidebarOpen] = useState(false);
+    const navigate = useNavigate();
 
     return (
         <>
@@ -128,7 +130,8 @@ export const Dashboard = () => {
                                                         href="#"
                                                         onClick={(e) => {
                                                             e.preventDefault();
-                                                            dispatch(logout()); // dispatch the logout action when the link is clicked
+                                                            dispatch(logout());
+                                                            navigate('/'); // dispatch the logout action when the link is clicked
                                                         }}
                                                         className={classNames(
                                                             'text-gray-400 hover:text-white hover:bg-gray-800',
@@ -204,7 +207,8 @@ export const Dashboard = () => {
                                         href="#"
                                         onClick={(e) => {
                                             e.preventDefault();
-                                            dispatch(logout()); // dispatch the logout action when the link is clicked
+        dispatch(logout());
+        navigate('/');// dispatch the logout action when the link is clicked
                                         }}
                                         className={classNames(
                                             'text-gray-400 hover:bg-red-800 hover:secondary',

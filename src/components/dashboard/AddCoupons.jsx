@@ -1,10 +1,48 @@
 import { Fragment, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
+import axios from "axios";
+import {toast} from "react-toastify";
 
 
 export function AddCoupons({onClose}) {
     const [open, setOpen] = useState(true)
-    const [product_name, setProduct_Name] = useState('');
+    const [couponTitle, setCouponTitle] = useState('')
+    const [code, setCode] = useState('')
+    const [type, setType] = useState('')
+    const [quantity, setQuantity] = useState('')
+    const [limits, setLimits] = useState('')
+    const [dateStart, setDateStart] = useState('')
+    const [dateEnd, setDateEnd] = useState('')
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+
+        const couponData = {
+            couponTitle,
+            code,
+            type,
+            quantity,
+            limits,
+            dateStart,
+            dateEnd,
+        };
+
+        try {
+            const response = await axios.post('https://your-api-url.com/coupons', couponData);
+
+            if (response.status === 200) {
+                // Handle successful submission
+                console.log('Coupon created successfully');
+                toast.success('Coupon created successfully');
+            } else {
+                // Handle other status codes and possible errors
+                console.log('An error occurred while creating the coupon');
+            }
+        } catch (error) {
+            // Handle network errors
+            console.log('A network error occurred while creating the coupon');
+        }
+    };
 
     return (
         <Transition.Root show={open} as={Fragment}>
@@ -24,7 +62,7 @@ export function AddCoupons({onClose}) {
                                 leaveTo="translate-x-full"
                             >
                                 <Dialog.Panel className="pointer-events-auto w-screen max-w-2xl">
-                                    <form className="flex h-full flex-col overflow-y-scroll bg-white shadow-xl">
+                                    <form onSubmit={handleSubmit} className="flex h-full flex-col overflow-y-scroll bg-white shadow-xl">
                                         <div className="flex-1">
 
                                             <div className="bg-gray-50 px-4 py-6 sm:px-6">
@@ -69,8 +107,8 @@ export function AddCoupons({onClose}) {
                                                             type="text"
                                                             name="project-name"
                                                             id="project-name"
-                                                            value={product_name}
-                                                            onChange={(e) => setProduct_name(e.target.value)}
+                                                            value={couponTitle}
+                                                            onChange={(e) => setCouponTitle(e.target.value)}
                                                             className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                                         />
                                                     </div>
@@ -91,8 +129,8 @@ export function AddCoupons({onClose}) {
                                                             type="text"
                                                             name="project-name"
                                                             id="project-name"
-                                                            value={product_name}
-                                                            onChange={(e) => setProduct_name(e.target.value)}
+                                                            value={code}
+                                                            onChange={(e) => setCode(e.target.value)}
                                                             className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                                         />
                                                     </div>
@@ -113,8 +151,8 @@ export function AddCoupons({onClose}) {
                                                             type="text"
                                                             name="project-name"
                                                             id="project-name"
-                                                            value={product_name}
-                                                            onChange={(e) => setProduct_name(e.target.value)}
+                                                            value={type}
+                                                            onChange={(e) => setType(e.target.value)}
                                                             className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                                         />
                                                     </div>
@@ -135,8 +173,8 @@ export function AddCoupons({onClose}) {
                                                             type="text"
                                                             name="project-name"
                                                             id="project-name"
-                                                            value={product_name}
-                                                            onChange={(e) => setProduct_name(e.target.value)}
+                                                            value={quantity}
+                                                            onChange={(e) => setQuantity(e.target.value)}
                                                             className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                                         />
                                                     </div>
@@ -157,8 +195,8 @@ export function AddCoupons({onClose}) {
                                                             type="text"
                                                             name="project-name"
                                                             id="project-name"
-                                                            value={product_name}
-                                                            onChange={(e) => setProduct_name(e.target.value)}
+                                                            value={limits}
+                                                            onChange={(e) => setLimits(e.target.value)}
                                                             className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                                         />
                                                     </div>
@@ -179,6 +217,8 @@ export function AddCoupons({onClose}) {
                                                             type="date"
                                                             name="project-name"
                                                             id="project-name"
+                                                            value={dateStart}
+                                                            onChange={(e) => setDateStart(e.target.value)}
                                                             className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                                         />
                                                     </div>
@@ -201,12 +241,13 @@ export function AddCoupons({onClose}) {
                                                             type="date"
                                                             name="project-name"
                                                             id="project-name"
+                                                            value={dateEnd}
+                                                            onChange={(e) => setDateEnd(e.target.value)}
                                                             className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                                         />
                                                     </div>
                                                 </div>
-
-                                                                                            </div>
+                                            </div>
                                         </div>
 
                                         {/* Action buttons */}
@@ -223,7 +264,7 @@ export function AddCoupons({onClose}) {
                                                     type="submit"
                                                     className="inline-flex justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                                                 >
-                                                    Create Product
+                                                    Create Coupon
                                                 </button>
                                             </div>
                                         </div>

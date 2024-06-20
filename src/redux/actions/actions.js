@@ -52,14 +52,16 @@ export const login = (email, password) => {
         try {
             const response = await axios.post(`${server}/login`, { email, password });
 
+            if (response.status === 401) {
+                dispatch(logout());
+                throw new Error('Unauthorized. Logging out...');
+            }
+
             if (response.status < 200 || response.status >= 300) {
                 throw new Error('Login failed. Please try again.');
             }
 
             const data = response.data;
-
-            // Log the response data to the console
-            console.log(data);
 
             // Check if the user's role is 'vendor'
             if (data.user && data.user.role !== 'admin') {

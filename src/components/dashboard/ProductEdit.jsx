@@ -75,6 +75,7 @@ export const ProductEdit = () => {
     const [quantity, setQuantity] = useState(products.quantity);
     const [vendorId, setVendorId] = useState(products.vendor_id);
 
+
     const handleProductNameChange = (event) => {
         setProductName(event.target.value);
     };
@@ -261,7 +262,8 @@ export const ProductEdit = () => {
                                                         href="#"
                                                         onClick={(e) => {
                                                             e.preventDefault();
-                                                            dispatch(logout()); // dispatch the logout action when the link is clicked
+                                                            dispatch(logout());
+                                                            navigate('/'); // dispatch the logout action when the link is clicked
                                                         }}
                                                         className={classNames(
                                                             'text-gray-400 hover:bg-red-800 hover:secondary',
@@ -338,7 +340,8 @@ export const ProductEdit = () => {
                                         href="#"
                                         onClick={(e) => {
                                             e.preventDefault();
-                                            dispatch(logout()); // dispatch the logout action when the link is clicked
+        dispatch(logout());
+        navigate('/');// dispatch the logout action when the link is clicked
                                         }}
                                         className={classNames(
                                             'text-gray-400 hover:bg-red-800 hover:secondary',
@@ -357,10 +360,10 @@ export const ProductEdit = () => {
                                         className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-secondary hover:bg-secondary"
                                     >
                                         <img
-                                            className="h-8 w-8 rounded-full bg-gray-800"
-                                            src={`${assetServer}/images/users/${user.user.image}`}
-                                            alt=""
-                                        />
+    className="h-8 w-8 rounded-full bg-gray-800"
+    src={user && user.user && user.user.image ? `${assetServer}/images/users/${user.user.image}` : 'defaultImageURL'}
+    alt=""
+/>
                                         <span className="sr-only">Your profile</span>
                                         <span aria-hidden="true">{user && user.user ? user.user.name : 'Default Name'}</span>
                                     </a>

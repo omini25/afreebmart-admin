@@ -13,11 +13,11 @@ import {
 } from '@heroicons/react/20/solid'
 import { useDispatch } from 'react-redux';
 import { logout } from '../../redux/actions/actions';
-import { CheckIcon, HandThumbUpIcon, UserIcon } from '@heroicons/react/20/solid'
 import {server} from "../../server.js";
 import axios from "axios";
 import {assetServer} from "../../../assetServer.js";
 import banknotesIcon from "@heroicons/react/16/solid/esm/BanknotesIcon.js";
+import {useNavigate} from "react-router-dom";
 
 
 
@@ -59,6 +59,7 @@ export const Dashboard = () => {
     const [userCount, setUserCount] = useState(0);
     const pendingOrdersCount = orders.filter(order => order.status === 'pending').length;
     const [totalRevenue, setTotalRevenue] = useState(0);
+    const navigate = useNavigate();
 
 
     useEffect(() => {
@@ -75,6 +76,8 @@ export const Dashboard = () => {
 
         totalRevenue();
     }, []);
+
+    console.log(orders)
 
 
 
@@ -97,7 +100,7 @@ export const Dashboard = () => {
             try {
                 const response = await axios.get(`${server}/admin/orders`);
                 // Flatten the array structure
-                const flattenedOrders = response.data.orders;
+                const flattenedOrders = response.data.orders.flat();
                 setOrders(flattenedOrders);
             } catch (error) {
                 console.error('Failed to fetch orders:', error);
@@ -206,7 +209,8 @@ export const Dashboard = () => {
                                                         href="#"
                                                         onClick={(e) => {
                                                             e.preventDefault();
-                                                            dispatch(logout()); // dispatch the logout action when the link is clicked
+                                                            dispatch(logout());
+                                                            navigate('/'); // dispatch the logout action when the link is clicked
                                                         }}
                                                         className={classNames(
                                                             'text-gray-400 hover:bg-red-800 hover:secondary',
@@ -283,7 +287,8 @@ export const Dashboard = () => {
                                         href="#"
                                         onClick={(e) => {
                                             e.preventDefault();
-                                            dispatch(logout()); // dispatch the logout action when the link is clicked
+        dispatch(logout());
+        navigate('/');
                                         }}
                                         className={classNames(
                                             'text-gray-400 hover:bg-red-800 hover:secondary',
@@ -302,10 +307,10 @@ export const Dashboard = () => {
                                         className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-secondary hover:secondary"
                                     >
                                         <img
-                                            className="h-8 w-8 rounded-full bg-gray-800"
-                                            src={`${assetServer}/images/users/${user.user.image}`}
-                                            alt=""
-                                        />
+    className="h-8 w-8 rounded-full bg-gray-800"
+    src={user && user.user && user.user.image ? `${assetServer}/images/users/${user.user.image}` : 'defaultImageURL'}
+    alt=""
+/>
                                         <span className="sr-only">Your profile</span>
                                         <span aria-hidden="true">{user && user.user ? user.user.name : 'Default Name'}</span>
                                     </a>
