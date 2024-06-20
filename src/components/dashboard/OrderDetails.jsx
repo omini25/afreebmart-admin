@@ -20,7 +20,7 @@ import axios from "axios";
 import {server} from "../../server.js";
 import {assetServer} from "../../../assetServer.js";
 import banknotesIcon from "@heroicons/react/16/solid/esm/BanknotesIcon.js";
-import {Link, useParams} from "react-router-dom";
+import {Link, useNavigate, useParams} from "react-router-dom";
 import {ArrowRightStartOnRectangleIcon} from "@heroicons/react/20/solid/index.js";
 
 
