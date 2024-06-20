@@ -108,24 +108,24 @@ export const Login = () => {
                             {error && <p>{error}</p>}
                         </form>
 
-                        {/*<div>*/}
-                        {/*    <div className="relative mt-10">*/}
-                        {/*        <div className="absolute inset-0 flex items-center" aria-hidden="true">*/}
-                        {/*            <div className="w-full border-t border-gray-200"/>*/}
-                        {/*        </div>*/}
-                        {/*        <div className="relative flex justify-center text-sm font-medium leading-6">*/}
-                        {/*            <span className="bg-white px-6 text-gray-900">Or</span>*/}
-                        {/*        </div>*/}
-                        {/*    </div>*/}
+                        <div>
+                            <div className="relative mt-10">
+                                <div className="absolute inset-0 flex items-center" aria-hidden="true">
+                                    <div className="w-full border-t border-gray-200"/>
+                                </div>
+                                <div className="relative flex justify-center text-sm font-medium leading-6">
+                                    <span className="bg-white px-6 text-gray-900">Or</span>
+                                </div>
+                            </div>
 
-                        {/*    <p className="mt-10 text-center text-sm text-gray-500">*/}
-                        {/*        Not a vendor?{' '}*/}
-                        {/*        <a href="#" className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">*/}
-                        {/*            Sign Up*/}
-                        {/*        </a>*/}
-                        {/*    </p>*/}
+                            <p className="mt-10 text-center text-sm text-gray-500">
+                                Not a vendor?{' '}
+                                <a href="/signup" className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
+                                    Sign Up
+                                </a>
+                            </p>
 
-                        {/*</div>*/}
+                        </div>
                     </div>
 
 

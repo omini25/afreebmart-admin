@@ -15,7 +15,7 @@ export const signup = (name, email, password) => {
     return async (dispatch) => {
         dispatch({ type: SIGNUP_REQUEST });
         try {
-            const response = await fetch(`${server}/vendor-register`, {
+            const response = await fetch(`${server}/admin-register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
