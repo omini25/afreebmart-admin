@@ -77,9 +77,6 @@ export const Dashboard = () => {
         totalRevenue();
     }, []);
 
-    console.log(orders)
-
-
 
     useEffect(() => {
         const fetchUsers = async () => {
