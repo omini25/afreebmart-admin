@@ -225,12 +225,12 @@ export const Dashboard = () => {
                                                         className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-secondary hover:bg-secondary"
                                                     >
                                                         <img
-    className="h-8 w-8 rounded-full bg-gray-800"
-    src={user && user.user && user.user.image ? `${assetServer}/images/users/${user.user.image}` : 'defaultImageURL'}
-    alt=""
-/>
+                                                            className="h-8 w-8 rounded-full bg-gray-800"
+                                                            src={user && user.user && user.user.image ? `${assetServer}/images/users/${user.user.image}` : 'defaultImageURL'}
+                                                            alt=""
+                                                        />
                                                         <span className="sr-only">Your profile</span>
-                                                        <span aria-hidden="true">{user.user.name}</span>
+                                                        <span aria-hidden="true">{user && user.user ? user.user.name : 'Default Name'}</span>
                                                     </a>
                                                 </li>
                                             </ul>
@@ -307,7 +307,7 @@ export const Dashboard = () => {
                                             alt=""
                                         />
                                         <span className="sr-only">Your profile</span>
-                                        <span aria-hidden="true">{user.user.name}</span>
+                                        <span aria-hidden="true">{user && user.user ? user.user.name : 'Default Name'}</span>
                                     </a>
                                 </li>
                             </ul>

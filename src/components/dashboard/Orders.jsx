@@ -178,7 +178,7 @@ const user = userItem ? JSON.parse(userItem) : null;
     alt=""
 />
                                                         <span className="sr-only">Your profile</span>
-                                                        <span aria-hidden="true">{user.user.name}</span>
+                                                        <span aria-hidden="true">{user && user.user ? user.user.name : 'Default Name'}</span>
                                                     </a>
                                                 </li>
                                             </ul>
@@ -255,7 +255,7 @@ const user = userItem ? JSON.parse(userItem) : null;
                                             alt=""
                                         />
                                         <span className="sr-only">Your profile</span>
-                                        <span aria-hidden="true">{user.user.name}</span>
+                                        <span aria-hidden="true">{user && user.user ? user.user.name : 'Default Name'}</span>
                                     </a>
                                 </li>
                             </ul>

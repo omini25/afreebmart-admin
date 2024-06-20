@@ -239,7 +239,7 @@ export const Profile = () => {
     alt=""
 />
                                                         <span className="sr-only">Your profile</span>
-                                                        <span aria-hidden="true">{user.user.name}</span>
+                                                        <span aria-hidden="true">{user && user.user ? user.user.name : 'Default Name'}</span>
                                                     </a>
                                                 </li>
                                             </ul>
@@ -316,7 +316,7 @@ export const Profile = () => {
                                             alt=""
                                         />
                                         <span className="sr-only">Your profile</span>
-                                        <span aria-hidden="true">{user.user.name}</span>
+                                        <span aria-hidden="true">{user && user.user ? user.user.name : 'Default Name'}</span>
                                     </a>
                                 </li>
                             </ul>
