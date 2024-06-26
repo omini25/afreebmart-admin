@@ -9,7 +9,7 @@ import {
     InboxStackIcon,
     MagnifyingGlassIcon, TagIcon, UserCircleIcon,
     UserGroupIcon,
-    ShoppingBagIcon, ShoppingCartIcon, TruckIcon, WalletIcon, ListBulletIcon,
+    ShoppingBagIcon, ShoppingCartIcon, TruckIcon, WalletIcon, ListBulletIcon, BarsArrowUpIcon, ChevronDownIcon,
 } from '@heroicons/react/20/solid'
 import { useDispatch } from 'react-redux';
 import { logout } from '../../redux/actions/actions';
@@ -51,6 +51,8 @@ export const Ads = () => {
     const [sidebarOpen, setSidebarOpen] = useState(false)
     const [ads, setAds] = useState([]);
     const navigate = useNavigate();
+    const [searchTerm, setSearchTerm] = useState('');
+    const [selectedSort, setSelectedSort] = useState('Latest');
 
     useEffect(() => {
         const fetchads = async () => {
@@ -314,67 +316,115 @@ export const Ads = () => {
                                                 Search
                                             </label>
                                             <div className="flex rounded-md shadow-sm">
-                                                <div className="relative flex-grow focus-within:z-10">
-                                                    <div
-                                                        className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                                                        <MagnifyingGlassIcon className="h-5 w-5 text-gray-400"
-                                                                             aria-hidden="true"/>
-                                                    </div>
-                                                    <input
-                                                        type="text"
-                                                        name="mobile-search-candidate"
-                                                        id="mobile-search-candidate"
-                                                        className="block w-full rounded-none rounded-l-md border-0 py-1.5 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:hidden"
-                                                        placeholder="Search"
-                                                    />
-                                                    <input
-                                                        type="text"
-                                                        name="desktop-search-candidate"
-                                                        id="desktop-search-candidate"
-                                                        className="hidden w-full rounded-none rounded-l-md border-0 py-1.5 pl-10 text-sm leading-6 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:block"
-                                                        placeholder="Search candidates"
-                                                    />
+                                                <div
+                                                    className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                                                    <MagnifyingGlassIcon className="h-5 w-5 text-gray-400"
+                                                                         aria-hidden="true"/>
                                                 </div>
-                                                <button
-                                                    type="button"
-                                                    className="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-                                                >
-                                                    <BarsArrowUpIcon className="-ml-0.5 h-5 w-5 text-gray-400"
-                                                                     aria-hidden="true"/>
-                                                    Sort
-                                                    <ChevronDownIcon className="-mr-1 h-5 w-5 text-gray-400"
-                                                                     aria-hidden="true"/>
-                                                </button>
+                                                <input
+                                                    type="text"
+                                                    name="mobile-search-candidate"
+                                                    id="mobile-search-candidate"
+                                                    className="block w-full rounded-none rounded-l-md border-0 py-1.5 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:hidden"
+                                                    placeholder="Search"
+                                                    value={searchTerm}
+                                                    onChange={event => setSearchTerm(event.target.value)}
+                                                />
+                                                <input
+                                                    type="text"
+                                                    name="desktop-search-candidate"
+                                                    id="desktop-search-candidate"
+                                                    className="hidden w-full rounded-none rounded-l-md border-0 py-1.5 pl-10 text-sm leading-6 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:block"
+                                                    placeholder="Search Payments"
+                                                    value={searchTerm}
+                                                    onChange={event => setSearchTerm(event.target.value)}
+                                                />
+
+                                                <Menu as="div" className="relative inline-block text-left">
+                                                    <div>
+                                                        <Menu.Button
+                                                            className="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                                                            <BarsArrowUpIcon className="-ml-0.5 h-5 w-5 text-gray-400"
+                                                                             aria-hidden="true"/>
+                                                            Sort
+                                                            <ChevronDownIcon className="-mr-1 h-5 w-5 text-gray-400"
+                                                                             aria-hidden="true"/>
+                                                        </Menu.Button>
+                                                    </div>
+                                                    <Transition
+                                                        as={Fragment}
+                                                        enter="transition ease-out duration-100"
+                                                        enterFrom="transform opacity-0 scale-95"
+                                                        enterTo="transform opacity-100 scale-100"
+                                                        leave="transition ease-in duration-75"
+                                                        leaveFrom="transform opacity-100 scale-100"
+                                                        leaveTo="transform opacity-0 scale-95"
+                                                    >
+                                                        <Menu.Items
+                                                            className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+                                                            <div className="py-1">
+                                                                {['latest', 'active', 'pending', 'expired'].map((status, statusIdx) => (
+                                                                    <Menu.Item key={statusIdx}>
+                                                                        {({active}) => (
+                                                                            <button
+                                                                                onClick={() => setAds([...ads].sort((a, b) => a.status === status ? -1 : b.status === status ? 1 : 0))}
+                                                                                className={`${
+                                                                                    active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'
+                                                                                } group flex items-center w-full px-2 py-2 text-sm`}
+                                                                            >
+                                                                                {status}
+                                                                            </button>
+                                                                        )}
+                                                                    </Menu.Item>
+                                                                ))}
+                                                            </div>
+                                                        </Menu.Items>
+                                                    </Transition>
+                                                </Menu>
                                             </div>
                                         </div>
                                     </div>
                                     <div className="mt-8 flow-root">
                                         <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                                            <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-                                                <table className="min-w-full divide-y divide-gray-300">
-                                                    <thead>
-                                                    <tr>
-                                                        <th scope="col"
-                                                            className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">
-                                                            Product
-                                                        </th>
-                                                        <th scope="col"
-                                                            className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                            Vendor
-                                                        </th>
+                                        <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+                                            <table className="min-w-full divide-y divide-gray-300">
+                                                <thead>
+                                                <tr>
+                                                    <th scope="col"
+                                                        className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">
+                                                        Product
+                                                    </th>
+                                                    <th scope="col"
+                                                        className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                                        Vendor
+                                                    </th>
 
-                                                        <th scope="col"
-                                                            className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                            Ad Details
-                                                        </th>
+                                                    <th scope="col"
+                                                        className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                                        Ad Details
+                                                    </th>
 
-                                                        <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-0">
-                                                            <span className="sr-only">Action</span>
-                                                        </th>
-                                                    </tr>
-                                                    </thead>
-                                                    <tbody className="divide-y divide-gray-200 bg-white">
-                                                    {ads.map((ad) => (
+                                                    <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-0">
+                                                        <span className="sr-only">Action</span>
+                                                    </th>
+                                                </tr>
+                                                </thead>
+                                                <tbody className="divide-y divide-gray-200 bg-white">
+                                                {ads
+                                                    .filter(ad => {
+                                                        // Modify this condition to match your search criteria
+                                                        return (
+                                                            ad.product_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                                                            ad.store_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                                                            ad.id?.toString().includes(searchTerm) ||
+                                                            ad.status?.toLowerCase().includes(searchTerm.toLowerCase())
+                                                        );
+                                                    })
+                                                    .sort((a, b) => {
+                                                        const statusOrder = ['latest', 'active', 'pending', 'expired'];
+                                                        return statusOrder.indexOf(a.status) - statusOrder.indexOf(b.status);
+                                                    })
+                                                    .map((ad) => (
                                                         <tr key={ad.id}>
                                                             <td className="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0">
                                                                 <div className="flex items-center">
@@ -404,23 +454,67 @@ export const Ads = () => {
                                                                         <div
                                                                             className="font-medium text-gray-900">{ad.status}</div>
                                                                         <div
-                                                                            className="mt-1 text-gray-500">{ad.duration} days</div>
+                                                                            className="mt-1 text-gray-500">{ad.duration} days
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </td>
 
                                                             <td className="relative whitespace-nowrap py-5 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-                                                                <a href="#"
-                                                                   className="text-indigo-600 hover:text-indigo-900">
-                                                                    Change Status<span className="sr-only">, {ad.id}</span>
-                                                                </a>
+                                                                <button
+                                                                    className="text-indigo-600 hover:text-indigo-900"
+                                                                    onClick={async () => {
+                                                                        try {
+                                                                            const response = await axios.delete(`${server}/admin/ads/${ad.id}`);
+                                                                            if (response.status === 200) {
+                                                                                // Update the local state if the API call was successful
+                                                                                setAds(ads.filter(item => item.id !== ad.id));
+                                                                            }
+                                                                        } catch (error) {
+                                                                            console.error('Failed to delete ad:', error);
+                                                                        }
+                                                                    }}
+                                                                >
+                                                                    Delete Ad
+                                                                </button>
+                                                            </td>
+
+                                                            <td className="relative whitespace-nowrap py-5 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
+                                                                <select
+                                                                    className="text-indigo-600 hover:text-indigo-900"
+                                                                    value={ad.status}
+                                                                    onChange={async (event) => {
+                                                                        const newStatus = event.target.value;
+                                                                        try {
+                                                                            const response = await axios.put(`${server}/admin/ads/${ad.id}/status`, {
+                                                                                status: newStatus
+                                                                            });
+                                                                            if (response.status === 200) {
+                                                                                // Update the local state if the API call was successful
+                                                                                setAds(ads.map((item) =>
+                                                                                    item.id === ad.id ? {
+                                                                                        ...item,
+                                                                                        status: newStatus
+                                                                                    } : item
+                                                                                ));
+                                                                            }
+                                                                        } catch (error) {
+                                                                            console.error('Failed to update status:', error);
+                                                                        }
+                                                                    }}
+                                                                >
+                                                                    <option value="{ad.status}">{ad.status}</option>
+                                                                    <option value="Active">Active</option>
+                                                                    <option value="Pending">Pending</option>
+                                                                    <option value="Expired">Expired</option>
+                                                                </select>
                                                             </td>
                                                         </tr>
                                                     ))}
-                                                    </tbody>
+                                                </tbody>
 
-                                                </table>
-                                            </div>
+                                            </table>
+                                        </div>
                                         </div>
                                     </div>
                                 </div>

@@ -179,10 +179,10 @@ export const PaymentHistory = () => {
                                                         className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-secondary hover:bg-secondary"
                                                     >
                                                         <img
-    className="h-8 w-8 rounded-full bg-gray-800"
-    src={user && user.user && user.user.image ? `${assetServer}/images/users/${user.user.image}` : 'defaultImageURL'}
-    alt=""
-/>
+                                                            className="h-8 w-8 rounded-full bg-gray-800"
+                                                            src={user && user.user && user.user.image ? `${assetServer}/images/users/${user.user.image}` : 'defaultImageURL'}
+                                                            alt=""
+                                                        />
                                                         <span className="sr-only">Your profile</span>
                                                         <span aria-hidden="true">{user && user.user ? user.user.name : 'Default Name'}</span>
                                                     </a>
@@ -237,8 +237,8 @@ export const PaymentHistory = () => {
                                         href="#"
                                         onClick={(e) => {
                                             e.preventDefault();
-        dispatch(logout());
-        navigate('/');// dispatch the logout action when the link is clicked
+                                            dispatch(logout());
+                                            navigate('/');// dispatch the logout action when the link is clicked
                                         }}
                                         className={classNames(
                                             'text-gray-400 hover:bg-red-800 hover:secondary',
@@ -257,10 +257,10 @@ export const PaymentHistory = () => {
                                         className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-secondary hover:bg-secondary"
                                     >
                                         <img
-    className="h-8 w-8 rounded-full bg-gray-800"
-    src={user && user.user && user.user.image ? `${assetServer}/images/users/${user.user.image}` : 'defaultImageURL'}
-    alt=""
-/>
+                                            className="h-8 w-8 rounded-full bg-gray-800"
+                                            src={user && user.user && user.user.image ? `${assetServer}/images/users/${user.user.image}` : 'defaultImageURL'}
+                                            alt=""
+                                        />
                                         <span className="sr-only">Your profile</span>
                                         <span aria-hidden="true">{user && user.user ? user.user.name : 'Default Name'}</span>
                                     </a>
@@ -461,43 +461,43 @@ export const PaymentHistory = () => {
                                                     })
                                                     .map((payment) => (
                                                         <tr key={payment.id}>
-                                                        <td className="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0">
-                                                            <div className="flex items-center">
+                                                            <td className="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0">
+                                                                <div className="flex items-center">
 
-                                                                <div className="ml-4">
-                                                                    <div
-                                                                        className="font-medium text-gray-900">{payment.product_name}</div>
-                                                                    <div
-                                                                        className="mt-1 text-gray-500">#{payment.id}</div>
+                                                                    <div className="ml-4">
+                                                                        <div
+                                                                            className="font-medium text-gray-900">{payment.product_name}</div>
+                                                                        <div
+                                                                            className="mt-1 text-gray-500">#{payment.id}</div>
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                        </td>
-                                                        <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                                            <div className="text-gray-900">{payment.user_name}</div>
-                                                            <div className="mt-1 text-gray-500">
-                                                                $ {payment.total_cost}
-                                                            </div>
-                                                        </td>
+                                                            </td>
+                                                            <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                                                                <div className="text-gray-900">{payment.user_name}</div>
+                                                                <div className="mt-1 text-gray-500">
+                                                                    $ {payment.total_cost}
+                                                                </div>
+                                                            </td>
 
-                                                        <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                                            <div className="text-gray-900">{payment.store_name}</div>
-                                                            <div
-                                                                className="mt-1 text-gray-500">#{payment.product_cost}
-                                                            </div>
-                                                        </td>
-                                                        <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                                                            <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                                                                <div className="text-gray-900">{payment.store_name}</div>
+                                                                <div
+                                                                    className="mt-1 text-gray-500">#{payment.product_cost}
+                                                                </div>
+                                                            </td>
+                                                            <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
                                                                 <span
                                                                     className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
                                                                     {payment.payment_status}
                                                                 </span>
-                                                        </td>
-                                                        <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                                            <div
-                                                                className="text-gray-900">{payment.order_status} id: {payment.order_id}</div>
+                                                            </td>
+                                                            <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                                                                <div
+                                                                    className="text-gray-900">{payment.order_status} id: {payment.order_id}</div>
 
-                                                        </td>
-                                                    </tr>
-                                                ))}
+                                                            </td>
+                                                        </tr>
+                                                    ))}
                                                 </tbody>
                                             </table>
                                         </div>

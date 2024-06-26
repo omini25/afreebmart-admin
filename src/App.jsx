@@ -19,7 +19,14 @@ import {
     VendorsPage,
     AdminsPage,
     CouponsPage,
-    OrderDetailsPage, ProductEditPage, CategoryEditPage, CouponEditPage, DeliveryPage
+    OrderDetailsPage,
+    ProductEditPage,
+    CategoryEditPage,
+    CouponEditPage,
+    DeliveryPage,
+    ReviewPage,
+    UserEditPage,
+    VendorEditPage
 } from "./routes/Routes.js";
 import {ToastContainer} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
@@ -58,6 +65,9 @@ function App() {
                         <Route path="/category/:id" element={<CategoryEditPage />} />
                         <Route path="/coupon/:id" element={<CouponEditPage />} />
                         <Route path="/deliveries" element={<DeliveryPage />} />
+                        <Route path="/reviews" element={<ReviewPage />} />
+                        <Route path="/edit-user/:id" element={<UserEditPage />} />
+                        <Route path="/edit-vendor/:id" element={<VendorEditPage />}/>
                     </Routes>
                 {/*</Switch>*/}
             </Router>

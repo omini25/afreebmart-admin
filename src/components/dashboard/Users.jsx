@@ -473,7 +473,7 @@ export const Users = () => {
                                                                 {new Date(users.created_at).toLocaleDateString()}
                                                             </td>
                                                             <td className="relative whitespace-nowrap py-5 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-                                                                <a href="#"
+                                                                <a href={`/edit-user/${users.id}`}
                                                                    className="text-indigo-600 hover:text-indigo-900">
                                                                     View<span className="sr-only">, {users.id}</span>
                                                                 </a>

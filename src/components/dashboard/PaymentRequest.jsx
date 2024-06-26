@@ -20,7 +20,7 @@ import banknotesIcon from "@heroicons/react/16/solid/esm/BanknotesIcon.js";
 import {server} from "../../server.js";
 import axios from "axios";
 import {assetServer} from "../../../assetServer.js";
-import {ArrowRightStartOnRectangleIcon} from "@heroicons/react/20/solid";
+import {ArrowRightStartOnRectangleIcon, BarsArrowUpIcon, ChevronDownIcon} from "@heroicons/react/20/solid";
 import {useNavigate} from "react-router-dom";
 
 
@@ -57,6 +57,8 @@ export const PaymentRequest = () => {
     const user = userItem ? JSON.parse(userItem) : null;
     const [payments, setPayments] = useState([]);
     const navigate = useNavigate();
+    const [searchTerm, setSearchTerm] = useState('');
+    const [selectedSort, setSelectedSort] = useState('Latest');
 
     useEffect(() => {
         const fetchPayments = async () => {
@@ -302,24 +304,103 @@ export const PaymentRequest = () => {
                     </div>
 
                     <main className="lg:pr-10 lg:pl-10">
-                        <header
-                            className="border-b border-white/5 px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
-                            <div className="md:flex md:items-center md:justify-between">
-                                <div className="min-w-0 flex-1">
-                                    <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
-                                    Vendor Payout Requests
-                                    </h2>
+                        <div className="border-b border-gray-200 pb-5 sm:flex sm:items-center sm:justify-between">
+                            <h3 className="text-base font-semibold leading-6 text-gray-900">Payment Requests</h3>
+                            <div className="mt-3 sm:ml-4 sm:mt-0">
+                                <label htmlFor="mobile-search-candidate" className="sr-only">
+                                    Search
+                                </label>
+                                <label htmlFor="desktop-search-candidate" className="sr-only">
+                                    Search
+                                </label>
+                                <div className="flex rounded-md shadow-sm">
+                                    <div className="relative flex-grow focus-within:z-10">
+                                        <div
+                                            className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                                            <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" aria-hidden="true"/>
+                                        </div>
+                                        <input
+                                            type="text"
+                                            name="mobile-search-candidate"
+                                            id="mobile-search-candidate"
+                                            className="block w-full rounded-none rounded-l-md border-0 py-1.5 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:hidden"
+                                            placeholder="Search"
+                                            value={searchTerm}
+                                            onChange={event => setSearchTerm(event.target.value)}
+                                        />
+                                        <input
+                                            type="text"
+                                            name="desktop-search-candidate"
+                                            id="desktop-search-candidate"
+                                            className="hidden w-full rounded-none rounded-l-md border-0 py-1.5 pl-10 text-sm leading-6 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:block"
+                                            placeholder="Search Payments"
+                                            value={searchTerm}
+                                            onChange={event => setSearchTerm(event.target.value)}
+                                        />
+                                    </div>
+                                    <Menu as="div" className="relative inline-block text-left">
+                                        <div>
+                                            <Menu.Button
+                                                className="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                                                <BarsArrowUpIcon className="-ml-0.5 h-5 w-5 text-gray-400"
+                                                                 aria-hidden="true"/>
+                                                Sort
+                                                <ChevronDownIcon className="-mr-1 h-5 w-5 text-gray-400"
+                                                                 aria-hidden="true"/>
+                                            </Menu.Button>
+                                        </div>
+                                        <Transition
+                                            as={Fragment}
+                                            enter="transition ease-out duration-100"
+                                            enterFrom="transform opacity-0 scale-95"
+                                            enterTo="transform opacity-100 scale-100"
+                                            leave="transition ease-in duration-75"
+                                            leaveFrom="transform opacity-100 scale-100"
+                                            leaveTo="transform opacity-0 scale-95"
+                                        >
+                                            <Menu.Items
+                                                className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+                                                <div className="py-1">
+                                                    {['Latest', 'Paid', 'Unpaid', 'Highest', 'Lowest'].map((status, statusIdx) => (
+                                                        <Menu.Item key={statusIdx}>
+                                                            {({active}) => (
+                                                                <button
+                                                                    onClick={() => {
+                                                                        setSelectedSort(status);
+                                                                        const sortedPayments = [...payments].sort((a, b) => {
+                                                                            switch (status) {
+                                                                                case 'Latest':
+                                                                                    return new Date(b.created_at) - new Date(a.created_at);
+                                                                                case 'Paid':
+                                                                                    return a.status === 'Paid' ? -1 : 1;
+                                                                                case 'Unpaid':
+                                                                                    return a.status === 'Unpaid' ? -1 : 1;
+                                                                                case 'Highest':
+                                                                                    return b.product_cost - a.product_cost;
+                                                                                case 'Lowest':
+                                                                                    return a.product_cost - b.product_cost;
+                                                                                default:
+                                                                                    return 0;
+                                                                            }
+                                                                        });
+                                                                        setPayments(sortedPayments);
+                                                                    }}
+                                                                    className={`${
+                                                                        active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'
+                                                                    } group flex items-center w-full px-2 py-2 text-sm`}
+                                                                >
+                                                                    {status}
+                                                                </button>
+                                                            )}
+                                                        </Menu.Item>
+                                                    ))}
+                                                </div>
+                                            </Menu.Items>
+                                        </Transition>
+                                    </Menu>
                                 </div>
-
                             </div>
-
-                            <div className="sm:flex-auto">
-
-                                <p className="mt-2 text-sm text-gray-700">
-                                    A list of all the payment requests by vendors that have finalized orders
-                                </p>
-                            </div>
-                        </header>
+                        </div>
 
                         <div>
 
@@ -356,53 +437,105 @@ export const PaymentRequest = () => {
                                                 </tr>
                                                 </thead>
                                                 <tbody className="divide-y divide-gray-200">
-                                                {payments.map((payment) => (
-                                                    <tr key={payment.id}>
-                                                        <td className="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0">
-                                                            <div className="flex items-center">
+                                                {payments
+                                                    .filter(payment => {
+                                                        // Modify this condition to match your search criteria
+                                                        return (
+                                                            payment.bank_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                                                            payment.account_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                                                            payment.id?.toString().includes(searchTerm) ||
+                                                            payment.store_name?.toLowerCase().includes(searchTerm.toLowerCase())
+                                                        );
+                                                    })
+                                                    .sort((a, b) => {
+                                                        // Modify this switch statement to match your sort options
+                                                        switch (selectedSort) {
+                                                            case 'Latest':
+                                                                return new Date(b.created_at) - new Date(a.created_at);
+                                                            case 'Paid':
+                                                                return a.status === 'Paid' ? -1 : 1;
+                                                            case 'Unpaid':
+                                                                return a.status === 'Pending' ? -1 : 1;
+                                                            case 'Highest':
+                                                                return b.product_cost - a.product_cost;
+                                                            case 'Lowest':
+                                                                return a.product_cost - b.product_cost;
+                                                            default:
+                                                                return 0;
+                                                        }
+                                                    })
+                                                    .map((payment) => (
+                                                        <tr key={payment.id}>
+                                                            <td className="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0">
+                                                                <div className="flex items-center">
 
-                                                                <div className="ml-4">
-                                                                    <div
-                                                                        className="font-medium text-gray-900">$ {payment.amount}</div>
-                                                                    <div
-                                                                        className="mt-1 text-gray-500">#{payment.id}</div>
+                                                                    <div className="ml-4">
+                                                                        <div
+                                                                            className="font-medium text-gray-900">$ {payment.amount}</div>
+                                                                        <div
+                                                                            className="mt-1 text-gray-500">#{payment.id}</div>
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                        </td>
-                                                        <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                                            <div className="text-gray-900">{payment.store_name}</div>
-                                                            <div className="mt-1 text-gray-500">
-                                                                {payment.vendor_id}
-                                                            </div>
-                                                        </td>
+                                                            </td>
+                                                            <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                                                                <div
+                                                                    className="text-gray-900">{payment.store_name}</div>
+                                                                <div className="mt-1 text-gray-500">
+                                                                    {payment.vendor_id}
+                                                                </div>
+                                                            </td>
 
-                                                        <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                                            <div className="text-gray-900">{payment.bank_name}</div>
-                                                            <div
-                                                                className="text-gray-900">{payment.account_number}</div>
-                                                            <div
-                                                                className="mt-1 text-gray-500">#{payment.account_name}
-                                                            </div>
-                                                        </td>
-                                                        <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                                                            <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                                                                <div className="text-gray-900">{payment.bank_name}</div>
+                                                                <div
+                                                                    className="text-gray-900">{payment.account_number}</div>
+                                                                <div
+                                                                    className="mt-1 text-gray-500">#{payment.account_name}
+                                                                </div>
+                                                            </td>
+                                                            <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
                                                                 <span
                                                                     className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
                                                                     {payment.status}
                                                                 </span>
-                                                        </td>
+                                                            </td>
 
-                                                        <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                                            {new Date(payment.created_at).toLocaleDateString()}
-                                                        </td>
-                                                        <td className="relative whitespace-nowrap py-5 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-                                                            <a href="#"
-                                                               className="text-indigo-600 hover:text-indigo-900">
-                                                                Change Status<span className="sr-only">, {payment.id}</span>
-                                                            </a>
-                                                        </td>
+                                                            <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                                                                {new Date(payment.created_at).toLocaleDateString()}
+                                                            </td>
+                                                            <td className="relative whitespace-nowrap py-5 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
+                                                                <select
+                                                                    className="text-indigo-600 hover:text-indigo-900"
+                                                                    value={payment.status}
+                                                                    onChange={async (event) => {
+                                                                        const newStatus = event.target.value;
+                                                                        try {
+                                                                            const response = await axios.put(`Your_API_Endpoint/${payment.id}`, {
+                                                                                status: newStatus
+                                                                            });
+                                                                            if (response.status === 200) {
+                                                                                // Update the local state if the API call was successful
+                                                                                setPayments(payments.map((item) =>
+                                                                                    item.id === payment.id ? {
+                                                                                        ...item,
+                                                                                        status: newStatus
+                                                                                    } : item
+                                                                                ));
+                                                                            }
+                                                                        } catch (error) {
+                                                                            console.error('Failed to update status:', error);
+                                                                        }
+                                                                    }}
+                                                                >
+                                                                    <option value="{payment.status}">{payment.status}</option>
+                                                                    <option value="Paid">Paid</option>
+                                                                    <option value="Unpaid">Unpaid</option>
+                                                                    <option value="Pending">Pending</option>
+                                                                </select>
+                                                            </td>
 
-                                                    </tr>
-                                                ))}
+                                                        </tr>
+                                                    ))}
                                                 </tbody>
                                             </table>
                                         </div>

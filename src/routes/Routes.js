@@ -20,6 +20,9 @@ import {ProductEditPage} from "../pages/account/ProductEditPage.jsx";
 import {CategoryEditPage} from "../pages/account/CategoryEditPage.jsx";
 import {CouponEditPage} from "../pages/account/CouponEditPage.jsx";
 import {DeliveryPage} from "../pages/account/DeliveryPage.jsx";
+import {ReviewPage} from "../pages/account/ReviewPage.jsx";
+import {UserEditPage} from "../pages/account/UserEditPage.jsx";
+import {VendorEditPage} from "../pages/account/VendorEditPage.jsx";
 
 export {
     HomePage,
@@ -45,5 +48,8 @@ export {
     CategoryEditPage,
     CouponEditPage,
     DeliveryPage,
+    ReviewPage,
+    UserEditPage,
+    VendorEditPage,
 };
 
