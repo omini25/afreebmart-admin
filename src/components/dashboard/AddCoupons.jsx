@@ -2,33 +2,37 @@ import { Fragment, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import axios from "axios";
 import {toast} from "react-toastify";
+import {server} from "../../server.js";
 
 
 export function AddCoupons({onClose}) {
     const [open, setOpen] = useState(true)
-    const [couponTitle, setCouponTitle] = useState('')
+    const [title, setTitle] = useState('')
     const [code, setCode] = useState('')
-    const [type, setType] = useState('')
+    const [discount_type, setDiscountType] = useState('')
+    const [discount, setDiscount] = useState('')
     const [quantity, setQuantity] = useState('')
     const [limits, setLimits] = useState('')
-    const [dateStart, setDateStart] = useState('')
-    const [dateEnd, setDateEnd] = useState('')
+    const [start_date, setStartDate] = useState('')
+    const [end_date, setEndDate] = useState('')
+    const user = JSON.parse(localStorage.getItem('user'));
 
     const handleSubmit = async (event) => {
         event.preventDefault();
 
         const couponData = {
-            couponTitle,
+            title,
             code,
-            type,
+            discount_type,
+            discount,
             quantity,
             limits,
-            dateStart,
-            dateEnd,
+            start_date,
+            end_date,
         };
 
         try {
-            const response = await axios.post('https://your-api-url.com/coupons', couponData);
+            const response = await axios.post(`${server}/admin/add-coupon`, couponData);
 
             if (response.status === 200) {
                 // Handle successful submission
@@ -36,11 +40,11 @@ export function AddCoupons({onClose}) {
                 toast.success('Coupon created successfully');
             } else {
                 // Handle other status codes and possible errors
-                console.log('An error occurred while creating the coupon');
+                console.error('An error occurred while creating the coupon 1');
             }
         } catch (error) {
             // Handle network errors
-            console.log('A network error occurred while creating the coupon');
+            console.error('An error occurred while creating the coupon', error);
         }
     };
 
@@ -107,8 +111,8 @@ export function AddCoupons({onClose}) {
                                                             type="text"
                                                             name="project-name"
                                                             id="project-name"
-                                                            value={couponTitle}
-                                                            onChange={(e) => setCouponTitle(e.target.value)}
+                                                            value={title}
+                                                            onChange={(e) => setTitle(e.target.value)}
                                                             className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                                         />
                                                     </div>
@@ -147,12 +151,36 @@ export function AddCoupons({onClose}) {
                                                         </label>
                                                     </div>
                                                     <div className="sm:col-span-2">
+                                                        <select
+                                                            name="discount_type"
+                                                            id="discount_type"
+                                                            value={discount_type}
+                                                            onChange={(e) => setDiscountType(e.target.value)}
+                                                            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                                        >
+                                                            <option value="percent">Percentage</option>
+                                                            <option value="fixed">Flat Fee</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div
+                                                    className="space-y-2 px-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:space-y-0 sm:px-6 sm:py-5">
+                                                    <div>
+                                                        <label
+                                                            htmlFor="project-name"
+                                                            className="block text-sm font-medium leading-6 text-gray-900 sm:mt-1.5"
+                                                        >
+                                                            Amount or Percentage Discount
+                                                        </label>
+                                                    </div>
+                                                    <div className="sm:col-span-2">
                                                         <input
                                                             type="text"
-                                                            name="project-name"
-                                                            id="project-name"
-                                                            value={type}
-                                                            onChange={(e) => setType(e.target.value)}
+                                                            name="discount"
+                                                            id="discount"
+                                                            value={discount}
+                                                            onChange={(e) => setDiscount(e.target.value)}
                                                             className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                                         />
                                                     </div>
@@ -217,8 +245,8 @@ export function AddCoupons({onClose}) {
                                                             type="date"
                                                             name="project-name"
                                                             id="project-name"
-                                                            value={dateStart}
-                                                            onChange={(e) => setDateStart(e.target.value)}
+                                                            value={start_date}
+                                                            onChange={(e) => setStartDate(e.target.value)}
                                                             className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                                         />
                                                     </div>
@@ -241,8 +269,8 @@ export function AddCoupons({onClose}) {
                                                             type="date"
                                                             name="project-name"
                                                             id="project-name"
-                                                            value={dateEnd}
-                                                            onChange={(e) => setDateEnd(e.target.value)}
+                                                            value={end_date}
+                                                            onChange={(e) => setEndDate(e.target.value)}
                                                             className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                                         />
                                                     </div>

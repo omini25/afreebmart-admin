@@ -11,22 +11,19 @@ export function AddProduct({onClose}) {
     const [categories, setCategories] = useState([]);
     const [subCategories, setSubCategories] = useState([]);
     const user = JSON.parse(localStorage.getItem('user'));
-    const [file, setFile] = useState(null);
 
-    const handleFileChange = (event) => {
+    const [uploadedImage, setUploadedImage] = useState(null);
+
+    const handleImageChange = (event) => {
         if (event.target.files.length > 0) {
-            setFile(event.target.files[0]);
+            setUploadedImage(URL.createObjectURL(event.target.files[0]));
         }
     };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        const formData = new FormData();
-        for (const pair of new FormData(event.target)) {
-            formData.append(pair[0], pair[1]);
-        }
-        formData.append('image', file);
+        const formData = new FormData(event.target);
 
         try {
             const response = await axios.post(`${server}/admin/products`, formData);
@@ -282,15 +279,36 @@ export function AddProduct({onClose}) {
                                                     </div>
                                                 </div>
 
-                                                <div className="mt-4 flex text-sm leading-6 text-gray-600">
-                                                    <label htmlFor="image"
-                                                           className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-primary">
-                                                        <span>Upload a file</span>
-                                                        <input id="image" name="image" type="file" accept="image/*"
-                                                               className="sr-only"
-                                                               onChange={handleFileChange}/>
+                                                <div
+                                                    className="space-y-2 px-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:space-y-0 sm:px-6 sm:py-5">
+                                                    <label htmlFor="cover-photo"
+                                                           className="block text-sm font-medium leading-6 text-gray-900">
+                                                        Product Image
                                                     </label>
-                                                    <p className="pl-1">or drag and drop</p>
+                                                    <div
+                                                        className="mt-2 justify-center rounded-lg border border-dashed border-gray-900/25 sm:col-span-2">
+                                                        <div className="text-center">
+                                                            {uploadedImage ? (
+                                                                <img src={uploadedImage} alt="Uploaded"
+                                                                     className="mx-auto h-12 w-12"/>
+                                                            ) : (
+                                                                <PhotoIcon className="mx-auto h-12 w-12 text-gray-300"
+                                                                           aria-hidden="true"/>
+                                                            )}
+                                                            <div className="mt-4 flex text-sm leading-6 text-gray-600">
+                                                                <label htmlFor="image"
+                                                                       className="relative cursor-pointer rounded-md bg-white font-semibold text-primary focus-within:outline-none focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2 hover:text-primary">
+                                                                    <span>Upload a file</span>
+                                                                    <input id="image" name="image" type="file"
+                                                                           className="sr-only"
+                                                                           onChange={handleImageChange}/>
+                                                                </label>
+                                                                <p className="pl-1">or drag and drop</p>
+                                                            </div>
+                                                            <p className="text-xs leading-5 text-gray-600">PNG, JPG, GIF
+                                                                up to 10MB</p>
+                                                        </div>
+                                                    </div>
                                                 </div>
 
 

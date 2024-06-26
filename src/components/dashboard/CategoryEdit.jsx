@@ -20,6 +20,7 @@ import banknotesIcon from "@heroicons/react/16/solid/esm/BanknotesIcon.js";
 import {ArrowRightStartOnRectangleIcon} from "@heroicons/react/20/solid/index.js";
 import AddCategory from "./AddCategory.jsx";
 import {Link, useNavigate, useParams} from "react-router-dom";
+import {toast} from "react-toastify";
 
 
 
@@ -50,9 +51,8 @@ function classNames(...classes) {
 export const CategoryEdit = () => {
     const dispatch = useDispatch();
     const userItem = localStorage.getItem('user');
-const user = userItem ? JSON.parse(userItem) : null;
+    const user = userItem ? JSON.parse(userItem) : null;
     const [sidebarOpen, setSidebarOpen] = useState(false)
-    const [isAddCategoryOpen, setIsAddCategoryOpen] = useState(false);
     const [categories, setCategories] = useState([]);
     const { id } = useParams();
     const navigate = useNavigate();
@@ -70,6 +70,52 @@ const user = userItem ? JSON.parse(userItem) : null;
 
         fetchCategories();
     }, []);
+
+
+    const handleFormSubmit = async (event) => {
+        event.preventDefault();
+
+        const categoryName = event.target.elements.category_name.value;
+        const subCategory = event.target.elements.sub_categories.value;
+        const imageFile = event.target.elements['file-upload'].files[0];
+
+        const categoryData = {
+            category_name: categoryName,
+            sub_categories: subCategory.split(',').map(item => item.trim()).join(', '), // join the array back into a string
+            image: imageFile
+        };
+
+        try {
+            const response = await axios.put(`${server}/admin/categories/${id}`, categoryData, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (response.status === 200) {
+                toast('Category updated successfully');
+            } else {
+                toast('Failed to update category');
+            }
+        } catch (error) {
+            console.error('Failed to update category:', error);
+        }
+    };
+
+    const handleDeleteCategory = async () => {
+        try {
+            const response = await axios.delete(`${server}/admin/delete-categories/${id}`);
+
+            if (response.status === 200) {
+                toast('Category deleted successfully');
+                navigate('/categories');
+            } else {
+                toast('Failed to delete category');
+            }
+        } catch (error) {
+            console.error('Failed to delete category:', error);
+        }
+    };
 
 
 
@@ -318,14 +364,14 @@ const user = userItem ? JSON.parse(userItem) : null;
                                                 <button
                                                     type="button"
                                                     className="inline-flex items-center rounded-md bg-red-800 px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-                                                    onClick={() => setIsAddCategoryOpen(true)}
+                                                    onClick={handleDeleteCategory}
                                                 >
                                                     Delete category
                                                 </button>
                                             </div>
                                         </div>
                                     </header>
-                                    <form>
+                                    <form onSubmit={handleFormSubmit}>
                                         <div className="space-y-12">
                                             <div className="border-b border-gray-900/10 pb-12">
                                                 <h2 className="text-base font-semibold leading-7 text-gray-900">Category
@@ -333,7 +379,7 @@ const user = userItem ? JSON.parse(userItem) : null;
 
                                                 <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                                                     <div className="sm:col-span-4">
-                                                        <label htmlFor="username"
+                                                        <label htmlFor="category_name"
                                                                className="block text-sm font-medium leading-6 text-gray-900">
                                                             Category Name
                                                         </label>
@@ -342,9 +388,9 @@ const user = userItem ? JSON.parse(userItem) : null;
                                                                 className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-primary sm:max-w-md">
                                                                 <input
                                                                     type="text"
-                                                                    name="username"
-                                                                    id="username"
-                                                                    autoComplete="username"
+                                                                    name="category_name"
+                                                                    id="category_name"
+                                                                    autoComplete="category_name"
                                                                     className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                                                                     placeholder={`${categories.category_name}`}
                                                                 />
@@ -353,14 +399,14 @@ const user = userItem ? JSON.parse(userItem) : null;
                                                     </div>
 
                                                     <div className="col-span-full">
-                                                        <label htmlFor="about"
+                                                        <label htmlFor="sub_categories"
                                                                className="block text-sm font-medium leading-6 text-gray-900">
                                                             Sub Category
                                                         </label>
                                                         <div className="mt-2">
                                                             <textarea
-                                                                id="about"
-                                                                name="about"
+                                                                id="sub_categories"
+                                                                name="sub_categories"
                                                                 rows={3}
                                                                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6"
                                                                 defaultValue={''}
@@ -398,7 +444,7 @@ const user = userItem ? JSON.parse(userItem) : null;
                                                     </div>
                                                 </div>
                                             </div>
-                                            
+
                                         </div>
 
                                         <div className="mt-6 flex items-center justify-end gap-x-6">

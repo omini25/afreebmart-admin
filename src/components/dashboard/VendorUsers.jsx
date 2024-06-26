@@ -1,5 +1,5 @@
 import { Fragment, useState, useEffect } from 'react'
-import { Dialog, Transition } from '@headlessui/react'
+import { Dialog, Transition, Menu } from '@headlessui/react'
 import {
     Cog6ToothIcon,
 } from '@heroicons/react/24/outline'
@@ -21,6 +21,9 @@ import {server} from "../../server.js";
 import {assetServer} from "../../../assetServer.js";
 import banknotesIcon from "@heroicons/react/16/solid/esm/BanknotesIcon.js";
 import {useNavigate} from "react-router-dom";
+import {ChevronDownIcon} from "@heroicons/react/20/solid/index.js";
+
+
 
 
 
@@ -54,8 +57,9 @@ export const VendorUsers = () => {
     const userItem = localStorage.getItem('user');
     const user = userItem ? JSON.parse(userItem) : null;
     const navigate = useNavigate();
-
     const [users, setUsers] = useState([]);
+    const [selectedSort, setSelectedSort] = useState('Latest');
+    const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -305,16 +309,86 @@ export const VendorUsers = () => {
 
                             <main className="pb-14 sm:px-6 sm:pb-20 sm:pt-10 lg:px-8">
                                 <div className="px-4 sm:px-6 lg:px-8">
-                                    <header
-                                        className="border-b border-white/5 px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
-                                        <div className="md:flex md:items-center md:justify-between">
-                                            <div className="min-w-0 flex-1">
-                                                <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
-                                                    Vendor Users
-                                                </h2>
+                                    <div
+                                        className="border-b border-gray-200 pb-5 sm:flex sm:items-center sm:justify-between">
+                                        <h3 className="text-base font-semibold leading-6 text-gray-900">Vendors</h3>
+                                        <div className="mt-3 sm:ml-4 sm:mt-0">
+                                            <label htmlFor="mobile-search-candidate" className="sr-only">
+                                                Search
+                                            </label>
+                                            <label htmlFor="desktop-search-candidate" className="sr-only">
+                                                Search
+                                            </label>
+                                            <div className="flex rounded-md shadow-sm">
+                                                <div className="relative flex-grow focus-within:z-10">
+                                                    <div
+                                                        className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                                                        <MagnifyingGlassIcon className="h-5 w-5 text-gray-400"
+                                                                             aria-hidden="true"/>
+                                                    </div>
+                                                    <input
+                                                        type="text"
+                                                        name="mobile-search-candidate"
+                                                        id="mobile-search-candidate"
+                                                        className="block w-full rounded-none rounded-l-md border-0 py-1.5 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:hidden"
+                                                        placeholder="Search"
+                                                        value={searchTerm}
+                                                        onChange={event => setSearchTerm(event.target.value)}
+                                                    />
+                                                    <input
+                                                        type="text"
+                                                        name="desktop-search-candidate"
+                                                        id="desktop-search-candidate"
+                                                        className="hidden w-full rounded-none rounded-l-md border-0 py-1.5 pl-10 text-sm leading-6 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:block"
+                                                        placeholder="Search vendors"
+                                                        value={searchTerm}
+                                                        onChange={event => setSearchTerm(event.target.value)}
+                                                    />
+                                                </div>
+                                                <Menu as="div" className="relative inline-block text-left">
+                                                    <div>
+                                                        <Menu.Button
+                                                            className="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                                                            {selectedSort}
+                                                            <ChevronDownIcon className="-mr-1 h-5 w-5 text-gray-400"
+                                                                             aria-hidden="true"/>
+                                                        </Menu.Button>
+                                                    </div>
+                                                    <Transition
+                                                        as={Fragment}
+                                                        enter="transition ease-out duration-100"
+                                                        enterFrom="transform opacity-0 scale-95"
+                                                        enterTo="transform opacity-100 scale-100"
+                                                        leave="transition ease-in duration-75"
+                                                        leaveFrom="transform opacity-100 scale-100"
+                                                        leaveTo="transform opacity-0 scale-95"
+                                                    >
+                                                        <Menu.Items
+                                                            className="absolute right-0 w-56 mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                                                            <div className="px-1 py-1 ">
+                                                                {['Latest', 'Pending', 'Suspended'].map((sort) => (
+                                                                    <Menu.Item key={sort}>
+                                                                        {({active}) => (
+                                                                            <button
+                                                                                onClick={() => setSelectedSort(sort)}
+                                                                                className={`${
+                                                                                    active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'
+                                                                                } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
+                                                                            >
+                                                                                {sort}
+                                                                            </button>
+                                                                        )}
+                                                                    </Menu.Item>
+                                                                ))}
+                                                            </div>
+                                                        </Menu.Items>
+                                                    </Transition>
+                                                </Menu>
                                             </div>
                                         </div>
-                                    </header>
+                                    </div>
+
+
                                     <div className="mt-8 flow-root">
                                         <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                                             <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
@@ -343,13 +417,32 @@ export const VendorUsers = () => {
                                                     </tr>
                                                     </thead>
                                                     <tbody className="divide-y divide-gray-200 bg-white">
-                                                    {users.map((users) => (
+                                                    {users.filter(user => {
+                                                        return (
+                                                            user.name && user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                                                            user.id && user.id.toString().includes(searchTerm) ||
+                                                            user.email && user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                                                            user.phone && user.phone.includes(searchTerm)
+                                                        );
+                                                    }).sort((a, b) => {
+                                                        switch (selectedSort) {
+                                                            case 'Latest':
+                                                                return new Date(b.created_at) - new Date(a.created_at);
+                                                            case 'Pending':
+                                                                return a.status === 'Pending' ? -1 : 1;
+                                                            case 'Suspended':
+                                                                return a.status === 'Suspended' ? -1 : 1;
+                                                            default:
+                                                                return 0;
+                                                        }
+                                                    }).map((users) => (
                                                         <tr key={users.id}>
                                                             <td className="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0">
                                                                 <div className="flex items-center">
                                                                     <div className="h-11 w-11 flex-shrink-0">
                                                                         <img className="h-11 w-11 rounded-full"
-                                                                             src={`${assetServer}/images/users/${users.image}`} alt=""/>
+                                                                             src={`${assetServer}/images/users/${users.image}`}
+                                                                             alt=""/>
                                                                     </div>
                                                                     <div className="ml-4">
                                                                         <div
@@ -382,6 +475,24 @@ export const VendorUsers = () => {
                                                                    className="text-indigo-600 hover:text-indigo-900">
                                                                     Suspend<span className="sr-only">, {users.id}</span>
                                                                 </a>
+                                                            </td>
+
+                                                            <td className="relative whitespace-nowrap py-5 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
+                                                                <button
+                                                                    onClick={async (e) => {
+                                                                        e.preventDefault();
+                                                                        try {
+                                                                            const response = await axios.put(`${server}/admin/users/${users.id}/suspend`);
+                                                                            console.log(response.data);
+                                                                            // You might want to update the users list or show a notification here
+                                                                        } catch (error) {
+                                                                            console.error('Failed to suspend user:', error);
+                                                                        }
+                                                                    }}
+                                                                    className="text-red-600 hover:text-secondary"
+                                                                >
+                                                                    Suspend
+                                                                </button>
                                                             </td>
                                                         </tr>
                                                     ))}

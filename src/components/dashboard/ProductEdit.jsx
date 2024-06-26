@@ -64,7 +64,7 @@ export const ProductEdit = () => {
     const [subCategories, setSubCategories] = useState([]);
     const [productName, setProductName] = useState(products.product_name);
     const [category, setCategory] = useState(products.category);
-    const [subCategory, setSubCategory] = useState(products.subcategory);
+    const [subcategory, setSubCategory] = useState(products.subcategory);
     const [unit, setUnit] = useState(products.unit);
     const [tags, setTags] = useState(products.tags);
     const [description, setDescription] = useState(products.description);
@@ -74,6 +74,9 @@ export const ProductEdit = () => {
     const [groupPrice, setGroupPrice] = useState(products.group_price);
     const [quantity, setQuantity] = useState(products.quantity);
     const [vendorId, setVendorId] = useState(products.vendor_id);
+    const [deliverer, setDeliverer] = useState(products.deliverer);
+    const [group, setGroup] = useState(products.group);
+    const [status, setStatus] = useState(products.status);
 
 
     const handleProductNameChange = (event) => {
@@ -114,6 +117,16 @@ export const ProductEdit = () => {
         setVendorId(event.target.value);
     }
 
+    const handleDelivererChange = (event) => {
+        setDeliverer(event.target.value);
+    }
+    const handleGroupChange = (event) => {
+        setGroup(event.target.value);
+    }
+    const handleStatusChange = (event) => {
+        setStatus(event.target.value);
+    }
+
     const handleSubmit = async (event) => {
         event.preventDefault();
 
@@ -128,7 +141,7 @@ export const ProductEdit = () => {
             toast('Product updated successfully', {type: 'success', autoClose: 2000});
 
             // Refresh the page
-            window.location.reload();
+            // window.location.reload();
         } catch (error) {
             console.error('Failed to submit form:', error);
             // handle error
@@ -492,14 +505,14 @@ export const ProductEdit = () => {
                                                                     id="sub-category"
                                                                     name="sub_category"
                                                                     autoComplete="sub-category"
-                                                                    onChange={handleCategoriesChange}
-                                                                    value={subCategory}
+                                                                    onChange={handleSubCategoryChange}
+                                                                    value={subcategory}
                                                                     className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                                                                 >
                                                                     <option>{products.subcategory}</option>
-                                                                    {subCategories.map((subCategory, index) => (
-                                                                        <option key={index} value={subCategory}>
-                                                                            {subCategory}
+                                                                    {subCategories.map((subcategory, index) => (
+                                                                        <option key={index} value={subcategory}>
+                                                                            {subcategory}
                                                                         </option>
                                                                     ))}
                                                                 </select>
@@ -523,7 +536,8 @@ export const ProductEdit = () => {
                                                                     onChange={handleUnitChange}
                                                                     className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                                                                 >
-                                                                    <option value={`${products.unit}`}>{products.unit}</option>
+                                                                    <option
+                                                                        value={`${products.unit}`}>{products.unit}</option>
                                                                     <option value={`KG`}>KG</option>
                                                                     <option value={`Litre`}>Litre</option>
                                                                     <option value={`Gram`}>Gram</option>
@@ -552,6 +566,31 @@ export const ProductEdit = () => {
                                                                     value={tags}
                                                                     onChange={handleTagsChange}
                                                                 />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="sm:col-span-4">
+                                                        <label htmlFor="group"
+                                                               className="block text-sm font-medium leading-6 text-gray-900">
+                                                            Group
+                                                        </label>
+                                                        <div className="mt-2">
+                                                            <div
+                                                                className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-primary sm:max-w-md">
+                                                                <select
+                                                                    name="group"
+                                                                    id="group"
+                                                                    autoComplete="group"
+                                                                    value={group}
+                                                                    onChange={handleGroupChange}
+                                                                    className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                                                                >
+                                                                    <option
+                                                                        value={products.group}>{products.group === 1 ? 'Yes' : 'No'}</option>
+                                                                    <option value={0}>No</option>
+                                                                    <option value={1}>Yes</option>
+                                                                </select>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -714,6 +753,58 @@ export const ProductEdit = () => {
                                                                     value={vendorId}
                                                                     onChange={handleVendorIdChange}
                                                                 />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+
+                                                    <div className="sm:col-span-4">
+                                                        <label htmlFor="unit"
+                                                               className="block text-sm font-medium leading-6 text-gray-900">
+                                                            Status
+                                                        </label>
+                                                        <div className="mt-2">
+                                                            <div
+                                                                className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-primary sm:max-w-md">
+                                                                <select
+                                                                    name="status"
+                                                                    id="status"
+                                                                    autoComplete="status"
+                                                                    value={status}
+                                                                    onChange={handleStatusChange}
+                                                                    className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                                                                >
+                                                                    <option
+                                                                        value={`${products.status}`}>{products.status}</option>
+                                                                    <option value={`Active`}>Active</option>
+                                                                    <option value={`Inactive`}>Inactive</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="sm:col-span-4">
+                                                        <label htmlFor="deliverer"
+                                                               className="block text-sm font-medium leading-6 text-gray-900">
+                                                            Deliverer of product
+                                                        </label>
+                                                        <div className="mt-2">
+                                                            <div
+                                                                className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-primary sm:max-w-md">
+                                                                <select
+                                                                    name="deliverer"
+                                                                    id="deliverer"
+                                                                    autoComplete="deliverer"
+                                                                    value={deliverer}
+                                                                    onChange={handleDelivererChange}
+                                                                    className="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                                                                >
+                                                                    <option
+                                                                        value={`${products.deliverer}`}>{products.deliverer}</option>
+                                                                    <option value={`afreebmart`}>Afreebmart</option>
+                                                                    <option
+                                                                        value={`${products.store_name}`}>{products.store_name}</option>
+                                                                </select>
                                                             </div>
                                                         </div>
                                                     </div>

@@ -1,5 +1,5 @@
 import {Fragment, useEffect, useState} from 'react'
-import { Dialog, Transition } from '@headlessui/react'
+import { Menu, Dialog, Transition } from '@headlessui/react'
 import {
     FolderIcon,
     GlobeAltIcon,
@@ -9,7 +9,7 @@ import {
     InboxStackIcon,
     MagnifyingGlassIcon, TagIcon, UserCircleIcon,
     UserGroupIcon,
-    ShoppingBagIcon, ShoppingCartIcon, TruckIcon, WalletIcon, ListBulletIcon,
+    ShoppingBagIcon, ShoppingCartIcon, TruckIcon, WalletIcon, ListBulletIcon, ChevronDownIcon,
 } from '@heroicons/react/20/solid'
 import { useDispatch } from 'react-redux';
 import { logout } from '../../redux/actions/actions';
@@ -56,6 +56,9 @@ export const Products = () => {
     const [products, setProducts] = useState([]);
     const [isAddProductOpen, setIsAddProductOpen] = useState(false);
     const navigate = useNavigate();
+    const [selectedSort, setSelectedSort] = useState('Latest');
+    const [searchTerm, setSearchTerm] = useState('');
+
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -175,10 +178,10 @@ export const Products = () => {
                                                         className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-secondary hover:secondary"
                                                     >
                                                         <img
-    className="h-8 w-8 rounded-full bg-gray-800"
-    src={user && user.user && user.user.image ? `${assetServer}/images/users/${user.user.image}` : 'defaultImageURL'}
-    alt=""
-/>
+                                                            className="h-8 w-8 rounded-full bg-gray-800"
+                                                            src={user && user.user && user.user.image ? `${assetServer}/images/users/${user.user.image}` : 'defaultImageURL'}
+                                                            alt=""
+                                                        />
                                                         <span className="sr-only">Your profile</span>
                                                         <span aria-hidden="true">{user && user.user ? user.user.name : 'Default Name'}</span>
                                                     </a>
@@ -233,8 +236,8 @@ export const Products = () => {
                                         href="#"
                                         onClick={(e) => {
                                             e.preventDefault();
-        dispatch(logout());
-        navigate('/');// dispatch the logout action when the link is clicked
+                                            dispatch(logout());
+                                            navigate('/');// dispatch the logout action when the link is clicked
                                         }}
                                         className={classNames(
                                             'text-gray-400 hover:bg-red-800 hover:secondary',
@@ -253,10 +256,10 @@ export const Products = () => {
                                         className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-secondary hover:secondary"
                                     >
                                         <img
-    className="h-8 w-8 rounded-full bg-gray-800"
-    src={user && user.user && user.user.image ? `${assetServer}/images/users/${user.user.image}` : 'defaultImageURL'}
-    alt=""
-/>
+                                            className="h-8 w-8 rounded-full bg-gray-800"
+                                            src={user && user.user && user.user.image ? `${assetServer}/images/users/${user.user.image}` : 'defaultImageURL'}
+                                            alt=""
+                                        />
                                         <span className="sr-only">Your profile</span>
                                         <span aria-hidden="true">{user && user.user ? user.user.name : 'Default Name'}</span>
                                     </a>
@@ -304,13 +307,85 @@ export const Products = () => {
 
                             <main className="pb-14 sm:px-6 sm:pb-20 sm:pt-10 lg:px-8">
                                 <div className="px-4 sm:px-6 lg:px-8">
-                                    <header
-                                        className="border-b border-white/5 px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
-                                        <div className="md:flex md:items-center md:justify-between">
-                                            <div className="min-w-0 flex-1">
-                                                <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
-                                                    All Products
-                                                </h2>
+
+
+
+                                    <div
+                                        className="border-b border-gray-200 pb-5 sm:flex sm:items-center sm:justify-between">
+                                        <h3 className="text-base font-semibold leading-6 text-gray-900">Job
+                                            Postings</h3>
+                                        <div className="mt-3 sm:ml-4 sm:mt-0">
+                                            <label htmlFor="mobile-search-candidate" className="sr-only">
+                                                Search
+                                            </label>
+                                            <label htmlFor="desktop-search-candidate" className="sr-only">
+                                                Search
+                                            </label>
+                                            <div className="flex rounded-md shadow-sm">
+                                                <div className="relative flex-grow focus-within:z-10">
+                                                    <div
+                                                        className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                                                        <MagnifyingGlassIcon className="h-5 w-5 text-gray-400"
+                                                                             aria-hidden="true"/>
+                                                    </div>
+                                                    <input
+                                                        type="text"
+                                                        name="mobile-search-candidate"
+                                                        id="mobile-search-candidate"
+                                                        className="block w-full rounded-none rounded-l-md border-0 py-1.5 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:hidden"
+                                                        placeholder="Search"
+                                                        value={searchTerm}
+                                                        onChange={event => setSearchTerm(event.target.value)}
+                                                    />
+                                                    <input
+                                                        type="text"
+                                                        name="desktop-search-candidate"
+                                                        id="desktop-search-candidate"
+                                                        className="hidden w-full rounded-none rounded-l-md border-0 py-1.5 pl-10 text-sm leading-6 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:block"
+                                                        placeholder="Search products"
+                                                        value={searchTerm}
+                                                        onChange={event => setSearchTerm(event.target.value)}
+                                                    />
+                                                </div>
+                                                <Menu as="div" className="relative inline-block text-left">
+                                                    <div>
+                                                        <Menu.Button
+                                                            className="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                                                            {selectedSort}
+                                                            <ChevronDownIcon className="-mr-1 h-5 w-5 text-gray-400"
+                                                                             aria-hidden="true"/>
+                                                        </Menu.Button>
+                                                    </div>
+                                                    <Transition
+                                                        as={Fragment}
+                                                        enter="transition ease-out duration-100"
+                                                        enterFrom="transform opacity-0 scale-95"
+                                                        enterTo="transform opacity-100 scale-100"
+                                                        leave="transition ease-in duration-75"
+                                                        leaveFrom="transform opacity-100 scale-100"
+                                                        leaveTo="transform opacity-0 scale-95"
+                                                    >
+                                                        <Menu.Items
+                                                            className="absolute right-0 w-56 mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                                                            <div className="px-1 py-1 ">
+                                                                {['Latest', 'Pending', 'Suspended', 'InStock', 'Active', 'Highest', 'Lowest'].map((sort) => (
+                                                                    <Menu.Item key={sort}>
+                                                                        {({active}) => (
+                                                                            <button
+                                                                                onClick={() => setSelectedSort(sort)}
+                                                                                className={`${
+                                                                                    active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'
+                                                                                } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
+                                                                            >
+                                                                                {sort}
+                                                                            </button>
+                                                                        )}
+                                                                    </Menu.Item>
+                                                                ))}
+                                                            </div>
+                                                        </Menu.Items>
+                                                    </Transition>
+                                                </Menu>
                                             </div>
                                             <div className="mt-4 flex md:ml-4 md:mt-0">
                                                 <button
@@ -323,14 +398,17 @@ export const Products = () => {
                                             </div>
 
                                             <div className="fixed top-0 left-0 z-50">
-                                                {isAddProductOpen && <AddProduct onClose={() => setIsAddProductOpen(false)} />}
+                                                {isAddProductOpen &&
+                                                    <AddProduct onClose={() => setIsAddProductOpen(false)}/>}
                                             </div>
                                         </div>
-                                    </header>
+                                    </div>
+
+
                                     <div className="mt-8 flow-root">
                                         <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                                             <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-                                            <table className="min-w-full divide-y divide-gray-300">
+                                                <table className="min-w-full divide-y divide-gray-300">
                                                     <thead>
                                                     <tr>
                                                         <th scope="col"
@@ -359,7 +437,32 @@ export const Products = () => {
                                                     </tr>
                                                     </thead>
                                                     <tbody className="divide-y divide-gray-200 bg-white">
-                                                    {products.map((product) => (
+                                                    {products.filter(product => {
+                                                        return (
+                                                            product.id.toString().includes(searchTerm) ||
+                                                            product.product_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                                                            product.store_name.toLowerCase().includes(searchTerm.toLowerCase())
+                                                        );
+                                                    }).sort((a, b) => {
+                                                        switch (selectedSort) {
+                                                            case 'Latest':
+                                                                return new Date(b.created_at) - new Date(a.created_at);
+                                                            case 'Pending':
+                                                                return a.status === 'Pending' ? -1 : 1;
+                                                            case 'Suspended':
+                                                                return a.status === 'Suspended' ? -1 : 1;
+                                                            case 'InStock':
+                                                                return a.stock_status === 'InStock' ? -1 : 1;
+                                                            case 'Active':
+                                                                return a.status === 'Active' ? -1 : 1;
+                                                            case 'Highest':
+                                                                return b.price - a.price;
+                                                            case 'Lowest':
+                                                                return a.price - b.price;
+                                                            default:
+                                                                return 0;
+                                                        }
+                                                    }).map((product) => (
                                                         <tr key={product.id}>
                                                             <td className="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0">
                                                                 <div className="flex items-center">
@@ -377,9 +480,10 @@ export const Products = () => {
                                                                 </div>
                                                             </td>
                                                             <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                                                <div className="text-gray-900">{product.store_name}</div>
+                                                                <div
+                                                                    className="text-gray-900">{product.store_name}</div>
                                                                 <div className="mt-1 text-gray-500">
-                                                                  $ {product.group === "1" ? product.group_price : product.price}
+                                                                    $ {product.group === "1" ? product.group_price : product.price}
                                                                 </div>
                                                             </td>
 
@@ -399,12 +503,12 @@ export const Products = () => {
                                                                 <div
                                                                     className="text-gray-900">{product.stock_status} Qty: {product.quantity}</div>
                                                                 <div className="mt-1 text-gray-500">
-                                                                  {product.group === "1" ? 'Bulk Product' : 'Main Product'}
+                                                                    {product.group === "1" ? 'Bulk Product' : 'Main Product'}
                                                                 </div>
                                                             </td>
                                                             <td className="relative whitespace-nowrap py-5 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
                                                                 <Link to={`/product/${product.id}`}
-                                                                   className="text-indigo-600 hover:text-indigo-900">
+                                                                      className="text-indigo-600 hover:text-indigo-900">
                                                                     View/Edit<span
                                                                     className="sr-only">, {product.name}</span>
                                                                 </Link>
