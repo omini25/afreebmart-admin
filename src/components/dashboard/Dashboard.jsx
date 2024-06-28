@@ -1,3 +1,4 @@
+import React from 'react';
 import {Fragment, useEffect, useState} from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import {
@@ -73,6 +74,7 @@ export const Dashboard = () => {
     const pendingOrdersCount = orders.filter(order => order.status === 'pending').length;
     const [totalRevenue, setTotalRevenue] = useState(0);
     const navigate = useNavigate();
+    const [activityItems, setActivityItems] = useState([]);
 
 
     useEffect(() => {
@@ -134,6 +136,23 @@ export const Dashboard = () => {
 
         fetchProducts();
     }, []);
+
+    useEffect(() => {
+        const fetchActivityItems = async () => {
+            try {
+                // Replace with your own API endpoint
+                const response = await axios.get(`${server}/admin/actions/details`);
+                setActivityItems(response.data.flatMap(item => item.orders, item => item.payments, item => item.reviews, item => item.groups, item => item.ads, item => item.products));
+            } catch (error) {
+                console.error('Failed to fetch activity items:', error);
+            }
+        };
+
+        fetchActivityItems();
+    }, []);
+
+
+    console.log(activityItems);
 
     return (
         <>
@@ -513,8 +532,239 @@ export const Dashboard = () => {
                                         </div>
                                     </section>
                                 </div>
+                            </div>
 
+                            {/* Activity list */}
+                            <div className="px-4 sm:px-6 lg:px-8 mt-50 mb-50">
+                                <div className="sm:flex sm:items-center mt-50">
+                                    <h2 className="text-primary" id="section-2-title">
+                                        30 days of user activities
+                                    </h2>
 
+                                </div>
+                                <div className="mt-8 flow-root">
+                                    <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                                        <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+                                            <table className="min-w-full divide-y divide-gray-300">
+                                                <thead>
+                                                <tr>
+                                                    <th scope="col"
+                                                        className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">
+                                                        Product & id
+                                                    </th>
+                                                    <th scope="col"
+                                                        className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                                        Title
+                                                    </th>
+                                                    <th scope="col"
+                                                        className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                                        Status
+                                                    </th>
+                                                    <th scope="col"
+                                                        className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                                        Date & Time
+                                                    </th>
+                                                </tr>
+                                                </thead>
+                                                <tbody className="divide-y divide-gray-200 bg-white">
+                                                {activityItems.map((item, index) => (
+                                                    <React.Fragment key={index}>
+                                                        {item.orders && item.orders.map((order) => (
+                                                            <tr key={order.id}>
+                                                                <td className="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0">
+                                                                    <div className="flex items-center">
+                                                                        <div className="h-11 w-11 flex-shrink-0">
+                                                                            <ShoppingBagIcon className="h-8 w-8 text-gray-400"
+                                                                                             aria-hidden="true"/>
+                                                                        </div>
+                                                                        <div className="ml-4">
+                                                                            <div
+                                                                                className="font-medium text-gray-900">{order.product_name}</div>
+                                                                            <div className="mt-1 text-gray-500">{order.id}</div>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                                <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                                                                    <div className="text-gray-900">{order.vendor.store_name}</div>
+                                                                    <div className="mt-1 text-gray-500">{order.price}</div>
+                                                                </td>
+                                                                <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                                                                  <span
+                                                                      className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
+                                                                    {order.status}
+                                                                  </span>
+                                                                </td>
+                                                                <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                                                                    {new Date(order.created_at).toLocaleString()}
+                                                                </td>
+
+                                                            </tr>
+                                                        ))}
+
+                                                        {/*payments*/}
+                                                        {item.payments && item.payments.map((payment) => (
+                                                            <tr key={payment.id}>
+                                                                <td className="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0">
+                                                                    <div className="flex items-center">
+                                                                        <div className="h-11 w-11 flex-shrink-0">
+                                                                            <WalletIcon className="h-8 w-8 text-gray-400" aria-hidden="true"/>
+                                                                        </div>
+                                                                        <div className="ml-4">
+                                                                            <div
+                                                                                className="font-medium text-gray-900">{payment.product.product_name}</div>
+                                                                            <div className="mt-1 text-gray-500">{payment.id}</div>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                                <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                                                                    <div className="text-gray-900">{payment.total_cost}</div>
+                                                                    <div className="mt-1 text-gray-500">{payment.product_cost}</div>
+                                                                </td>
+                                                                <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                                                                  <span
+                                                                      className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
+                                                                    {payment.order_status}
+                                                                  </span>
+                                                                </td>
+                                                                <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                                                                    {new Date(payment.created_at).toLocaleString()}
+                                                                </td>
+
+                                                            </tr>
+                                                        ))}
+
+                                                        {/*reviews*/}
+                                                        {item.reviews && item.reviews.map((review) => (
+                                                            <tr key={review.id}>
+                                                                <td className="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0">
+                                                                    <div className="flex items-center">
+                                                                        <div className="h-11 w-11 flex-shrink-0">
+                                                                            <StarIcon className="h-8 w-8 text-gray-400" aria-hidden="true"/>
+                                                                        </div>
+                                                                        <div className="ml-4">
+                                                                            <div
+                                                                                className="font-medium text-gray-900">{review.product.product_name}</div>
+                                                                            <div className="mt-1 text-gray-500">{review.id}</div>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                                <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                                                                    <div className="text-gray-900">{review.rating}</div>
+                                                                    <div className="mt-1 text-gray-500">{review.comment}</div>
+                                                                </td>
+                                                                <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                                                                  <span
+                                                                      className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
+                                                                    {review.reported === 1 ? 'Reported to Admin' : 'Not Reported'}
+                                                                  </span>
+                                                                </td>
+                                                                <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                                                                    {new Date(review.created_at).toLocaleString()}
+                                                                </td>
+
+                                                            </tr>
+                                                        ))}
+
+                                                        {/*groups*/}
+                                                        {item.groups && item.groups.map((group) => (
+                                                            <tr key={group.id}>
+                                                                <td className="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0">
+                                                                    <div className="flex items-center">
+                                                                        <div className="h-11 w-11 flex-shrink-0">
+                                                                            <UserGroupIcon className="h-8 w-8 text-gray-400"
+                                                                                           aria-hidden="true"/>
+                                                                        </div>
+                                                                        <div className="ml-4">
+                                                                            <div className="font-medium text-gray-900">{group.name}</div>
+                                                                            <div className="mt-1 text-gray-500">{group.group_id}</div>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                                <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                                                                    <div className="text-gray-900">{group.role}</div>
+                                                                    <div className="mt-1 text-gray-500">{group.product.product_name} </div>
+                                                                </td>
+
+                                                                <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                                                                    <span className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
+                                                                    {group.status}
+                                                                    </span>
+                                                                </td>
+                                                                <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                                                                    {new Date(group.created_at).toLocaleString()}
+                                                                </td>
+
+                                                            </tr>
+                                                        ))}
+
+                                                        {item.ads && item.ads.map((ad) => (
+                                                            <tr key={ad.id}>
+                                                                <td className="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0">
+                                                                    <div className="flex items-center">
+                                                                        <div className="h-11 w-11 flex-shrink-0">
+                                                                            <StarIcon className="h-8 w-8 text-gray-400" aria-hidden="true"/>
+                                                                        </div>
+                                                                        <div className="ml-4">
+                                                                            <div
+                                                                                className="font-medium text-gray-900">{ad.product.product_name}</div>
+                                                                            <div className="mt-1 text-gray-500">{ad.id}</div>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                                <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                                                                    <div className="text-gray-900">{ad.duration}</div>
+                                                                </td>
+                                                                <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                                                                  <span
+                                                                      className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
+                                                                    {ad.status}
+                                                                  </span>
+                                                                </td>
+                                                                <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                                                                    {new Date(ad.created_at).toLocaleString()}
+                                                                </td>
+
+                                                            </tr>
+                                                        ))}
+
+                                                        {/*groups*/}
+                                                        {item.products && item.products.map((product) => (
+                                                            <tr key={product.id}>
+                                                                <td className="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0">
+                                                                    <div className="flex items-center">
+                                                                        <div className="h-11 w-11 flex-shrink-0">
+                                                                            <UserGroupIcon className="h-8 w-8 text-gray-400"
+                                                                                           aria-hidden="true"/>
+                                                                        </div>
+                                                                        <div className="ml-4">
+                                                                            <div className="font-medium text-gray-900">{product.product_name}</div>
+                                                                            <div className="mt-1 text-gray-500">{product.id}</div>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                                <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                                                                    <div className="text-gray-900">{product.price}</div>
+                                                                    <div className="mt-1 text-gray-500">{product.category} </div>
+                                                                </td>
+
+                                                                <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                                                            <span className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
+                                                            {product.status}
+                                                            </span>
+                                                                </td>
+                                                                <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                                                                    {new Date(product.created_at).toLocaleString()}
+                                                                </td>
+
+                                                            </tr>
+                                                        ))}
+                                                    </React.Fragment>
+                                                ))}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </main>

@@ -76,6 +76,8 @@ export const Products = () => {
         fetchProducts();
     }, []);
 
+    console.log(products)
+
     return (
         <>
             <div>
@@ -430,7 +432,7 @@ export const Products = () => {
                                                         </th>
                                                         <th scope="col"
                                                             className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                            Stock & Type
+                                                            Stock & Orders
                                                         </th>
                                                         <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-0">
                                                             <span className="sr-only">Action</span>
@@ -503,12 +505,12 @@ export const Products = () => {
                                                             <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
                                                                 <div
                                                                     className="text-gray-900">{product.stock_status} Qty: {product.quantity}</div>
-                                                                <div className="mt-1 text-gray-500">
-                                                                    {product.group === "1" ? 'Bulk Product' : 'Main Product'}
+                                                                <div
+                                                                    className="mt-1 text-gray-500">{product.orders_count}
                                                                 </div>
                                                             </td>
                                                             <td className="relative whitespace-nowrap py-5 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-                                                                <Link to={`/product/${product.id}`}
+                                                            <Link to={`/product/${product.id}`}
                                                                       className="text-indigo-600 hover:text-indigo-900">
                                                                     View/Edit<span
                                                                     className="sr-only">, {product.name}</span>

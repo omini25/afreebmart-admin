@@ -33,7 +33,7 @@ const navigation = [
     { name: 'Categories', href: '/categories', icon: ListBulletIcon, current: false },
     { name: 'Ads', href: '/ads', icon: GlobeAltIcon, current: false },
     { name: 'Deliveries', href: '/deliveries', icon: TruckIcon, current: false },
-    { name: 'Payment History', href: '/payments', icon: banknotesIcon, current: true },
+    { name: 'Payment History', href: '/payments', icon: banknotesIcon, current: false },
     { name: 'Payment Request', href: '/payments-requests', icon: WalletIcon, current: false },
     { name: 'Messages', href: '/messages', icon: InboxStackIcon, current: false },
     { name: 'Users', href: '/users', icon: UserGroupIcon, current: false },
