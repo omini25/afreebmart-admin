@@ -106,7 +106,7 @@ export const CouponEdit = () => {
         try {
             // Make a PUT request to the API endpoint for updating coupons
             // Replace 'http://api.example.com/coupons' with the actual API endpoint
-            const response = await axios.put(`http://api.example.com/coupons/${id}`, coupon);
+            const response = await axios.put(`${server}/admin/coupons/${id}`, coupon);
 
             // Check if the request was successful
             if (response.status === 200) {
@@ -127,7 +127,7 @@ export const CouponEdit = () => {
         try {
             // Make a DELETE request to the API endpoint for deleting coupons
             // Replace 'http://api.example.com/coupons' with the actual API endpoint
-            const response = await axios.delete(`http://api.example.com/coupons/${id}`);
+            const response = await axios.delete(`${server}/admin/delete-coupon/${id}`);
 
             // Check if the request was successful
             if (response.status === 200) {

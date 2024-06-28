@@ -52,26 +52,30 @@ export const login = (email, password) => {
         try {
             const response = await axios.post(`${server}/login`, { email, password });
 
-            if (response.status === 401) {
-                dispatch(logout());
-                throw new Error('Unauthorized. Logging out...');
-            }
-
             if (response.status < 200 || response.status >= 300) {
+                toast.error('Invalid email or password.');
                 throw new Error('Login failed. Please try again.');
             }
 
             const data = response.data;
 
-            // Check if the user's role is 'vendor'
-            if (data.user && data.user.role !== 'admin') {
-                throw new Error('Access denied. You must be an Admin to log in.');
+            // Check if the user's role is 'admin'
+            if (data.user.role !== 'admin') {
+                toast.error('Access denied. You must be a Admin to log in.');
+                throw new Error('Access denied. You must be a Admin to log in.');
+            }
+
+            // Check if the user's status is 'suspended'
+            if (data.user.status === 'suspended') {
+                toast.error('Your account is suspended. Please contact support.');
+                throw new Error('Your account is suspended. Please contact support.');
             }
 
             // Save user's details in Redux store
             dispatch({ type: LOGIN_SUCCESS, payload: data });
 
             // Save user's details and isLoggedIn state in localStorage
+            // Only when login is successful
             localStorage.setItem('user', JSON.stringify(data));
             localStorage.setItem('isLoggedIn', true);
 
