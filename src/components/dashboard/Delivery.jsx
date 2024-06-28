@@ -9,7 +9,7 @@ import {
     InboxStackIcon,
     MagnifyingGlassIcon, TagIcon, UserCircleIcon,
     UserGroupIcon,
-    ShoppingBagIcon, ShoppingCartIcon, TruckIcon, WalletIcon, ListBulletIcon,
+    ShoppingBagIcon, ShoppingCartIcon, TruckIcon, WalletIcon, ListBulletIcon, BarsArrowUpIcon, ChevronDownIcon,
 } from '@heroicons/react/20/solid'
 import { useDispatch } from 'react-redux';
 import { logout } from '../../redux/actions/actions';
@@ -18,7 +18,7 @@ import {server} from "../../server.js";
 import {assetServer} from "../../../assetServer.js";
 import banknotesIcon from "@heroicons/react/16/solid/esm/BanknotesIcon.js";
 import {Link, useNavigate} from "react-router-dom";
-import {ArrowRightStartOnRectangleIcon} from "@heroicons/react/20/solid/index.js";
+import {ArrowRightStartOnRectangleIcon, BackspaceIcon, StarIcon} from "@heroicons/react/20/solid/index.js";
 
 
 
@@ -34,8 +34,10 @@ const navigation = [
     { name: 'Messages', href: '/messages', icon: InboxStackIcon, current: false },
     { name: 'Users', href: '/users', icon: UserGroupIcon, current: false },
     { name: 'Vendors', href: '/vendors', icon: BuildingStorefrontIcon, current: false },
+    { name: 'Delivers', href: '/deliverers', icon: BackspaceIcon, current: false },
     { name: 'Admins', href: '/admins', icon: IdentificationIcon, current: false },
     { name: 'Coupons', href: '/coupons', icon: TagIcon, current: false },
+    { name: 'Reviews', href: '/reviews', icon: StarIcon, current:false},
     { name: 'Profile', href: '/profile', icon: UserCircleIcon, current: false },
 ]
 
@@ -304,16 +306,51 @@ export const Delivery = () => {
 
                             <main className="pb-14 sm:px-6 sm:pb-20 sm:pt-10 lg:px-8">
                                 <div className="px-4 sm:px-6 lg:px-8">
-                                    <header
-                                        className="border-b border-white/5 px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
-                                        <div className="md:flex md:items-center md:justify-between">
-                                            <div className="min-w-0 flex-1">
-                                                <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
-                                                    Deliveries
-                                                </h2>
+                                    <div
+                                        className="border-b border-gray-200 pb-5 sm:flex sm:items-center sm:justify-between">
+                                        <h3 className="text-base font-semibold leading-6 text-gray-900">Deliveries</h3>
+                                        <div className="mt-3 sm:ml-4 sm:mt-0">
+                                            <label htmlFor="mobile-search-candidate" className="sr-only">
+                                                Search
+                                            </label>
+                                            <label htmlFor="desktop-search-candidate" className="sr-only">
+                                                Search
+                                            </label>
+                                            <div className="flex rounded-md shadow-sm">
+                                                <div className="relative flex-grow focus-within:z-10">
+                                                    <div
+                                                        className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                                                        <MagnifyingGlassIcon className="h-5 w-5 text-gray-400"
+                                                                             aria-hidden="true"/>
+                                                    </div>
+                                                    <input
+                                                        type="text"
+                                                        name="mobile-search-candidate"
+                                                        id="mobile-search-candidate"
+                                                        className="block w-full rounded-none rounded-l-md border-0 py-1.5 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:hidden"
+                                                        placeholder="Search"
+                                                    />
+                                                    <input
+                                                        type="text"
+                                                        name="desktop-search-candidate"
+                                                        id="desktop-search-candidate"
+                                                        className="hidden w-full rounded-none rounded-l-md border-0 py-1.5 pl-10 text-sm leading-6 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:block"
+                                                        placeholder="Search Deliveries"
+                                                    />
+                                                </div>
+                                                <button
+                                                    type="button"
+                                                    className="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                                                >
+                                                    <BarsArrowUpIcon className="-ml-0.5 h-5 w-5 text-gray-400"
+                                                                     aria-hidden="true"/>
+                                                    Sort
+                                                    <ChevronDownIcon className="-mr-1 h-5 w-5 text-gray-400"
+                                                                     aria-hidden="true"/>
+                                                </button>
                                             </div>
                                         </div>
-                                    </header>
+                                    </div>
                                     <div className="mt-8 flow-root">
                                         <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                                             <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
@@ -352,7 +389,8 @@ export const Delivery = () => {
                                                                 <div className="flex items-center">
                                                                     <div className="h-11 w-11 flex-shrink-0">
                                                                         <img className="h-11 w-11 rounded-full"
-                                                                             src={`${assetServer}/images/products/${order.image}`} alt=""/>
+                                                                             src={`${assetServer}/images/products/${order.image}`}
+                                                                             alt=""/>
                                                                     </div>
                                                                     <div className="ml-4">
                                                                         <div
@@ -363,7 +401,8 @@ export const Delivery = () => {
                                                                 </div>
                                                             </td>
                                                             <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                                                <div className="text-gray-900">$ {order.total_price}</div>
+                                                                <div
+                                                                    className="text-gray-900">$ {order.total_price}</div>
                                                                 <div
                                                                     className="mt-1 text-gray-500">{order.quantity}
                                                                 </div>

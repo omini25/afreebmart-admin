@@ -17,8 +17,9 @@ import axios from 'axios';
 import {server} from "../../server.js";
 import {assetServer} from "../../../assetServer.js";
 import banknotesIcon from "@heroicons/react/16/solid/esm/BanknotesIcon.js";
-import {ArrowRightStartOnRectangleIcon} from "@heroicons/react/20/solid/index.js";
+import {ArrowRightStartOnRectangleIcon, BackspaceIcon, StarIcon} from "@heroicons/react/20/solid/index.js";
 import {useNavigate} from "react-router-dom";
+import {toast} from "react-toastify";
 
 
 
@@ -35,8 +36,10 @@ const navigation = [
     { name: 'Messages', href: '/messages', icon: InboxStackIcon, current: false },
     { name: 'Users', href: '/users', icon: UserGroupIcon, current: false },
     { name: 'Vendors', href: '/vendors', icon: BuildingStorefrontIcon, current: false },
+    { name: 'Delivers', href: '/deliverers', icon: BackspaceIcon, current: false },
     { name: 'Admins', href: '/admins', icon: IdentificationIcon, current: false },
     { name: 'Coupons', href: '/coupons', icon: TagIcon, current: false },
+    { name: 'Reviews', href: '/reviews', icon: StarIcon, current:false},
     { name: 'Profile', href: '/profile', icon: UserCircleIcon, current: false },
 ]
 
@@ -51,6 +54,8 @@ export const Ads = () => {
     const [sidebarOpen, setSidebarOpen] = useState(false)
     const [ads, setAds] = useState([]);
     const navigate = useNavigate();
+    const userItem = localStorage.getItem('user');
+    const user = userItem ? JSON.parse(userItem) : null;
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedSort, setSelectedSort] = useState('Latest');
 
@@ -171,16 +176,17 @@ export const Ads = () => {
 
                                                 <li className="-mx-6 mt-auto">
                                                     <a
-                                                        href="/"
-                                                        className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-secondary hover:bg-gray-800"
+                                                        href="/profile"
+                                                        className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-secondary hover:bg-secondary"
                                                     >
                                                         <img
                                                             className="h-8 w-8 rounded-full bg-gray-800"
-                                                            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                                                            src={user && user.user && user.user.image ? `${assetServer}/images/users/${user.user.image}` : 'defaultImageURL'}
                                                             alt=""
                                                         />
                                                         <span className="sr-only">Your profile</span>
-                                                        <span aria-hidden="true">Tom Cook</span>
+                                                        <span
+                                                            aria-hidden="true">{user && user.user ? user.user.name : 'Default Name'}</span>
                                                     </a>
                                                 </li>
                                             </ul>
@@ -207,7 +213,7 @@ export const Ads = () => {
                             </a>
                         </div>
                         <nav className="flex flex-1 flex-col">
-                            <ul role="list" className="flex flex-1 flex-col gap-y-7">
+                        <ul role="list" className="flex flex-1 flex-col gap-y-7">
                                 <li>
                                     <ul role="list" className="-mx-2 space-y-1">
                                         {navigation.map((item) => (
@@ -233,8 +239,8 @@ export const Ads = () => {
                                         href="#"
                                         onClick={(e) => {
                                             e.preventDefault();
-        dispatch(logout());
-        navigate('/');// dispatch the logout action when the link is clicked
+                                            dispatch(logout());
+                                            navigate('/');// dispatch the logout action when the link is clicked
                                         }}
                                         className={classNames(
                                             'text-gray-400 hover:text-white hover:bg-gray-800',
@@ -250,15 +256,16 @@ export const Ads = () => {
                                 <li className="-mx-6 mt-auto">
                                     <a
                                         href="/profile"
-                                        className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-secondary hover:bg-gray-800"
+                                        className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-secondary hover:secondary"
                                     >
                                         <img
                                             className="h-8 w-8 rounded-full bg-gray-800"
-                                            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                                            src={user && user.user && user.user.image ? `${assetServer}/images/users/${user.user.image}` : 'defaultImageURL'}
                                             alt=""
                                         />
                                         <span className="sr-only">Your profile</span>
-                                        <span aria-hidden="true">Tom Cook</span>
+                                        <span
+                                            aria-hidden="true">{user && user.user ? user.user.name : 'Default Name'}</span>
                                     </a>
                                 </li>
                             </ul>
@@ -279,7 +286,7 @@ export const Ads = () => {
                         <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
                             <form className="flex flex-1" action="#" method="GET">
                                 <label htmlFor="search-field" className="sr-only">
-                                    Search
+                                Search
                                 </label>
                                 <div className="relative w-full">
                                     <MagnifyingGlassIcon
@@ -316,11 +323,11 @@ export const Ads = () => {
                                                 Search
                                             </label>
                                             <div className="flex rounded-md shadow-sm">
-                                                <div
-                                                    className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                                                    <MagnifyingGlassIcon className="h-5 w-5 text-gray-400"
-                                                                         aria-hidden="true"/>
-                                                </div>
+                                                {/*<div*/}
+                                                {/*    className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">*/}
+                                                {/*    <MagnifyingGlassIcon className="h-5 w-5 text-gray-400"*/}
+                                                {/*                         aria-hidden="true"/>*/}
+                                                {/*</div>*/}
                                                 <input
                                                     type="text"
                                                     name="mobile-search-candidate"
@@ -335,7 +342,7 @@ export const Ads = () => {
                                                     name="desktop-search-candidate"
                                                     id="desktop-search-candidate"
                                                     className="hidden w-full rounded-none rounded-l-md border-0 py-1.5 pl-10 text-sm leading-6 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:block"
-                                                    placeholder="Search Payments"
+                                                    placeholder="Search Ads"
                                                     value={searchTerm}
                                                     onChange={event => setSearchTerm(event.target.value)}
                                                 />
@@ -421,8 +428,12 @@ export const Ads = () => {
                                                         );
                                                     })
                                                     .sort((a, b) => {
-                                                        const statusOrder = ['latest', 'active', 'pending', 'expired'];
-                                                        return statusOrder.indexOf(a.status) - statusOrder.indexOf(b.status);
+                                                        if (selectedSort === 'Latest') {
+                                                            return new Date(b.created_at) - new Date(a.created_at); // Assuming 'created_at' is a date field
+                                                        } else {
+                                                            const status = ['latest', 'active', 'pending', 'expired'];
+                                                            return status.indexOf(a.status) - status.indexOf(b.status);
+                                                        }
                                                     })
                                                     .map((ad) => (
                                                         <tr key={ad.id}>
@@ -462,7 +473,7 @@ export const Ads = () => {
 
                                                             <td className="relative whitespace-nowrap py-5 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
                                                                 <button
-                                                                    className="text-indigo-600 hover:text-indigo-900"
+                                                                    className="text-red-600 hover:text-indigo-900"
                                                                     onClick={async () => {
                                                                         try {
                                                                             const response = await axios.delete(`${server}/admin/ads/${ad.id}`);
@@ -470,6 +481,8 @@ export const Ads = () => {
                                                                                 // Update the local state if the API call was successful
                                                                                 setAds(ads.filter(item => item.id !== ad.id));
                                                                             }
+
+                                                                            toast('Ad deleted successfully', {type:'success'})
                                                                         } catch (error) {
                                                                             console.error('Failed to delete ad:', error);
                                                                         }
@@ -497,6 +510,8 @@ export const Ads = () => {
                                                                                         status: newStatus
                                                                                     } : item
                                                                                 ));
+
+                                                                                toast('Status updated successfully', {type: 'success'})
                                                                             }
                                                                         } catch (error) {
                                                                             console.error('Failed to update status:', error);
@@ -504,9 +519,9 @@ export const Ads = () => {
                                                                     }}
                                                                 >
                                                                     <option value="{ad.status}">{ad.status}</option>
-                                                                    <option value="Active">Active</option>
-                                                                    <option value="Pending">Pending</option>
-                                                                    <option value="Expired">Expired</option>
+                                                                    <option value="active">Active</option>
+                                                                    <option value="pending">Pending</option>
+                                                                    <option value="expired">Expired</option>
                                                                 </select>
                                                             </td>
                                                         </tr>

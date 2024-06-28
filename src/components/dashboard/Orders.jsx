@@ -18,7 +18,7 @@ import {server} from "../../server.js";
 import {assetServer} from "../../../assetServer.js";
 import banknotesIcon from "@heroicons/react/16/solid/esm/BanknotesIcon.js";
 import {Link, useNavigate} from "react-router-dom";
-import {ArrowRightStartOnRectangleIcon} from "@heroicons/react/20/solid/index.js";
+import {ArrowRightStartOnRectangleIcon, BackspaceIcon, StarIcon} from "@heroicons/react/20/solid/index.js";
 
 
 
@@ -35,8 +35,10 @@ const navigation = [
     { name: 'Messages', href: '/messages', icon: InboxStackIcon, current: false },
     { name: 'Users', href: '/users', icon: UserGroupIcon, current: false },
     { name: 'Vendors', href: '/vendors', icon: BuildingStorefrontIcon, current: false },
+    { name: 'Delivers', href: '/deliverers', icon: BackspaceIcon, current: false },
     { name: 'Admins', href: '/admins', icon: IdentificationIcon, current: false },
     { name: 'Coupons', href: '/coupons', icon: TagIcon, current: false },
+    {name: 'Reviews', href: '/reviews', icon: StarIcon, current:false},
     { name: 'Profile', href: '/profile', icon: UserCircleIcon, current: false },
 ]
 
@@ -71,6 +73,8 @@ export const Orders = () => {
 
         fetchOrders();
     }, []);
+
+
 
 
     return (
@@ -417,9 +421,9 @@ export const Orders = () => {
                                                     {orders.filter(order => {
                                                         return (
                                                             order.id.toString().includes(searchTerm) ||
-                                                            order.product_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                                                            order.user_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                                                            order.store_name.toLowerCase().includes(searchTerm.toLowerCase())
+                                                            (order.product_name && order.product_name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                                                            (order.user_name && order.user_name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                                                            (order.store_name && order.store_name.toLowerCase().includes(searchTerm.toLowerCase()))
                                                         );
                                                     }).sort((a, b) => {
                                                         switch (selectedSort) {

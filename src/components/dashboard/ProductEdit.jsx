@@ -23,7 +23,7 @@ import axios from 'axios';
 import {server} from "../../server.js";
 import {assetServer} from "../../../assetServer.js";
 import banknotesIcon from "@heroicons/react/16/solid/esm/BanknotesIcon.js";
-import {ArrowRightStartOnRectangleIcon} from "@heroicons/react/20/solid/index.js";
+import {ArrowRightStartOnRectangleIcon, BackspaceIcon, StarIcon} from "@heroicons/react/20/solid/index.js";
 import {useNavigate, useParams} from "react-router-dom";
 import {toast} from "react-toastify";
 
@@ -43,8 +43,10 @@ const navigation = [
     { name: 'Messages', href: '/messages', icon: InboxStackIcon, current: false },
     { name: 'Users', href: '/users', icon: UserGroupIcon, current: false },
     { name: 'Vendors', href: '/vendors', icon: BuildingStorefrontIcon, current: false },
+    { name: 'Delivers', href: '/deliverers', icon: BackspaceIcon, current: false },
     { name: 'Admins', href: '/admins', icon: IdentificationIcon, current: false },
     { name: 'Coupons', href: '/coupons', icon: TagIcon, current: false },
+    {name: 'Reviews', href: '/reviews', icon: StarIcon, current:false},
     { name: 'Profile', href: '/profile', icon: UserCircleIcon, current: false },
 ]
 
@@ -133,11 +135,24 @@ export const ProductEdit = () => {
         const updatedFields = {};
         if (productName !== products.product_name) updatedFields.product_name = productName;
         if (category !== products.category) updatedFields.category = category;
+        if (subcategory!== products.subcategory) updatedFields.subcategory = subcategory;
+        if (unit!== products.unit) updatedFields.unit = unit;
+        if (tags!== products.tags) updatedFields.tags = tags;
+        if (description!== products.description) updatedFields.description = description;
+        if (image!== products.image) updatedFields.image = image;
+        if (shippingWeight!== products.shipping_weight) updatedFields.shipping_weight = shippingWeight;
+        if (price!== products.price) updatedFields.price = price;
+        if (groupPrice!== products.group_price) updatedFields.group_price = groupPrice;
+        if (quantity!== products.quantity) updatedFields.quantity = quantity;
+        if (vendorId!== products.vendor_id) updatedFields.vendor_id = vendorId;
+        if (deliverer!== products.deliverer) updatedFields.deliverer = deliverer;
+        if (group!== products.group) updatedFields.group = group;
+        if (status!== products.status) updatedFields.status = status;
+
         // ... repeat for all form fields
 
         try {
             const response = await axios.put(`${server}/admin/products/${id}`, updatedFields);
-            console.log(response.data);
             toast('Product updated successfully', {type: 'success', autoClose: 2000});
 
             // Refresh the page

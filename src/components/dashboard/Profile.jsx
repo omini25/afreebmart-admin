@@ -15,10 +15,10 @@ import {
 import { useDispatch } from 'react-redux';
 import { logout } from '../../redux/actions/actions';
 import {
-    ArrowRightStartOnRectangleIcon,
+    ArrowRightStartOnRectangleIcon, BackspaceIcon,
     InboxStackIcon,
     ShoppingBagIcon,
-    ShoppingCartIcon,
+    ShoppingCartIcon, StarIcon,
     TruckIcon, UserCircleIcon,
     WalletIcon
 } from "@heroicons/react/20/solid/index.js";
@@ -43,8 +43,10 @@ const navigation = [
     { name: 'Messages', href: '/messages', icon: InboxStackIcon, current: false },
     { name: 'Users', href: '/users', icon: UserGroupIcon, current: false },
     { name: 'Vendors', href: '/vendors', icon: BuildingStorefrontIcon, current: false },
+    { name: 'Delivers', href: '/deliverers', icon: BackspaceIcon, current: false },
     { name: 'Admins', href: '/admins', icon: IdentificationIcon, current: false },
     { name: 'Coupons', href: '/coupons', icon: TagIcon, current: false },
+    { name: 'Reviews', href: '/reviews', icon: StarIcon, current:false},
     { name: 'Profile', href: '/profile', icon: UserCircleIcon, current: true },
 ]
 

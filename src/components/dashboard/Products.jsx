@@ -17,7 +17,7 @@ import axios from 'axios';
 import {server} from "../../server.js";
 import {assetServer} from "../../../assetServer.js";
 import banknotesIcon from "@heroicons/react/16/solid/esm/BanknotesIcon.js";
-import {ArrowRightStartOnRectangleIcon} from "@heroicons/react/20/solid/index.js";
+import {ArrowRightStartOnRectangleIcon, BackspaceIcon, StarIcon} from "@heroicons/react/20/solid/index.js";
 import AddProduct from "./AddProduct.jsx";
 import {Link, useNavigate} from "react-router-dom";
 
@@ -37,8 +37,10 @@ const navigation = [
     { name: 'Messages', href: '/messages', icon: InboxStackIcon, current: false },
     { name: 'Users', href: '/users', icon: UserGroupIcon, current: false },
     { name: 'Vendors', href: '/vendors', icon: BuildingStorefrontIcon, current: false },
+    { name: 'Delivers', href: '/deliverers', icon: BackspaceIcon, current: false },
     { name: 'Admins', href: '/admins', icon: IdentificationIcon, current: false },
     { name: 'Coupons', href: '/coupons', icon: TagIcon, current: false },
+    { name: 'Reviews', href: '/reviews', icon: StarIcon, current:false},
     { name: 'Profile', href: '/profile', icon: UserCircleIcon, current: false },
 ]
 
@@ -312,8 +314,7 @@ export const Products = () => {
 
                                     <div
                                         className="border-b border-gray-200 pb-5 sm:flex sm:items-center sm:justify-between">
-                                        <h3 className="text-base font-semibold leading-6 text-gray-900">Job
-                                            Postings</h3>
+                                        <h3 className="text-base font-semibold leading-6 text-gray-900">Products</h3>
                                         <div className="mt-3 sm:ml-4 sm:mt-0">
                                             <label htmlFor="mobile-search-candidate" className="sr-only">
                                                 Search

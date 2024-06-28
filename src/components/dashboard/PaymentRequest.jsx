@@ -14,7 +14,7 @@ import {
     ShoppingBagIcon,
     ShoppingCartIcon, TagIcon,
     TruckIcon, UserCircleIcon, UserGroupIcon,
-    WalletIcon
+    WalletIcon, BackspaceIcon, StarIcon
 } from "@heroicons/react/20/solid/index.js";
 import banknotesIcon from "@heroicons/react/16/solid/esm/BanknotesIcon.js";
 import {server} from "../../server.js";
@@ -22,6 +22,7 @@ import axios from "axios";
 import {assetServer} from "../../../assetServer.js";
 import {ArrowRightStartOnRectangleIcon, BarsArrowUpIcon, ChevronDownIcon} from "@heroicons/react/20/solid";
 import {useNavigate} from "react-router-dom";
+import {toast} from "react-toastify";
 
 
 
@@ -37,8 +38,10 @@ const navigation = [
     { name: 'Messages', href: '/messages', icon: InboxStackIcon, current: false },
     { name: 'Users', href: '/users', icon: UserGroupIcon, current: false },
     { name: 'Vendors', href: '/vendors', icon: BuildingStorefrontIcon, current: false },
+    { name: 'Delivers', href: '/deliverers', icon: BackspaceIcon, current: false },
     { name: 'Admins', href: '/admins', icon: IdentificationIcon, current: false },
     { name: 'Coupons', href: '/coupons', icon: TagIcon, current: false },
+    { name: 'Reviews', href: '/reviews', icon: StarIcon, current:false},
     { name: 'Profile', href: '/profile', icon: UserCircleIcon, current: false },
 ]
 
@@ -510,7 +513,7 @@ export const PaymentRequest = () => {
                                                                     onChange={async (event) => {
                                                                         const newStatus = event.target.value;
                                                                         try {
-                                                                            const response = await axios.put(`Your_API_Endpoint/${payment.id}`, {
+                                                                            const response = await axios.put(`${server}/admin/vendor/transactions/${payment.id}/status`, {
                                                                                 status: newStatus
                                                                             });
                                                                             if (response.status === 200) {
@@ -521,6 +524,8 @@ export const PaymentRequest = () => {
                                                                                         status: newStatus
                                                                                     } : item
                                                                                 ));
+
+                                                                                toast('Status updated successfully', {type: 'success'})
                                                                             }
                                                                         } catch (error) {
                                                                             console.error('Failed to update status:', error);

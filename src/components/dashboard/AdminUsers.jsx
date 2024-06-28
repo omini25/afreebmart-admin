@@ -21,7 +21,7 @@ import {server} from "../../server.js";
 import {assetServer} from "../../../assetServer.js";
 import banknotesIcon from "@heroicons/react/16/solid/esm/BanknotesIcon.js";
 import {useNavigate} from "react-router-dom";
-import {ChevronDownIcon} from "@heroicons/react/20/solid/index.js";
+import {BackspaceIcon, ChevronDownIcon, StarIcon} from "@heroicons/react/20/solid/index.js";
 
 
 
@@ -37,8 +37,10 @@ const navigation = [
     { name: 'Messages', href: '/messages', icon: InboxStackIcon, current: false },
     { name: 'Users', href: '/users', icon: UserGroupIcon, current: false },
     { name: 'Vendors', href: '/vendors', icon: BuildingStorefrontIcon, current: false },
+    { name: 'Delivers', href: '/deliverers', icon: BackspaceIcon, current: false },
     { name: 'Admins', href: '/admins', icon: IdentificationIcon, current: true },
     { name: 'Coupons', href: '/coupons', icon: TagIcon, current: false },
+    { name: 'Reviews', href: '/reviews', icon: StarIcon, current:false},
     { name: 'Profile', href: '/profile', icon: UserCircleIcon, current: false },
 ]
 
@@ -466,12 +468,12 @@ export const AdminUsers = () => {
                                                             <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
                                                                 {new Date(users.created_at).toLocaleDateString()}
                                                             </td>
-                                                            <td className="relative whitespace-nowrap py-5 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-                                                                <a href="#"
-                                                                   className="text-indigo-600 hover:text-indigo-900">
-                                                                    Suspend<span className="sr-only">, {users.id}</span>
-                                                                </a>
-                                                            </td>
+                                                            {/*<td className="relative whitespace-nowrap py-5 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">*/}
+                                                            {/*    <a href="#"*/}
+                                                            {/*       className="text-indigo-600 hover:text-indigo-900">*/}
+                                                            {/*        Suspend<span className="sr-only">, {users.id}</span>*/}
+                                                            {/*    </a>*/}
+                                                            {/*</td>*/}
 
                                                             <td className="relative whitespace-nowrap py-5 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
                                                                 <button

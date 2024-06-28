@@ -14,7 +14,7 @@ import {
     ShoppingBagIcon,
     ShoppingCartIcon, TagIcon,
     TruckIcon, UserCircleIcon, UserGroupIcon,
-    WalletIcon, ArrowRightStartOnRectangleIcon
+    WalletIcon, ArrowRightStartOnRectangleIcon, BackspaceIcon, StarIcon
 } from "@heroicons/react/20/solid/index.js";
 import banknotesIcon from "@heroicons/react/16/solid/esm/BanknotesIcon.js";
 import {server} from "../../server.js";
@@ -22,6 +22,7 @@ import axios from "axios";
 import {assetServer} from "../../../assetServer.js";
 import {useNavigate} from "react-router-dom";
 import {BarsArrowUpIcon, ChevronDownIcon} from "@heroicons/react/20/solid";
+import {toast} from "react-toastify";
 
 
 
@@ -37,8 +38,10 @@ const navigation = [
     { name: 'Messages', href: '/messages', icon: InboxStackIcon, current: false },
     { name: 'Users', href: '/users', icon: UserGroupIcon, current: false },
     { name: 'Vendors', href: '/vendors', icon: BuildingStorefrontIcon, current: false },
+    { name: 'Delivers', href: '/deliverers', icon: BackspaceIcon, current: false },
     { name: 'Admins', href: '/admins', icon: IdentificationIcon, current: false },
     { name: 'Coupons', href: '/coupons', icon: TagIcon, current: false },
+    { name: 'Reviews', href: '/reviews', icon: StarIcon, current: true},
     { name: 'Profile', href: '/profile', icon: UserCircleIcon, current: false },
 ]
 
@@ -50,28 +53,25 @@ function classNames(...classes) {
 
 
 
-export const PaymentHistory = () => {
+export const Reviews = () => {
     const dispatch = useDispatch();
     const [sidebarOpen, setSidebarOpen] = useState(false)
     const userItem = localStorage.getItem('user');
     const user = userItem ? JSON.parse(userItem) : null;
-    const [payments, setPayments] = useState([]);
-    const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState('');
-    const [selectedSort, setSelectedSort] = useState('Latest');
+    const [reviews, setReviews] = useState([]);
 
     useEffect(() => {
-        const fetchPayments = async () => {
+        const fetchReviews = async () => {
             try {
-                const response = await axios.get(`${server}/admin/payments`);
-
-                setPayments(response.data.flat());
+                const response = await axios.get(`${server}/admin/reviews`); // replace 'API_URL' with the URL of the API
+                setReviews(response.data);
             } catch (error) {
-                console.error('Failed to fetch payments:', error);
+                console.error('Failed to fetch reviews:', error);
             }
         };
 
-        fetchPayments();
+        fetchReviews();
     }, []);
 
 
@@ -303,207 +303,147 @@ export const PaymentHistory = () => {
                     </div>
 
                     <main className="lg:pr-10 lg:pl-10">
-                        <div className="border-b border-gray-200 pb-5 sm:flex sm:items-center sm:justify-between">
-                            <h3 className="text-base font-semibold leading-6 text-gray-900">Payment History</h3>
-                            <div className="mt-3 sm:ml-4 sm:mt-0">
-                                <label htmlFor="mobile-search-candidate" className="sr-only">
-                                    Search
-                                </label>
-                                <label htmlFor="desktop-search-candidate" className="sr-only">
-                                    Search
-                                </label>
-                                <div className="flex rounded-md shadow-sm">
-                                    <div className="relative flex-grow focus-within:z-10">
-                                        <div
-                                            className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                                            <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" aria-hidden="true"/>
-                                        </div>
-                                        <input
-                                            type="text"
-                                            name="mobile-search-candidate"
-                                            id="mobile-search-candidate"
-                                            className="block w-full rounded-none rounded-l-md border-0 py-1.5 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:hidden"
-                                            placeholder="Search"
-                                            value={searchTerm}
-                                            onChange={event => setSearchTerm(event.target.value)}
-                                        />
-                                        <input
-                                            type="text"
-                                            name="desktop-search-candidate"
-                                            id="desktop-search-candidate"
-                                            className="hidden w-full rounded-none rounded-l-md border-0 py-1.5 pl-10 text-sm leading-6 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:block"
-                                            placeholder="Search Payments"
-                                            value={searchTerm}
-                                            onChange={event => setSearchTerm(event.target.value)}
-                                        />
-                                    </div>
-                                    <Menu as="div" className="relative inline-block text-left">
-                                        <div>
-                                            <Menu.Button className="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-                                                <BarsArrowUpIcon className="-ml-0.5 h-5 w-5 text-gray-400" aria-hidden="true"/>
-                                                Sort
-                                                <ChevronDownIcon className="-mr-1 h-5 w-5 text-gray-400" aria-hidden="true"/>
-                                            </Menu.Button>
-                                        </div>
-                                        <Transition
-                                            as={Fragment}
-                                            enter="transition ease-out duration-100"
-                                            enterFrom="transform opacity-0 scale-95"
-                                            enterTo="transform opacity-100 scale-100"
-                                            leave="transition ease-in duration-75"
-                                            leaveFrom="transform opacity-100 scale-100"
-                                            leaveTo="transform opacity-0 scale-95"
-                                        >
-                                            <Menu.Items className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
-                                                <div className="py-1">
-                                                    {['Latest', 'Paid', 'Unpaid', 'Highest', 'Lowest'].map((status, statusIdx) => (
-                                                        <Menu.Item key={statusIdx}>
-                                                            {({ active }) => (
-                                                                <button
-                                                                    onClick={() => {
-                                                                        setSelectedSort(status);
-                                                                        const sortedPayments = [...payments].sort((a, b) => {
-                                                                            switch (status) {
-                                                                                case 'Latest':
-                                                                                    return new Date(b.created_at) - new Date(a.created_at);
-                                                                                case 'Paid':
-                                                                                    return a.payment_status === 'Paid' ? -1 : 1;
-                                                                                case 'Unpaid':
-                                                                                    return a.payment_status === 'Unpaid' ? -1 : 1;
-                                                                                case 'Highest':
-                                                                                    return b.product_cost - a.product_cost;
-                                                                                case 'Lowest':
-                                                                                    return a.product_cost - b.product_cost;
-                                                                                default:
-                                                                                    return 0;
-                                                                            }
-                                                                        });
-                                                                        setPayments(sortedPayments);
-                                                                    }}
-                                                                    className={`${
-                                                                        active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'
-                                                                    } group flex items-center w-full px-2 py-2 text-sm`}
-                                                                >
-                                                                    {status}
-                                                                </button>
-                                                            )}
-                                                        </Menu.Item>
-                                                    ))}
+                        <div className="bg-white">
+
+
+                            <main className="pb-14 sm:px-6 sm:pb-20 sm:pt-10 lg:px-8">
+                                <div className="px-4 sm:px-6 lg:px-8">
+                                    <div
+                                        className="border-b border-gray-200 pb-5 sm:flex sm:items-center sm:justify-between">
+                                        <h3 className="text-base font-semibold leading-6 text-gray-900">Reviews</h3>
+                                        <div className="mt-3 sm:ml-4 sm:mt-0">
+                                            <label htmlFor="mobile-search-candidate" className="sr-only">
+                                                Search
+                                            </label>
+                                            <label htmlFor="desktop-search-candidate" className="sr-only">
+                                                Search
+                                            </label>
+                                            <div className="flex rounded-md shadow-sm">
+                                                <div className="relative flex-grow focus-within:z-10">
+                                                    <div
+                                                        className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                                                        <MagnifyingGlassIcon className="h-5 w-5 text-gray-400"
+                                                                             aria-hidden="true"/>
+                                                    </div>
+                                                    <input
+                                                        type="text"
+                                                        name="mobile-search-candidate"
+                                                        id="mobile-search-candidate"
+                                                        className="block w-full rounded-none rounded-l-md border-0 py-1.5 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:hidden"
+                                                        placeholder="Search"
+                                                        value={searchTerm}
+                                                        onChange={(event) => setSearchTerm(event.target.value)}
+                                                    />
+                                                    <input
+                                                        type="text"
+                                                        name="desktop-search-candidate"
+                                                        id="desktop-search-candidate"
+                                                        className="hidden w-full rounded-none rounded-l-md border-0 py-1.5 pl-10 text-sm leading-6 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:block"
+                                                        placeholder="Search reviews"
+                                                        value={searchTerm}
+                                                        onChange={(event) => setSearchTerm(event.target.value)}
+                                                    />
                                                 </div>
-                                            </Menu.Items>
-                                        </Transition>
-                                    </Menu>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div>
-
-                            <div className="px-4 sm:px-6 lg:px-8">
-
-                                <div className="mt-8 flow-root">
-                                    <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                                        <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-                                            <table className="min-w-full divide-y divide-gray-300">
-                                                <thead>
-                                                <tr>
-                                                    <th scope="col"
-                                                        className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">
-                                                        Product Name & Payment Id
-                                                    </th>
-                                                    <th scope="col"
-                                                        className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                        User & Total Price
-                                                    </th>
-                                                    <th scope="col"
-                                                        className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                        Vendor $ Product Price
-                                                    </th>
-                                                    <th scope="col"
-                                                        className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                        Status
-                                                    </th>
-
-                                                    <th scope="col"
-                                                        className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                        Order Status
-                                                    </th>
-
-                                                </tr>
-                                                </thead>
-                                                <tbody className="divide-y divide-gray-200">
-                                                {payments
-                                                    .filter(payment => {
-                                                        // Modify this condition to match your search criteria
-                                                        return (
-                                                            payment.product_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                                                            payment.user_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                                                            payment.id.toString().includes(searchTerm) ||
-                                                            payment.store_name.toLowerCase().includes(searchTerm.toLowerCase())
-                                                        );
-                                                    })
-                                                    .sort((a, b) => {
-                                                        // Modify this switch statement to match your sort options
-                                                        switch (selectedSort) {
-                                                            case 'Latest':
-                                                                return new Date(b.created_at) - new Date(a.created_at);
-                                                            case 'Paid':
-                                                                return a.payment_status === 'Paid' ? -1 : 1;
-                                                            case 'Unpaid':
-                                                                return a.payment_status === 'Unpaid' ? -1 : 1;
-                                                            case 'Highest':
-                                                                return b.product_cost - a.product_cost;
-                                                            case 'Lowest':
-                                                                return a.product_cost - b.product_cost;
-                                                            default:
-                                                                return 0;
-                                                        }
-                                                    })
-                                                    .map((payment) => (
-                                                        <tr key={payment.id}>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="mt-8 flow-root">
+                                        <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                                            <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+                                                <table className="min-w-full divide-y divide-gray-300">
+                                                    <thead>
+                                                    <tr>
+                                                        <th scope="col"
+                                                            className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                                            User & Vendor
+                                                        </th>
+                                                        <th scope="col"
+                                                            className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                                            Comment
+                                                        </th>
+                                                        <th scope="col"
+                                                            className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                                            Product
+                                                        </th>
+                                                        <th scope="col"
+                                                            className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                                            Rating
+                                                        </th>
+                                                        <th scope="col"
+                                                            className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                                            Created Date
+                                                        </th>
+                                                        <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-0">
+                                                            <span className="sr-only">Report</span>
+                                                        </th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody className="divide-y divide-gray-200 bg-white">
+                                                    {reviews.filter(review =>
+                                                        (review.product_name ? review.product_name.toLowerCase().includes(searchTerm.toLowerCase()) : false) ||
+                                                        (review.user_name ? review.user_name.toLowerCase().includes(searchTerm.toLowerCase()) : false) ||
+                                                        (review.comment ? review.comment.toLowerCase().includes(searchTerm.toLowerCase()) : false)
+                                                    ).map((review) => (
+                                                        <tr key={review.id}>
                                                             <td className="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0">
                                                                 <div className="flex items-center">
-
                                                                     <div className="ml-4">
                                                                         <div
-                                                                            className="font-medium text-gray-900">{payment.product_name}</div>
+                                                                            className="font-medium text-gray-900">{review.user.name}</div>
                                                                         <div
-                                                                            className="mt-1 text-gray-500">#{payment.id}</div>
+                                                                            className="mt-1 text-gray-500">{review.vendor.store_name}</div>
                                                                     </div>
                                                                 </div>
                                                             </td>
                                                             <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                                                <div className="text-gray-900">{payment.user_name}</div>
-                                                                <div className="mt-1 text-gray-500">
-                                                                    $ {payment.total_cost}
-                                                                </div>
-                                                            </td>
-
-                                                            <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                                                <div className="text-gray-900">{payment.store_name}</div>
-                                                                <div
-                                                                    className="mt-1 text-gray-500">#{payment.product_cost}
-                                                                </div>
-                                                            </td>
-                                                            <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                                                <span
-                                                                    className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
-                                                                    {payment.payment_status}
-                                                                </span>
+                                                                <div className="text-gray-900">{review.comment}</div>
                                                             </td>
                                                             <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
                                                                 <div
-                                                                    className="text-gray-900">{payment.order_status} id: {payment.order_id}</div>
+                                                                    className="text-gray-900">{review.product.product_name}</div>
+                                                                <div
+                                                                    className="mt-1 text-gray-500">#{review.product_id}</div>
+                                                            </td>
+
+                                                            <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                                                                <div className="text-gray-900">{review.rating}</div>
 
                                                             </td>
+                                                            <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                                                            {new Date(review.created_at).toLocaleDateString()}
+                                                            </td>
+                                                            {/*<td className="relative whitespace-nowrap py-5 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">*/}
+                                                            {/*    <a href="#"*/}
+                                                            {/*       className={`text-indigo-600 hover:text-indigo-900 ${review.reported === 1 ? 'cursor-default' : ''}`}*/}
+                                                            {/*       onClick={async (event) => {*/}
+                                                            {/*           if (review.reported === 1) {*/}
+                                                            {/*               event.preventDefault();*/}
+                                                            {/*           } else {*/}
+                                                            {/*               event.preventDefault();*/}
+                                                            {/*               try {*/}
+                                                            {/*                   const response = await axios.put(`${server}/vendor/reviews/${review.id}/report`);*/}
+                                                            {/*                   console.log('Response:', response.data);*/}
+                                                            {/*                   toast.success('Report sent successfully!');*/}
+                                                            {/*               } catch (error) {*/}
+                                                            {/*                   console.error('Failed to send review id:', error);*/}
+                                                            {/*                   toast.error('Failed to send report.');*/}
+                                                            {/*               }*/}
+                                                            {/*           }*/}
+                                                            {/*       }}*/}
+                                                            {/*    >*/}
+                                                            {/*        {review.reported === 0 ? 'Report' : 'Reported'}<span*/}
+                                                            {/*        className="sr-only">, {review.id}</span>*/}
+                                                            {/*    </a>*/}
+                                                            {/*</td>*/}
                                                         </tr>
                                                     ))}
-                                                </tbody>
-                                            </table>
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </main>
                         </div>
                     </main>
 
@@ -513,4 +453,4 @@ export const PaymentHistory = () => {
     )
 }
 
-export default PaymentHistory;
+export default Reviews;

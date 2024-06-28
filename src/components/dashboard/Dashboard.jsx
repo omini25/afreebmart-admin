@@ -5,11 +5,21 @@ import {
     GlobeAltIcon,
     XMarkIcon,
     Bars3Icon,
-    BuildingStorefrontIcon, IdentificationIcon,
+    BuildingStorefrontIcon,
+    IdentificationIcon,
     InboxStackIcon,
-    MagnifyingGlassIcon, TagIcon, UserCircleIcon,
+    MagnifyingGlassIcon,
+    TagIcon,
+    UserCircleIcon,
     UserGroupIcon,
-    ShoppingBagIcon, ShoppingCartIcon, TruckIcon, WalletIcon, ArrowRightStartOnRectangleIcon, ListBulletIcon,
+    ShoppingBagIcon,
+    ShoppingCartIcon,
+    TruckIcon,
+    WalletIcon,
+    ArrowRightStartOnRectangleIcon,
+    ListBulletIcon,
+    StarIcon,
+    BackspaceIcon,
 } from '@heroicons/react/20/solid'
 import { useDispatch } from 'react-redux';
 import { logout } from '../../redux/actions/actions';
@@ -18,6 +28,7 @@ import axios from "axios";
 import {assetServer} from "../../../assetServer.js";
 import banknotesIcon from "@heroicons/react/16/solid/esm/BanknotesIcon.js";
 import {useNavigate} from "react-router-dom";
+import { PaperClipIcon } from '@heroicons/react/20/solid'
 
 
 
@@ -34,8 +45,10 @@ const navigation = [
     { name: 'Messages', href: '/messages', icon: InboxStackIcon, current: false },
     { name: 'Users', href: '/users', icon: UserGroupIcon, current: false },
     { name: 'Vendors', href: '/vendors', icon: BuildingStorefrontIcon, current: false },
+    { name: 'Delivers', href: '/deliverers', icon: BackspaceIcon, current: false },
     { name: 'Admins', href: '/admins', icon: IdentificationIcon, current: false },
     { name: 'Coupons', href: '/coupons', icon: TagIcon, current: false },
+    { name: 'Reviews', href: '/reviews', icon: StarIcon, current:false},
     { name: 'Profile', href: '/profile', icon: UserCircleIcon, current: false },
 ]
 
@@ -284,8 +297,8 @@ export const Dashboard = () => {
                                         href="#"
                                         onClick={(e) => {
                                             e.preventDefault();
-        dispatch(logout());
-        navigate('/');
+                                            dispatch(logout());
+                                            navigate('/');
                                         }}
                                         className={classNames(
                                             'text-gray-400 hover:bg-red-800 hover:secondary',
@@ -304,10 +317,10 @@ export const Dashboard = () => {
                                         className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-secondary hover:secondary"
                                     >
                                         <img
-    className="h-8 w-8 rounded-full bg-gray-800"
-    src={user && user.user && user.user.image ? `${assetServer}/images/users/${user.user.image}` : 'defaultImageURL'}
-    alt=""
-/>
+                                            className="h-8 w-8 rounded-full bg-gray-800"
+                                            src={user && user.user && user.user.image ? `${assetServer}/images/users/${user.user.image}` : 'defaultImageURL'}
+                                            alt=""
+                                        />
                                         <span className="sr-only">Your profile</span>
                                         <span aria-hidden="true">{user && user.user ? user.user.name : 'Default Name'}</span>
                                     </a>
@@ -500,6 +513,8 @@ export const Dashboard = () => {
                                         </div>
                                     </section>
                                 </div>
+
+
                             </div>
                         </div>
                     </main>

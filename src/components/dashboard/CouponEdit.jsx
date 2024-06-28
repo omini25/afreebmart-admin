@@ -21,7 +21,9 @@ import {server} from "../../server.js";
 import {assetServer} from "../../../assetServer.js";
 import banknotesIcon from "@heroicons/react/16/solid/esm/BanknotesIcon.js";
 import {AddCoupons} from "./AddCoupons.jsx";
-import {Link, useNavigate} from "react-router-dom";
+import {Link, useNavigate, useParams} from "react-router-dom";
+import {BackspaceIcon, PhotoIcon, StarIcon} from "@heroicons/react/20/solid/index.js";
+import {toast} from "react-toastify";
 
 
 
@@ -37,8 +39,10 @@ const navigation = [
     { name: 'Messages', href: '/messages', icon: InboxStackIcon, current: false },
     { name: 'Users', href: '/users', icon: UserGroupIcon, current: false },
     { name: 'Vendors', href: '/vendors', icon: BuildingStorefrontIcon, current: false },
+    { name: 'Delivers', href: '/deliverers', icon: BackspaceIcon, current: false },
     { name: 'Admins', href: '/admins', icon: IdentificationIcon, current: false },
-    { name: 'Coupons', href: '/coupons', icon: TagIcon, current: true },
+    { name: 'Coupons', href: '/coupons', icon: TagIcon, current: false },
+    { name: 'Reviews', href: '/reviews', icon: StarIcon, current:false},
     { name: 'Profile', href: '/profile', icon: UserCircleIcon, current: false },
 ]
 
@@ -52,16 +56,25 @@ function classNames(...classes) {
 export const CouponEdit = () => {
     const dispatch = useDispatch();
     const userItem = localStorage.getItem('user');
-const user = userItem ? JSON.parse(userItem) : null;
+    const user = userItem ? JSON.parse(userItem) : null;
     const [sidebarOpen, setSidebarOpen] = useState(false)
-    const [isAddCouponsOpen, setIsAddCouponsOpen] = useState(false);
     const [coupons, setCoupons] = useState([]);
     const navigate = useNavigate();
+    const {id} = useParams();
+    const [title, setTitle] = useState('');
+    const [code, setCode] = useState('');
+    const [discount_type, setDiscountType] = useState('');
+    const [discount, setDiscount] = useState('');
+    const [quantity, setQuantity] = useState('');
+    const [limits, setLimits] = useState('');
+    const [start_date, setStartDate] = useState('');
+    const [end_date, setEndDate] = useState('');
+
 
     useEffect(() => {
         const fetchCoupons = async () => {
             try {
-                const response = await axios.get(`${server}/admin/coupons`);
+                const response = await axios.get(`${server}/admin/coupons/${id}`);
                 // Flatten the array structure
                 const flattenedCoupons = response.data;
                 setCoupons(flattenedCoupons);
@@ -74,6 +87,65 @@ const user = userItem ? JSON.parse(userItem) : null;
     }, []);
 
     console.log(coupons);
+
+    const handleFormSubmit = async (event) => {
+        event.preventDefault();
+
+        // Create a coupon object from the state variables
+        const coupon = {
+            title,
+            code,
+            discount_type,
+            discount,
+            quantity,
+            limits,
+            start_date,
+            end_date
+        };
+
+        try {
+            // Make a PUT request to the API endpoint for updating coupons
+            // Replace 'http://api.example.com/coupons' with the actual API endpoint
+            const response = await axios.put(`http://api.example.com/coupons/${id}`, coupon);
+
+            // Check if the request was successful
+            if (response.status === 200) {
+                // The coupon was successfully updated
+                // You can add any additional logic here, such as redirecting the user
+            } else {
+                // The request completed, but the status code is not 200
+                // This could indicate an error
+                console.error('Failed to update coupon:', response);
+            }
+        } catch (error) {
+            // The request failed, usually due to a network error or an invalid URL
+            console.error('Failed to update coupon:', error);
+        }
+    };
+
+    const handleDeleteCoupon = async () => {
+        try {
+            // Make a DELETE request to the API endpoint for deleting coupons
+            // Replace 'http://api.example.com/coupons' with the actual API endpoint
+            const response = await axios.delete(`http://api.example.com/coupons/${id}`);
+
+            // Check if the request was successful
+            if (response.status === 200) {
+                // The coupon was successfully deleted
+                toast.success('Coupon deleted successfully');
+                // You can add any additional logic here, such as redirecting the user
+                navigate('/coupons');
+            } else {
+                // The request completed, but the status code is not 200
+                // This could indicate an error
+                console.error('Failed to delete coupon:', response);
+            }
+        } catch (error) {
+            // The request failed, usually due to a network error or an invalid URL
+            console.error('Failed to delete coupon:', error);
+        }
+    };
+
 
     return (
         <>
@@ -311,115 +383,229 @@ const user = userItem ? JSON.parse(userItem) : null;
                                     <header
                                         className="border-b border-white/5 px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
                                         <div className="md:flex md:items-center md:justify-between">
-                                            <div className="min-w-0 flex-1">
+                                            <div className="min-w-0">
                                                 <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
-                                                    Coupons
+                                                    Coupons {id}
                                                 </h2>
                                             </div>
-                                            {/*<div className="mt-4 flex md:ml-4 md:mt-0">*/}
-                                            {/*    <button*/}
-                                            {/*        type="button"*/}
-                                            {/*        className="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"*/}
-                                            {/*        onClick={() => setIsAddCouponsOpen(true)}*/}
-                                            {/*    >*/}
-                                            {/*        Add a product*/}
-                                            {/*    </button>*/}
-                                            {/*</div>*/}
-
-                                            {/*<div className="fixed top-0 left-0 z-50">*/}
-                                            {/*    {isAddCouponsOpen &&*/}
-                                            {/*        <AddCoupons onClose={() => setIsAddCouponsOpen(false)}/>}*/}
-                                            {/*</div>*/}
-                                        </div>
-
-                                    </header>
-                                    <div className="mt-8 flow-root">
-                                        <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                                            <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-                                                <table className="min-w-full divide-y divide-gray-300">
-                                                    <thead>
-                                                    <tr>
-                                                        <th scope="col"
-                                                            className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                            Product
-                                                        </th>
-                                                        <th scope="col"
-                                                            className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                            Price and Quantity
-                                                        </th>
-                                                        <th scope="col"
-                                                            className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                            Customer and Vendor
-                                                        </th>
-                                                        <th scope="col"
-                                                            className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                            Delivery Status
-                                                        </th>
-                                                        <th scope="col"
-                                                            className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                            Date
-                                                        </th>
-                                                        <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-0">
-                                                            <span className="sr-only">View</span>
-                                                        </th>
-                                                    </tr>
-                                                    </thead>
-                                                    <tbody className="divide-y divide-gray-200 bg-white">
-                                                    {coupons.map((coupon) => (
-                                                        <tr key={coupon.id}>
-                                                            <td className="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0">
-                                                                <div className="flex items-center">
-                                                                    <div className="h-11 w-11 flex-shrink-0">
-                                                                        <img className="h-11 w-11 rounded-full"
-                                                                             src={`${assetServer}/images/products/${coupon.image}`} alt=""/>
-                                                                    </div>
-                                                                    <div className="ml-4">
-                                                                        <div
-                                                                            className="font-medium text-gray-900">{coupon.product_name}</div>
-                                                                        <div
-                                                                            className="mt-1 text-gray-500">#{coupon.id}</div>
-                                                                    </div>
-                                                                </div>
-                                                            </td>
-                                                            <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                                                <div className="text-gray-900">$ {coupon.total_price}</div>
-                                                                <div
-                                                                    className="mt-1 text-gray-500">{coupon.quantity}
-                                                                </div>
-                                                            </td>
-
-                                                            <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                                                <div className="text-gray-900">{coupon.user_name}</div>
-                                                                <div
-                                                                    className="mt-1 text-gray-500">{coupon.store_name}
-                                                                </div>
-                                                            </td>
-                                                            <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                                              <span
-                                                                  className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
-                                                                {coupon.status}
-                                                              </span>
-                                                            </td>
-                                                            <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                                                {new Date(coupon.created_at).toLocaleDateString()}
-                                                            </td>
-                                                            <td className="relative whitespace-nowrap py-5 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-                                                                <Link to={`/coupon/${coupon.id}`}
-                                                                      className="text-indigo-600 hover:text-indigo-900">
-                                                                    View<span className="sr-only">, {coupon.id}</span>
-                                                                </Link>
-                                                            </td>
-                                                        </tr>
-                                                    ))}
-                                                    </tbody>
-                                                </table>
+                                            <div className="mt-4 flex md:ml-4 md:mt-0">
+                                                <button
+                                                    type="button"
+                                                    className="inline-flex items-center rounded-md bg-red-800 px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                                                    onClick={handleDeleteCoupon}
+                                                >
+                                                    Delete Coupon
+                                                </button>
                                             </div>
                                         </div>
-                                    </div>
+                                    </header>
+                                    <form onSubmit={handleFormSubmit}>
+                                        <div className="space-y-12">
+                                        <div className="border-b border-gray-900/10 pb-12">
+                                                <h2 className="text-base font-semibold leading-7 text-gray-900">Category
+                                                    Information</h2>
+
+                                                <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                                                    <div
+                                                        className="sm:col-span-4">
+                                                        <div>
+                                                            <label
+                                                                htmlFor="project-name"
+                                                                className="block text-sm font-medium leading-6 text-gray-900 sm:mt-1.5"
+                                                            >
+                                                                Coupon Title
+                                                            </label>
+                                                        </div>
+                                                        <div className="sm:col-span-2">
+                                                            <input
+                                                                type="text"
+                                                                name="project-name"
+                                                                id="project-name"
+                                                                value={title}
+                                                                onChange={(e) => setTitle(e.target.value)}
+                                                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                                            />
+                                                        </div>
+                                                    </div>
+
+                                                    <div
+                                                        className="sm:col-span-4">
+                                                        <div>
+                                                            <label
+                                                                htmlFor="project-name"
+                                                                className="block text-sm font-medium leading-6 text-gray-900 sm:mt-1.5"
+                                                            >
+                                                                Code
+                                                            </label>
+                                                        </div>
+                                                        <div className="sm:col-span-2">
+                                                            <input
+                                                                type="text"
+                                                                name="project-name"
+                                                                id="project-name"
+                                                                value={code}
+                                                                onChange={(e) => setCode(e.target.value)}
+                                                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                                            />
+                                                        </div>
+                                                    </div>
+
+                                                    <div
+                                                        className="sm:col-span-4">
+                                                        <div>
+                                                            <label
+                                                                htmlFor="project-name"
+                                                                className="block text-sm font-medium leading-6 text-gray-900 sm:mt-1.5"
+                                                            >
+                                                                Type
+                                                            </label>
+                                                        </div>
+                                                        <div className="sm:col-span-2">
+                                                            <select
+                                                                name="discount_type"
+                                                                id="discount_type"
+                                                                value={discount_type}
+                                                                onChange={(e) => setDiscountType(e.target.value)}
+                                                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                                            >
+                                                                <option value="percent">Percentage</option>
+                                                                <option value="fixed">Flat Fee</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+
+                                                    <div
+                                                        className="sm:col-span-4">
+                                                        <div>
+                                                            <label
+                                                                htmlFor="project-name"
+                                                                className="block text-sm font-medium leading-6 text-gray-900 sm:mt-1.5"
+                                                            >
+                                                                Amount or Percentage Discount
+                                                            </label>
+                                                        </div>
+                                                        <div className="sm:col-span-2">
+                                                            <input
+                                                                type="text"
+                                                                name="discount"
+                                                                id="discount"
+                                                                value={discount}
+                                                                onChange={(e) => setDiscount(e.target.value)}
+                                                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                                            />
+                                                        </div>
+                                                    </div>
+
+                                                    <div
+                                                        className="sm:col-span-4">
+                                                        <div>
+                                                            <label
+                                                                htmlFor="project-name"
+                                                                className="block text-sm font-medium leading-6 text-gray-900 sm:mt-1.5"
+                                                            >
+                                                                Quantity
+                                                            </label>
+                                                        </div>
+                                                        <div className="sm:col-span-2">
+                                                            <input
+                                                                type="text"
+                                                                name="project-name"
+                                                                id="project-name"
+                                                                value={quantity}
+                                                                onChange={(e) => setQuantity(e.target.value)}
+                                                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                                            />
+                                                        </div>
+                                                    </div>
+
+                                                    <div
+                                                        className="sm:col-span-4">
+                                                        <div>
+                                                            <label
+                                                                htmlFor="project-name"
+                                                                className="block text-sm font-medium leading-6 text-gray-900 sm:mt-1.5"
+                                                            >
+                                                                Limits
+                                                            </label>
+                                                        </div>
+                                                        <div className="sm:col-span-2">
+                                                            <input
+                                                                type="text"
+                                                                name="project-name"
+                                                                id="project-name"
+                                                                value={limits}
+                                                                onChange={(e) => setLimits(e.target.value)}
+                                                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                                            />
+                                                        </div>
+                                                    </div>
+
+                                                    <div
+                                                        className="sm:col-span-4">
+                                                        <div>
+                                                            <label
+                                                                htmlFor="project-name"
+                                                                className="block text-sm font-medium leading-6 text-gray-900 sm:mt-1.5"
+                                                            >
+                                                                Date Start
+                                                            </label>
+                                                        </div>
+                                                        <div className="sm:col-span-2">
+                                                            <input
+                                                                type="date"
+                                                                name="project-name"
+                                                                id="project-name"
+                                                                value={start_date}
+                                                                onChange={(e) => setStartDate(e.target.value)}
+                                                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                                            />
+                                                        </div>
+                                                    </div>
+
+
+                                                    <div
+                                                        className="sm:col-span-4">
+                                                        <div>
+                                                            <label
+                                                                htmlFor="project-name"
+                                                                className="block text-sm font-medium leading-6 text-gray-900 sm:mt-1.5"
+                                                            >
+                                                                Date End
+                                                            </label>
+                                                        </div>
+                                                        <div className="sm:col-span-2">
+                                                            <input
+                                                                type="date"
+                                                                name="project-name"
+                                                                id="project-name"
+                                                                value={end_date}
+                                                                onChange={(e) => setEndDate(e.target.value)}
+                                                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                                            />
+                                                        </div>
+                                                    </div>
+
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                        <div className="mt-6 flex items-center justify-end gap-x-6">
+                                            <button type="button"
+                                                    className="text-sm font-semibold leading-6 text-gray-900">
+                                                Cancel
+                                            </button>
+                                            <button
+                                                type="submit"
+                                                className="rounded-md bg-primary px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                                            >
+                                                Save
+                                            </button>
+                                        </div>
+                                    </form>
                                 </div>
                             </main>
-
-
                         </div>
                     </main>
 

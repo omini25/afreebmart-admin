@@ -17,7 +17,7 @@ import axios from 'axios';
 import {server} from "../../server.js";
 import {assetServer} from "../../../assetServer.js";
 import banknotesIcon from "@heroicons/react/16/solid/esm/BanknotesIcon.js";
-import {ArrowRightStartOnRectangleIcon} from "@heroicons/react/20/solid/index.js";
+import {ArrowRightStartOnRectangleIcon, BackspaceIcon, StarIcon} from "@heroicons/react/20/solid/index.js";
 import AddCategory from "./AddCategory.jsx";
 import {Link, useNavigate, useParams} from "react-router-dom";
 import {toast} from "react-toastify";
@@ -37,8 +37,10 @@ const navigation = [
     { name: 'Messages', href: '/messages', icon: InboxStackIcon, current: false },
     { name: 'Users', href: '/users', icon: UserGroupIcon, current: false },
     { name: 'Vendors', href: '/vendors', icon: BuildingStorefrontIcon, current: false },
+    { name: 'Delivers', href: '/deliverers', icon: BackspaceIcon, current: false },
     { name: 'Admins', href: '/admins', icon: IdentificationIcon, current: false },
     { name: 'Coupons', href: '/coupons', icon: TagIcon, current: false },
+    {name: 'Reviews', href: '/reviews', icon: StarIcon, current:false},
     { name: 'Profile', href: '/profile', icon: UserCircleIcon, current: false },
 ]
 
@@ -81,7 +83,7 @@ export const CategoryEdit = () => {
 
         const categoryData = {
             category_name: categoryName,
-            sub_categories: subCategory.split(',').map(item => item.trim()).join(', '), // join the array back into a string
+            sub_categories: subCategory, // leave as an array
             image: imageFile
         };
 
@@ -91,6 +93,7 @@ export const CategoryEdit = () => {
                     'Content-Type': 'application/json'
                 }
             });
+
 
             if (response.status === 200) {
                 toast('Category updated successfully');
@@ -404,10 +407,11 @@ export const CategoryEdit = () => {
                                                             Sub Category
                                                         </label>
                                                         <div className="mt-2">
-                                                            <textarea
+                                                            <input
+                                                                type="text"
                                                                 id="sub_categories"
                                                                 name="sub_categories"
-                                                                rows={3}
+                                                                // rows={3}
                                                                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6"
                                                                 defaultValue={''}
                                                                 placeholder={`${categories.sub_categories}`}

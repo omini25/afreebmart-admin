@@ -3,6 +3,7 @@ import { Dialog, Transition } from '@headlessui/react'
 import {PhotoIcon} from "@heroicons/react/20/solid/index.js";
 import axios from "axios";
 import {server} from "../../server.js";
+import {toast} from "react-toastify";
 
 
 export function AddCategory({onClose}) {
@@ -28,13 +29,15 @@ export function AddCategory({onClose}) {
 
             if (response.status === 200) {
                 // Handle successful response here
-                console.log(response.data);
+                toast('Category added successfully', {type: 'success'});
             } else {
                 // Handle error here
                 console.error('Error submitting form');
+                toast('Error adding category', {type: 'error'})
             }
         } catch (error) {
             console.error('Error submitting form', error);
+            toast('Error adding category', {type: 'error'})
         }
     }
 

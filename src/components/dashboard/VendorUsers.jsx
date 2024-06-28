@@ -21,7 +21,8 @@ import {server} from "../../server.js";
 import {assetServer} from "../../../assetServer.js";
 import banknotesIcon from "@heroicons/react/16/solid/esm/BanknotesIcon.js";
 import {useNavigate} from "react-router-dom";
-import {ChevronDownIcon} from "@heroicons/react/20/solid/index.js";
+import {BackspaceIcon, ChevronDownIcon, StarIcon} from "@heroicons/react/20/solid/index.js";
+import {toast} from "react-toastify";
 
 
 
@@ -39,8 +40,10 @@ const navigation = [
     { name: 'Messages', href: '/messages', icon: InboxStackIcon, current: false },
     { name: 'Users', href: '/users', icon: UserGroupIcon, current: false },
     { name: 'Vendors', href: '/vendors', icon: BuildingStorefrontIcon, current: true },
+    { name: 'Delivers', href: '/deliverers', icon: BackspaceIcon, current: false },
     { name: 'Admins', href: '/admins', icon: IdentificationIcon, current: false },
     { name: 'Coupons', href: '/coupons', icon: TagIcon, current: false },
+    { name: 'Reviews', href: '/reviews', icon: StarIcon, current:false},
     { name: 'Profile', href: '/profile', icon: UserCircleIcon, current: false },
 ]
 
@@ -471,9 +474,9 @@ export const VendorUsers = () => {
                                                                 {new Date(users.created_at).toLocaleDateString()}
                                                             </td>
                                                             <td className="relative whitespace-nowrap py-5 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-                                                                <a href="#"
+                                                                <a href={`/edit-vendor/${users.id}`}
                                                                    className="text-indigo-600 hover:text-indigo-900">
-                                                                    Suspend<span className="sr-only">, {users.id}</span>
+                                                                    View<span className="sr-only">, {users.id}</span>
                                                                 </a>
                                                             </td>
 
@@ -484,6 +487,7 @@ export const VendorUsers = () => {
                                                                         try {
                                                                             const response = await axios.put(`${server}/admin/users/${users.id}/suspend`);
                                                                             console.log(response.data);
+                                                                            toast('Vendor Suspended')
                                                                             // You might want to update the users list or show a notification here
                                                                         } catch (error) {
                                                                             console.error('Failed to suspend user:', error);
