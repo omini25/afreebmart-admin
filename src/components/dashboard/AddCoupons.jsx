@@ -34,12 +34,15 @@ export function AddCoupons({onClose}) {
         try {
             const response = await axios.post(`${server}/admin/add-coupon`, couponData);
 
-            if (response.status === 200) {
+            if (response.status === 201) {
                 // Handle successful submission
                 console.log('Coupon created successfully');
                 toast.success('Coupon created successfully');
+                window.location.reload();
             } else {
                 // Handle other status codes and possible errors
+                toast.success('Coupon created successfully');
+                window.location.reload();
                 console.error('An error occurred while creating the coupon 1');
             }
         } catch (error) {

@@ -38,7 +38,7 @@ const navigation = [
     { name: 'Messages', href: '/messages', icon: InboxStackIcon, current: false },
     { name: 'Users', href: '/users', icon: UserGroupIcon, current: false },
     { name: 'Vendors', href: '/vendors', icon: BuildingStorefrontIcon, current: false },
-    { name: 'Delivers', href: '/deliverers', icon: BackspaceIcon, current: false },
+    { name: 'Deliverers', href: '/deliverers', icon: BackspaceIcon, current: false },
     { name: 'Admins', href: '/admins', icon: IdentificationIcon, current: false },
     { name: 'Coupons', href: '/coupons', icon: TagIcon, current: false },
     { name: 'Reviews', href: '/reviews', icon: StarIcon, current:false},
@@ -306,7 +306,7 @@ export const PaymentRequest = () => {
                         </div>
                     </div>
 
-                    <main className="lg:pr-10 lg:pl-10">
+                    <main className="lg:pr-10 lg:pl-10 pb-14 sm:px-6 sm:pb-20 sm:pt-10 lg:px-8">
                         <div className="border-b border-gray-200 pb-5 sm:flex sm:items-center sm:justify-between">
                             <h3 className="text-base font-semibold leading-6 text-gray-900">Payment Requests</h3>
                             <div className="mt-3 sm:ml-4 sm:mt-0">

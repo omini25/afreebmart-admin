@@ -1,6 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../../redux/actions/actions.js';
-// import {AiOutlineEye, AiOutlineEyeInvisible} from "react-icons/ai";
 import {useLocation} from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import {toast} from "react-toastify";
@@ -20,7 +19,7 @@ export const Login = () => {
         event.preventDefault();
         try {
             const userData = await dispatch(login(email, password));
-            toast.success('Login successful!');
+            // toast.success('Login successful!');
             navigate('/dashboard');
         } catch (error) {
             toast.error('Login failed!');
@@ -34,8 +33,8 @@ export const Login = () => {
                 <div className="sm:mx-auto sm:w-full sm:max-w-md">
                     <img
                         className="mx-auto h-10 w-auto"
-                        src="https://afreebmart.com/backend/images/logo/afreemart-logo.png"
-                        alt="Your Company"
+                        src="src/assets/afreemart-logo.png"
+                        alt="Afreebmart"
                     />
                     <h2 className="mt-6 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
                         Login into your admin dashboard
@@ -100,12 +99,12 @@ export const Login = () => {
                             <div>
                                 <button
                                     type="submit" disabled={loading}
-                                    className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                                    className="flex w-full justify-center rounded-md bg-primary px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-secondary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
                                 >
                                     Log in
                                 </button>
                             </div>
-                            {error && <p>{error}</p>}
+                            {/*{error && <p>{error}</p>}*/}
                         </form>
 
                         <div>

@@ -34,7 +34,7 @@ const navigation = [
     { name: 'Messages', href: '/messages', icon: InboxStackIcon, current: false },
     { name: 'Users', href: '/users', icon: UserGroupIcon, current: false },
     { name: 'Vendors', href: '/vendors', icon: BuildingStorefrontIcon, current: false },
-    { name: 'Delivers', href: '/deliverers', icon: BackspaceIcon, current: false },
+    { name: 'Deliverers', href: '/deliverers', icon: BackspaceIcon, current: false },
     { name: 'Admins', href: '/admins', icon: IdentificationIcon, current: false },
     { name: 'Coupons', href: '/coupons', icon: TagIcon, current: false },
     { name: 'Reviews', href: '/reviews', icon: StarIcon, current:false},
@@ -62,7 +62,7 @@ export const Delivery = () => {
             try {
                 const response = await axios.get(`${server}/admin/deliveries`);
                 // Flatten the array structure
-                const flattenedOrders = response.data.orders;
+                const flattenedOrders = response.data;
                 setOrders(flattenedOrders);
             } catch (error) {
                 console.error('Failed to fetch orders:', error);
@@ -71,7 +71,6 @@ export const Delivery = () => {
 
         fetchOrders();
     }, []);
-
 
     return (
         <>
@@ -359,11 +358,11 @@ export const Delivery = () => {
                                                     <tr>
                                                         <th scope="col"
                                                             className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                            Product
+                                                            Product & Delivery Id
                                                         </th>
                                                         <th scope="col"
                                                             className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                            Address and Deliverer
+                                                            Deliverer & Id
                                                         </th>
                                                         <th scope="col"
                                                             className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
@@ -402,14 +401,14 @@ export const Delivery = () => {
                                                             </td>
                                                             <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
                                                                 <div
-                                                                    className="text-gray-900">$ {order.total_price}</div>
+                                                                    className="text-gray-900">{order.deliverer}</div>
                                                                 <div
-                                                                    className="mt-1 text-gray-500">{order.quantity}
+                                                                    className="mt-1 text-gray-500">{order.deliverer_id}
                                                                 </div>
                                                             </td>
 
                                                             <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                                                <div className="text-gray-900">{order.user_name}</div>
+                                                                <div className="text-gray-900">{order.product_owner}</div>
                                                                 <div
                                                                     className="mt-1 text-gray-500">{order.store_name}
                                                                 </div>
@@ -424,7 +423,7 @@ export const Delivery = () => {
                                                                 {new Date(order.created_at).toLocaleDateString()}
                                                             </td>
                                                             <td className="relative whitespace-nowrap py-5 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-                                                                <Link to={`/order-details/${order.id}`}
+                                                                <Link to={`/delivery-details/${order.id}`}
                                                                       className="text-indigo-600 hover:text-indigo-900">
                                                                     View<span className="sr-only">, {order.id}</span>
                                                                 </Link>

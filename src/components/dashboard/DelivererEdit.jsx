@@ -5,20 +5,11 @@ import {
     GlobeAltIcon,
     XMarkIcon,
     Bars3Icon,
-    BuildingStorefrontIcon,
-    IdentificationIcon,
+    BuildingStorefrontIcon, IdentificationIcon,
     InboxStackIcon,
-    MagnifyingGlassIcon,
-    TagIcon,
-    UserCircleIcon,
+    MagnifyingGlassIcon, TagIcon, UserCircleIcon,
     UserGroupIcon,
-    ShoppingBagIcon,
-    ShoppingCartIcon,
-    TruckIcon,
-    WalletIcon,
-    ListBulletIcon,
-    ArrowRightStartOnRectangleIcon,
-    BackspaceIcon, StarIcon,
+    ShoppingBagIcon, ShoppingCartIcon, TruckIcon, WalletIcon, ListBulletIcon, ArrowRightStartOnRectangleIcon,
 } from '@heroicons/react/20/solid'
 import { useDispatch } from 'react-redux';
 import { logout } from '../../redux/actions/actions';
@@ -27,7 +18,7 @@ import {server} from "../../server.js";
 import {assetServer} from "../../../assetServer.js";
 import banknotesIcon from "@heroicons/react/16/solid/esm/BanknotesIcon.js";
 import {Link, useNavigate, useParams} from "react-router-dom";
-import {BarsArrowUpIcon, ChevronDownIcon} from "@heroicons/react/20/solid/index.js";
+import {BackspaceIcon, BarsArrowUpIcon, ChevronDownIcon, StarIcon} from "@heroicons/react/20/solid/index.js";
 import AddProduct from "./AddProduct.jsx";
 import {toast} from "react-toastify";
 
@@ -46,15 +37,14 @@ const navigation = [
     { name: 'Payment History', href: '/payments', icon: banknotesIcon, current: false },
     { name: 'Payment Request', href: '/payments-requests', icon: WalletIcon, current: false },
     { name: 'Messages', href: '/messages', icon: InboxStackIcon, current: false },
-    { name: 'Users', href: '/users', icon: UserGroupIcon, current: true },
+    { name: 'Users', href: '/users', icon: UserGroupIcon, current: false },
     { name: 'Vendors', href: '/vendors', icon: BuildingStorefrontIcon, current: false },
-    { name: 'Deliverers', href: '/deliverers', icon: BackspaceIcon, current: false },
+    { name: 'Deliverers', href: '/deliverers', icon: BackspaceIcon, current: true },
     { name: 'Admins', href: '/admins', icon: IdentificationIcon, current: false },
     { name: 'Coupons', href: '/coupons', icon: TagIcon, current: false },
     { name: 'Reviews', href: '/reviews', icon: StarIcon, current:false},
     { name: 'Profile', href: '/profile', icon: UserCircleIcon, current: false },
 ]
-
 
 
 const statuses = { Completed: 'text-green-400 bg-green-400/10', Error: 'text-rose-400 bg-rose-400/10' }
@@ -67,7 +57,7 @@ function classNames(...classes) {
 }
 
 
-export const UserEdit = () => {
+export const DelivererEdit = () => {
     const dispatch = useDispatch();
     const [sidebarOpen, setSidebarOpen] = useState(false)
     const userItem = localStorage.getItem('user');
@@ -79,13 +69,12 @@ export const UserEdit = () => {
 
     const secondaryNavigation = [
         { name: 'Overview', onClick: () => setCurrentTab('Overview') },
-        { name: 'Orders', onClick: () => setCurrentTab('Orders') },
-        { name: 'Groups', onClick: () => setCurrentTab('Products') },
-
+        { name: 'Deliveries', onClick: () => setCurrentTab('Products') },
+        // { name: 'Orders', onClick: () => setCurrentTab('Orders') },
+        // { name: 'Ads', onClick: () => setCurrentTab('Ads') },
         { name: 'Transactions', onClick: () => setCurrentTab('Transactions') },
         { name: 'Settings', onClick: () => setCurrentTab('Settings') },
     ];
-
 
     return (
         <>
@@ -335,12 +324,13 @@ export const UserEdit = () => {
                         </header>
 
                         <div>
-                            {currentTab === 'Overview' && <OverviewContent setCurrentTab={setCurrentTab}/>}
+                            {currentTab === 'Overview' && <OverviewContent setCurrentTab={setCurrentTab}/> }
                             {currentTab === 'Products' && <ProductsContent setCurrentTab={setCurrentTab}/>}
-                            {currentTab === 'Orders' && <OrdersContent setCurrentTab={setCurrentTab}/>}
+                            {/*{currentTab === 'Orders' && <OrdersContent setCurrentTab={setCurrentTab}/>}*/}
+                            {/*{currentTab === 'Ads' && <AdsContent setCurrentTab={setCurrentTab}/>}*/}
                             {currentTab === 'Transactions' && <TransactionsContent setCurrentTab={setCurrentTab}/>}
                             {currentTab === 'Settings' && <SettingsContent setCurrentTab={setCurrentTab}/>}
-                            {/* ... */}
+                            {/* Add similar lines for the other tabs */}
                         </div>
 
                     </main>
@@ -354,19 +344,16 @@ export const UserEdit = () => {
 const OverviewContent = ({ setCurrentTab }) => {
     const [vendorDetails, setVendorDetails] = useState(null);
     const [activityItems, setActivityItems] = useState([]);
-
-    const {id} = useParams();
+    const { id } = useParams();
 
     const [isLoading, setIsLoading] = useState(true); // Add this line
-
 
     useEffect(() => {
         const fetchVendorDetails = async () => {
             setIsLoading(true); // Set loading state to true before starting the API call
             try {
-                const response = await axios.get(`${server}/admin/all-user-details/${id}`);
+                const response = await axios.get(`${server}/admin/delivery/${id}/details`);
                 setVendorDetails(response.data);
-                console.log(response)
             } catch (error) {
                 console.error('Failed to fetch vendor details:', error);
             }
@@ -376,11 +363,13 @@ const OverviewContent = ({ setCurrentTab }) => {
         fetchVendorDetails();
     }, [id]);
 
+    console.log(vendorDetails)
+
     useEffect(() => {
         const fetchActivityItems = async () => {
             try {
                 // Replace with your own API endpoint
-                const response = await axios.get(`${server}/user/${id}/actions`);
+                const response = await axios.get(`${server}/admin/delivery/${id}/details`);
                 setActivityItems(response.data);
             } catch (error) {
                 console.error('Failed to fetch activity items:', error);
@@ -389,7 +378,6 @@ const OverviewContent = ({ setCurrentTab }) => {
 
         fetchActivityItems();
     }, []);
-
 
     if (isLoading) {
         return (
@@ -458,14 +446,11 @@ const OverviewContent = ({ setCurrentTab }) => {
         );
     }
 
-    console.log(vendorDetails)
 
 
     const stats = [
-        // { name: 'Products', value: vendorDetails.products ? vendorDetails.products.length : 0 },
-        { name: 'Orders', value: vendorDetails && vendorDetails.orders ? vendorDetails.orders.length : 0 },
-        { name: 'Groups', value: vendorDetails && vendorDetails.groups ? vendorDetails.groups.length : 0 },
-        // { name: 'Wallet Balance', value: `$${vendorDetails.wallet.wallet_balance}` },
+        { name: 'Deliveries', value: vendorDetails.deliveries ? vendorDetails.deliveries.length : 0 },
+        { name: 'Wallet Balance', value: `$${vendorDetails.deliverer.wallet_balance}` },
     ]
 
     return (
@@ -477,20 +462,18 @@ const OverviewContent = ({ setCurrentTab }) => {
                     <div>
                         <div className="flex items-center gap-x-3">
                             <div
-                                className={`flex-none rounded-full p-1 text-${vendorDetails?.status === 'Active' ? 'green-400' : 'red-400'}`}>
+                                className={`flex-none rounded-full p-1 text-${vendorDetails.user.status === 'Active' ? 'green-400' : 'red-400'}`}>
                                 <div className="h-2 w-2 rounded-full bg-current"/>
                             </div>
-                            <div className="flex gap-x-3 text-base leading-7">
-                                <span className="font-semibold text-black">{vendorDetails?.name}</span>
-                                <span className="text-gray-600">/</span>
-                                <span className="font-semibold text-black">{vendorDetails?.email}</span>
-                            </div>
+                            <h1 className="flex gap-x-3 text-base leading-7">
+                                <span className="font-semibold text-black">{vendorDetails.user.name}</span>
+                            </h1>
                         </div>
-                        <p className="mt-2 text-xs leading-6 text-gray-400">{vendorDetails?.phone}</p>
+                        <p className="mt-2 text-xs leading-6 text-gray-400">{vendorDetails.deliverer.location}</p>
                     </div>
                     <div
                         className="order-first flex-none rounded-full bg-indigo-400/10 px-2 py-1 text-xs font-medium text-indigo-400 ring-1 ring-inset ring-indigo-400/30 sm:order-none">
-                        {vendorDetails?.status}
+                        {vendorDetails.user.status}
                     </div>
                 </div>
 
@@ -551,7 +534,7 @@ const OverviewContent = ({ setCurrentTab }) => {
                                 </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gray-200 bg-white">
-                                {vendorDetails.orders && vendorDetails.orders.map((order) => (
+                                {activityItems.deliveries && activityItems.deliveries.map((order) => (
                                     <tr key={order.id}>
                                         <td className="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0">
                                             <div className="flex items-center">
@@ -567,9 +550,8 @@ const OverviewContent = ({ setCurrentTab }) => {
                                             </div>
                                         </td>
                                         <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                            {/*<div*/}
-                                            {/*    className="text-gray-900">{order.vendor ? order.vendor.store_name : 'No vendor'}</div>*/}
-                                            <div className="mt-1 text-gray-500">{order.price}</div>
+                                            <div className="text-gray-900">{order.product_owner}</div>
+                                            <div className="mt-1 text-gray-500">{order.delivery_amount}</div>
                                         </td>
                                         <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
                                           <span
@@ -585,7 +567,7 @@ const OverviewContent = ({ setCurrentTab }) => {
                                 ))}
 
                                 {/*payments*/}
-                                {vendorDetails.payments && vendorDetails.payments.map((payment) => (
+                                {activityItems.payments && activityItems.payments.map((payment) => (
                                     <tr key={payment.id}>
                                         <td className="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0">
                                             <div className="flex items-center">
@@ -594,19 +576,19 @@ const OverviewContent = ({ setCurrentTab }) => {
                                                 </div>
                                                 <div className="ml-4">
                                                     <div
-                                                        className="font-medium text-gray-900">{payment.product.product_name}</div>
+                                                        className="font-medium text-gray-900">{payment.amount}</div>
                                                     <div className="mt-1 text-gray-500">{payment.id}</div>
                                                 </div>
                                             </div>
                                         </td>
                                         <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                            <div className="text-gray-900">{payment.total_cost}</div>
-                                            <div className="mt-1 text-gray-500">{payment.product_cost}</div>
+                                            <div className="text-gray-900">{payment.bank_name}</div>
+                                            <div className="mt-1 text-gray-500">{payment.account_number}</div>
                                         </td>
                                         <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
                                           <span
                                               className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
-                                            {payment.order_status}
+                                            {payment.status}
                                           </span>
                                         </td>
                                         <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
@@ -616,69 +598,6 @@ const OverviewContent = ({ setCurrentTab }) => {
                                     </tr>
                                 ))}
 
-                                {/*reviews*/}
-                                {vendorDetails.reviews && vendorDetails.reviews.map((review) => (
-                                    <tr key={review.id}>
-                                        <td className="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0">
-                                            <div className="flex items-center">
-                                                <div className="h-11 w-11 flex-shrink-0">
-                                                    <StarIcon className="h-8 w-8 text-gray-400" aria-hidden="true"/>
-                                                </div>
-                                                <div className="ml-4">
-                                                    {/*<div*/}
-                                                    {/*    className="font-medium text-gray-900">{review.product.product_name}</div>*/}
-                                                    <div className="mt-1 text-gray-500">{review.id}</div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                            <div className="text-gray-900">{review.rating}</div>
-                                            <div className="mt-1 text-gray-500">{review.comment}</div>
-                                        </td>
-                                        <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                          <span
-                                            className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
-                                            {review.reported === 1 ? 'Reported to Admin' : 'Not Reported'}
-                                          </span>
-                                        </td>
-                                        <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                            {new Date(review.created_at).toLocaleString()}
-                                        </td>
-
-                                    </tr>
-                                ))}
-
-                                {/*groups*/}
-                                {activityItems.groups && activityItems.groups.map((group) => (
-                                    <tr key={group.id}>
-                                        <td className="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0">
-                                            <div className="flex items-center">
-                                                <div className="h-11 w-11 flex-shrink-0">
-                                                    <UserGroupIcon className="h-8 w-8 text-gray-400"
-                                                                   aria-hidden="true"/>
-                                                </div>
-                                                <div className="ml-4">
-                                                    <div className="font-medium text-gray-900">{group.name}</div>
-                                                    <div className="mt-1 text-gray-500">{group.group_id}</div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                            <div className="text-gray-900">{group.role}</div>
-                                            <div className="mt-1 text-gray-500">{group.product.product_name} </div>
-                                        </td>
-
-                                        <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                            <span className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
-                                            {group.status}
-                                            </span>
-                                        </td>
-                                        <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                            {new Date(group.created_at).toLocaleString()}
-                                        </td>
-
-                                    </tr>
-                                    ))}
                                 </tbody>
                             </table>
                         </div>
@@ -689,26 +608,26 @@ const OverviewContent = ({ setCurrentTab }) => {
     );
 };
 
-const ProductsContent = ({
-    setCurrentTab
-}) => {
-    // const [vendorDetails, setVendorDetails] = useState(null);
-
+const ProductsContent = ({ setCurrentTab }) => {
     const userItem = localStorage.getItem('user');
     const user = userItem ? JSON.parse(userItem) : null;
     const [products, setProducts] = useState([]);
     const [isAddProductOpen, setIsAddProductOpen] = useState(false);
-    const navigate = useNavigate();
     const [selectedSort, setSelectedSort] = useState('Latest');
-    const [searchTerm, setSearchTerm] = useState('');
+    const [searchInput, setSearchInput] = useState('');
+    const [filteredProducts, setFilteredProducts] = useState([]);
+
     const {id} = useParams();
+
 
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await axios.get(`${server}/user/group/${id}`);
+                const response = await axios.get(`${server}/admin/delivery/${id}/details`);
 
-                setProducts(response.data.groups.flat());
+                const productsData = response.data.deliveries;
+                setProducts(productsData);
+                setFilteredProducts(productsData); // initialize filteredProducts with all products
             } catch (error) {
                 console.error('Failed to fetch products:', error);
             }
@@ -717,6 +636,35 @@ const ProductsContent = ({
         fetchProducts();
     }, []);
 
+    const sortProducts = (products, option) => {
+        switch (option) {
+            case 'Latest':
+                return [...products].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+            case 'Pending':
+                return products.filter(product => product.status === 'pending');
+            case 'Suspended':
+                return products.filter(product => product.status === 'suspended');
+            case 'Highest':
+                return [...products].sort((a, b) => b.price - a.price);
+            case 'Lowest':
+                return [...products].sort((a, b) => a.price - b.price);
+            default:
+                return products;
+        }
+    };
+
+    const handleSearch = (e) => {
+        const value = e.target.value;
+        setSearchInput(value);
+        if (value === '') {
+            setFilteredProducts(products);
+        } else {
+            setFilteredProducts(products.filter(product =>
+                product.product_name.toLowerCase().includes(value.toLowerCase()) ||
+                product.id.toString().includes(value)
+            ));
+        }
+    };
 
     return (
         <>
@@ -726,11 +674,15 @@ const ProductsContent = ({
 
                     <main className="pb-14 sm:px-6 sm:pb-20 sm:pt-10 lg:px-8">
                         <div className="px-4 sm:px-6 lg:px-8">
-
-
                             <div
                                 className="border-b border-gray-200 pb-5 sm:flex sm:items-center sm:justify-between">
-                                <h3 className="text-base font-semibold leading-6 text-gray-900">Groups</h3>
+                                <div>
+
+                                    <div className="mt-3 flex md:ml-4 md:mt-0">
+
+                                    </div>
+                                </div>
+
                                 <div className="mt-3 sm:ml-4 sm:mt-0">
                                     <label htmlFor="mobile-search-candidate" className="sr-only">
                                         Search
@@ -751,25 +703,25 @@ const ProductsContent = ({
                                                 id="mobile-search-candidate"
                                                 className="block w-full rounded-none rounded-l-md border-0 py-1.5 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:hidden"
                                                 placeholder="Search"
-                                                value={searchTerm}
-                                                onChange={event => setSearchTerm(event.target.value)}
+                                                value={searchInput}
+                                                onChange={handleSearch}
                                             />
                                             <input
                                                 type="text"
                                                 name="desktop-search-candidate"
                                                 id="desktop-search-candidate"
                                                 className="hidden w-full rounded-none rounded-l-md border-0 py-1.5 pl-10 text-sm leading-6 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:block"
-                                                placeholder="Search groups"
-                                                value={searchTerm}
-                                                onChange={event => setSearchTerm(event.target.value)}
+                                                placeholder="Search Products"
+                                                value={searchInput}
+                                                onChange={handleSearch}
                                             />
                                         </div>
-                                        <Menu as="div" className="relative inline-block text-left">
+                                        <Menu as="div" className="relative inline-block text-left ml-5">
                                             <div>
                                                 <Menu.Button
-                                                    className="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                                                    className="inline-flex justify-between w-full px-4 py-2 text-sm font-medium text-white bg-gray-800 rounded-md hover:bg-gray-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
                                                     {selectedSort}
-                                                    <ChevronDownIcon className="-mr-1 h-5 w-5 text-gray-400"
+                                                    <ChevronDownIcon className="w-5 h-5 ml-2 -mr-1"
                                                                      aria-hidden="true"/>
                                                 </Menu.Button>
                                             </div>
@@ -785,252 +737,16 @@ const ProductsContent = ({
                                                 <Menu.Items
                                                     className="absolute right-0 w-56 mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                                                     <div className="px-1 py-1 ">
-                                                        {['Latest', 'Active', 'Suspended',].map((sort) => (
-                                                            <Menu.Item key={sort}>
+                                                        {['Latest', 'Pending', 'Suspended', 'Highest', 'Lowest'].map((option) => (
+                                                            <Menu.Item key={option}>
                                                                 {({active}) => (
                                                                     <button
-                                                                        onClick={() => setSelectedSort(sort)}
+                                                                        onClick={() => setSelectedSort(option)}
                                                                         className={`${
                                                                             active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'
                                                                         } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
                                                                     >
-                                                                        {sort}
-                                                                    </button>
-                                                                )}
-                                                            </Menu.Item>
-                                                        ))}
-                                                    </div>
-                                                </Menu.Items>
-                                            </Transition>
-                                        </Menu>
-                                    </div>
-
-                                </div>
-                            </div>
-
-
-                            <div className="mt-8 flow-root">
-                                <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                                    <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-                                        <table className="min-w-full divide-y divide-gray-300">
-                                            <thead>
-                                            <tr>
-                                                <th scope="col"
-                                                    className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">
-                                                    Name/Id
-                                                </th>
-                                                <th scope="col"
-                                                    className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                    Product
-                                                </th>
-                                                <th scope="col"
-                                                    className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                    Role
-                                                </th>
-                                                <th scope="col"
-                                                    className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                    Status
-                                                </th>
-                                                <th scope="col"
-                                                    className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                    Number of members
-                                                </th>
-                                                {/*<th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-0">*/}
-                                                {/*    <span className="sr-only">Action</span>*/}
-                                                {/*</th>*/}
-                                            </tr>
-                                            </thead>
-                                            <tbody className="divide-y divide-gray-200 bg-white">
-                                            {products.filter(product => {
-                                                return (
-                                                    product.group_id.toString().includes(searchTerm) ||
-                                                    product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                                                    product.product_name.toLowerCase().includes(searchTerm.toLowerCase())
-                                                );
-                                            }).sort((a, b) => {
-                                                switch (selectedSort) {
-                                                    case 'Latest':
-                                                        return new Date(b.created_at) - new Date(a.created_at);
-                                                    case 'Pending':
-                                                        return a.status === 'active' ? -1 : 1;
-                                                    case 'Suspended':
-                                                        return a.status === 'suspended' ? -1 : 1;
-                                                    case 'Active':
-                                                        return a.status === 'Active' ? -1 : 1;
-                                                    case 'Highest':
-                                                        return b.price - a.price;
-                                                    case 'Lowest':
-                                                        return a.price - b.price;
-                                                    default:
-                                                        return 0;
-                                                }
-                                            }).map((product) => (
-                                                <tr key={product.id}>
-                                                    <td className="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0">
-                                                        <div className="flex items-center">
-                                                            <div className="ml-4">
-                                                                <div
-                                                                    className="font-medium text-gray-900">{product.name}</div>
-                                                                <div
-                                                                    className="mt-1 text-gray-500">#{product.group_id}</div>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                                        <div
-                                                            className="text-gray-900">{product.product_name}</div>
-
-                                                    </td>
-
-                                                    <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                                        <div className="text-gray-900">{product.role}</div>
-                                                    </td>
-                                                    <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                                                <span
-                                                                    className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
-                                                                    {product.status}
-                                                                </span>
-                                                    </td>
-                                                    <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                                        <div
-                                                            className="text-gray-900">{product.users_count}</div>
-
-                                                    </td>
-                                                    {/*<td className="relative whitespace-nowrap py-5 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">*/}
-                                                    {/*    <Link to={`/product/${product.id}`}*/}
-                                                    {/*          className="text-indigo-600 hover:text-indigo-900">*/}
-                                                    {/*        View/Edit<span*/}
-                                                    {/*        className="sr-only">, {product.name}</span>*/}
-                                                    {/*    </Link>*/}
-                                                    {/*</td>*/}
-                                                </tr>
-                                            ))}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </main>
-
-
-                </div>
-            </main>
-        </>
-    );
-};
-
-
-const OrdersContent = ({ setCurrentTab }) => {
-    // const [vendorDetails, setVendorDetails] = useState(null);
-    const dispatch = useDispatch();
-    const [sidebarOpen, setSidebarOpen] = useState(false)
-    const userItem = localStorage.getItem('user');
-    const user = userItem ? JSON.parse(userItem) : null;
-    const navigate = useNavigate();
-    const [selectedSort, setSelectedSort] = useState('Latest');
-    const [orders, setOrders] = useState([]);
-    const [searchTerm, setSearchTerm] = useState('');
-    const {id} = useParams();
-
-
-
-    useEffect(() => {
-        const fetchOrders = async () => {
-            try {
-                const response = await axios.get(`${server}/order/${id}`);
-                if (response.data && Array.isArray(response.data.orders)) {
-                    setOrders(response.data.orders);
-                    console.log("Orders set successfully:", response.data.orders);
-                } else {
-                    console.error("Unexpected data structure:", response.data);
-                }
-            } catch (error) {
-                console.error('Failed to fetch orders:', error);
-                // Optionally, update the UI to reflect the error state
-            }
-        };
-
-        fetchOrders();
-    }, []);
-
-
-    return (
-        <>
-            <main className="lg:pr-10 lg:pl-10">
-                <div className="bg-white">
-
-
-                    <main className="pb-14 sm:px-6 sm:pb-20 sm:pt-10 lg:px-8">
-                        <div className="px-4 sm:px-6 lg:px-8">
-                            <div
-                                className="border-b border-gray-200 pb-5 sm:flex sm:items-center sm:justify-between">
-                                <h3 className="text-base font-semibold leading-6 text-gray-900">Orders</h3>
-                                <div className="mt-3 sm:ml-4 sm:mt-0">
-                                    <label htmlFor="mobile-search-candidate" className="sr-only">
-                                        Search
-                                    </label>
-                                    <label htmlFor="desktop-search-candidate" className="sr-only">
-                                        Search
-                                    </label>
-                                    <div className="flex rounded-md shadow-sm">
-                                        <div className="relative flex-grow focus-within:z-10">
-                                            <div
-                                                className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                                                <MagnifyingGlassIcon className="h-5 w-5 text-gray-400"
-                                                                     aria-hidden="true"/>
-                                            </div>
-                                            <input
-                                                type="text"
-                                                name="mobile-search-candidate"
-                                                id="mobile-search-candidate"
-                                                className="block w-full rounded-none rounded-l-md border-0 py-1.5 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:hidden"
-                                                placeholder="Search"
-                                                value={searchTerm}
-                                                onChange={event => setSearchTerm(event.target.value)}
-                                            />
-                                            <input
-                                                type="text"
-                                                name="desktop-search-candidate"
-                                                id="desktop-search-candidate"
-                                                className="hidden w-full rounded-none rounded-l-md border-0 py-1.5 pl-10 text-sm leading-6 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:block"
-                                                placeholder="Search orders"
-                                                value={searchTerm}
-                                                onChange={event => setSearchTerm(event.target.value)}
-                                            />
-                                        </div>
-                                        <Menu as="div" className="relative inline-block text-left">
-                                            <div>
-                                                <Menu.Button
-                                                    className="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-                                                    {/*<SortAscendingIcon className="-ml-0.5 h-5 w-5 text-gray-400" aria-hidden="true" />*/}
-                                                    {selectedSort}
-                                                    <ChevronDownIcon className="-mr-1 h-5 w-5 text-gray-400"
-                                                                     aria-hidden="true"/>
-                                                </Menu.Button>
-                                            </div>
-                                            <Transition
-                                                as={Fragment}
-                                                enter="transition ease-out duration-100"
-                                                enterFrom="transform opacity-0 scale-95"
-                                                enterTo="transform opacity-100 scale-100"
-                                                leave="transition ease-in duration-75"
-                                                leaveFrom="transform opacity-100 scale-100"
-                                                leaveTo="transform opacity-0 scale-95"
-                                            >
-                                                <Menu.Items
-                                                    className="absolute right-0 w-56 mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                                                    <div className="px-1 py-1 ">
-                                                        {['Latest', 'Highest', 'Lowest', 'Pending', 'Successful', 'Cancelled'].map((sort) => (
-                                                            <Menu.Item key={sort}>
-                                                                {({active}) => (
-                                                                    <button
-                                                                        onClick={() => setSelectedSort(sort)}
-                                                                        className={`${
-                                                                            active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'
-                                                                        } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
-                                                                    >
-                                                                        {sort}
+                                                                        {option}
                                                                     </button>
                                                                 )}
                                                             </Menu.Item>
@@ -1050,15 +766,15 @@ const OrdersContent = ({ setCurrentTab }) => {
                                             <tr>
                                                 <th scope="col"
                                                     className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                    Product
+                                                    Product & Delivery Id
                                                 </th>
                                                 <th scope="col"
                                                     className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                    Price and Quantity
+                                                    Deliverer & Id
                                                 </th>
                                                 <th scope="col"
                                                     className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                    Vendor
+                                                    Customer and Vendor
                                                 </th>
                                                 <th scope="col"
                                                     className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
@@ -1074,68 +790,50 @@ const OrdersContent = ({ setCurrentTab }) => {
                                             </tr>
                                             </thead>
                                             <tbody className="divide-y divide-gray-200 bg-white">
-                                            {orders.filter(order => {
-                                                return (
-                                                    order.id.toString().includes(searchTerm) ||
-                                                    (order.product_name && order.product_name.toLowerCase().includes(searchTerm.toLowerCase()))
-                                                );
-                                            }).sort((a, b) => {
-                                                switch (selectedSort) {
-                                                    case 'Latest':
-                                                        return new Date(b.created_at) - new Date(a.created_at);
-                                                    case 'Highest':
-                                                        return b.total_price - a.total_price;
-                                                    case 'Lowest':
-                                                        return a.total_price - b.total_price;
-                                                    case 'Pending':
-                                                        return a.status === 'Pending' ? -1 : 1;
-                                                    case 'Successful':
-                                                        return a.status === 'Successful' ? -1 : 1;
-                                                    case 'Cancelled':
-                                                        return a.status === 'Cancelled' ? -1 : 1;
-                                                    default:
-                                                        return 0;
-                                                }
-                                            }).map((order) => (
-                                                <tr key={order.id}>
+                                            {sortProducts(filteredProducts, selectedSort).map((product) => (
+                                                <tr key={product.id}>
                                                     <td className="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0">
                                                         <div className="flex items-center">
                                                             <div className="h-11 w-11 flex-shrink-0">
-                                                                {/* Ensure `order.image` is a string path to an image */}
                                                                 <img className="h-11 w-11 rounded-full"
-                                                                     src={`${assetServer}/images/products/${order.image}`}
-                                                                     alt={order.product_name || 'Product image'}/>
+                                                                     src={`${assetServer}/images/products/${product.image}`}
+                                                                     alt=""/>
                                                             </div>
                                                             <div className="ml-4">
                                                                 <div
-                                                                    className="font-medium text-gray-900">{order.product_name || 'N/A'}</div>
-                                                                <div className="mt-1 text-gray-500">#{order.id}</div>
+                                                                    className="font-medium text-gray-900">{product.product_name}</div>
+                                                                <div
+                                                                    className="mt-1 text-gray-500">#{product.id}</div>
                                                             </div>
                                                         </div>
                                                     </td>
                                                     <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                                        <div className="text-gray-900">$ {order.total_price}</div>
-                                                        <div className="mt-1 text-gray-500">{order.quantity}</div>
-                                                    </td>
-                                                    <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                                        {/* Check if `order.vendor` is an object and access a specific property, e.g., `name` */}
                                                         <div
-                                                            className="mt-1 text-gray-500">{order.vendor.store_name || 'Vendor info not available'}</div>
+                                                            className="text-gray-900">{product.deliverer}</div>
+                                                        <div
+                                                            className="mt-1 text-gray-500">{product.deliverer_id}
+                                                        </div>
+                                                    </td>
+
+                                                    <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                                                        <div className="text-gray-900">{product.product_owner}</div>
+                                                        <div
+                                                            className="mt-1 text-gray-500">{product.store_name}
+                                                        </div>
                                                     </td>
                                                     <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                                        <span
-                                                            className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
-                                                            {order.status}
-                                                        </span>
+                                                              <span
+                                                                  className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
+                                                                {product.status}
+                                                              </span>
                                                     </td>
                                                     <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                                        {/* Ensure `order.created_at` is a valid date string */}
-                                                        {new Date(order.created_at).toLocaleDateString()}
+                                                        {new Date(product.created_at).toLocaleDateString()}
                                                     </td>
                                                     <td className="relative whitespace-nowrap py-5 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-                                                        <Link to={`/order-details/${order.id}`}
+                                                        <Link to={`/delivery-details/${product.id}`}
                                                               className="text-indigo-600 hover:text-indigo-900">
-                                                            View<span className="sr-only">, {order.id}</span>
+                                                            View<span className="sr-only">, {product.id}</span>
                                                         </Link>
                                                     </td>
                                                 </tr>
@@ -1157,24 +855,22 @@ const OrdersContent = ({ setCurrentTab }) => {
 
 
 const TransactionsContent = ({setCurrentTab}) => {
-    // const [vendorDetails, setVendorDetails] = useState(null);
-
     const dispatch = useDispatch();
     const [sidebarOpen, setSidebarOpen] = useState(false)
     const userItem = localStorage.getItem('user');
     const user = userItem ? JSON.parse(userItem) : null;
     const [payments, setPayments] = useState([]);
-    const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState('');
-    const [selectedSort, setSelectedSort] = useState('Latest');
+    const [sortOption, setSortOption] = useState('latest');
+
     const {id} = useParams();
 
     useEffect(() => {
         const fetchPayments = async () => {
             try {
-                const response = await axios.get(`${server}/user/payments/${id}`);
+                const response = await axios.get(`${server}/admin/delivery/${id}/details`);
 
-                setPayments(response.data.flat());
+                setPayments(response.data.payments);
             } catch (error) {
                 console.error('Failed to fetch payments:', error);
             }
@@ -1183,11 +879,24 @@ const TransactionsContent = ({setCurrentTab}) => {
         fetchPayments();
     }, []);
 
+    const sortPayments = (payments) => {
+        switch (sortOption) {
+            case 'latest':
+                return [...payments].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+            case 'highest':
+                return [...payments].sort((a, b) => b.product_cost - a.product_cost);
+            case 'lowest':
+                return [...payments].sort((a, b) => a.product_cost - b.product_cost);
+            default:
+                return payments;
+        }
+    };
+
     return (
         <>
             <main className="lg:pr-10 lg:pl-10 pb-14 sm:px-6 sm:pb-20 sm:pt-10 lg:px-8">
                 <div className="border-b border-gray-200 pb-5 sm:flex sm:items-center sm:justify-between">
-                    <h3 className="text-base font-semibold leading-6 text-gray-900">Payment History</h3>
+                    <h1 className="text-base font-semibold leading-6 text-gray-900">Payment Request History</h1>
                     <div className="mt-3 sm:ml-4 sm:mt-0">
                         <label htmlFor="mobile-search-candidate" className="sr-only">
                             Search
@@ -1207,77 +916,61 @@ const TransactionsContent = ({setCurrentTab}) => {
                                     id="mobile-search-candidate"
                                     className="block w-full rounded-none rounded-l-md border-0 py-1.5 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:hidden"
                                     placeholder="Search"
-                                    value={searchTerm}
-                                    onChange={event => setSearchTerm(event.target.value)}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
                                 />
                                 <input
                                     type="text"
                                     name="desktop-search-candidate"
                                     id="desktop-search-candidate"
                                     className="hidden w-full rounded-none rounded-l-md border-0 py-1.5 pl-10 text-sm leading-6 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:block"
-                                    placeholder="Search Payments"
-                                    value={searchTerm}
-                                    onChange={event => setSearchTerm(event.target.value)}
+                                    placeholder="Search candidates"
+                                    onChange={(e) => setSearchTerm(e.target.value)}
                                 />
                             </div>
-                            <Menu as="div" className="relative inline-block text-left">
-                                <div>
-                                    <Menu.Button
-                                        className="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-                                        <BarsArrowUpIcon className="-ml-0.5 h-5 w-5 text-gray-400" aria-hidden="true"/>
-                                        Sort
-                                        <ChevronDownIcon className="-mr-1 h-5 w-5 text-gray-400" aria-hidden="true"/>
-                                    </Menu.Button>
-                                </div>
-                                <Transition
-                                    as={Fragment}
-                                    enter="transition ease-out duration-100"
-                                    enterFrom="transform opacity-0 scale-95"
-                                    enterTo="transform opacity-100 scale-100"
-                                    leave="transition ease-in duration-75"
-                                    leaveFrom="transform opacity-100 scale-100"
-                                    leaveTo="transform opacity-0 scale-95"
+                            <div className="relative inline-flex">
+                                <button
+                                    type="button"
+                                    className="relative -ml-px inline-flex items-center gap-x-1.5 rounded-r-md px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                                    onClick={(e) => {
+                                        if (e.currentTarget.nextElementSibling) {
+                                            e.currentTarget.nextElementSibling.classList.toggle('hidden');
+                                        }
+                                    }}
                                 >
-                                    <Menu.Items
-                                        className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
-                                        <div className="py-1">
-                                            {['Latest', 'Paid', 'Unpaid', 'Highest', 'Lowest'].map((status, statusIdx) => (
-                                                <Menu.Item key={statusIdx}>
-                                                    {({active}) => (
-                                                        <button
-                                                            onClick={() => {
-                                                                setSelectedSort(status);
-                                                                const sortedPayments = [...payments].sort((a, b) => {
-                                                                    switch (status) {
-                                                                        case 'Latest':
-                                                                            return new Date(b.created_at) - new Date(a.created_at);
-                                                                        case 'Paid':
-                                                                            return a.payment_status === 'Paid' ? -1 : 1;
-                                                                        case 'Unpaid':
-                                                                            return a.payment_status === 'Unpaid' ? -1 : 1;
-                                                                        case 'Highest':
-                                                                            return b.product_cost - a.product_cost;
-                                                                        case 'Lowest':
-                                                                            return a.product_cost - b.product_cost;
-                                                                        default:
-                                                                            return 0;
-                                                                    }
-                                                                });
-                                                                setPayments(sortedPayments);
-                                                            }}
-                                                            className={`${
-                                                                active ? 'bg-gray-100 text-gray-900' : 'text-gray-700'
-                                                            } group flex items-center w-full px-2 py-2 text-sm`}
-                                                        >
-                                                            {status}
-                                                        </button>
-                                                    )}
-                                                </Menu.Item>
-                                            ))}
-                                        </div>
-                                    </Menu.Items>
-                                </Transition>
-                            </Menu>
+                                    <BarsArrowUpIcon className="-ml-0.5 h-5 w-5 text-gray-400"
+                                                     aria-hidden="true"/>
+                                    Sort
+                                    <ChevronDownIcon className="-mr-1 h-5 w-5 text-gray-400"
+                                                     aria-hidden="true"/>
+                                </button>
+                                <div
+                                    className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 hidden">
+                                    <div className="py-1" role="menu" aria-orientation="vertical"
+                                         aria-labelledby="options-menu">
+                                        <button
+                                            onClick={() => setSortOption('latest')}
+                                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                            role="menuitem"
+                                        >
+                                            Latest
+                                        </button>
+                                        <button
+                                            onClick={() => setSortOption('highest')}
+                                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                            role="menuitem"
+                                        >
+                                            Highest
+                                        </button>
+                                        <button
+                                            onClick={() => setSortOption('lowest')}
+                                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                            role="menuitem"
+                                        >
+                                            Lowest
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1294,15 +987,15 @@ const TransactionsContent = ({setCurrentTab}) => {
                                         <tr>
                                             <th scope="col"
                                                 className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">
-                                                Product Name & Payment Id
+                                                Id
                                             </th>
                                             <th scope="col"
                                                 className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                Total Price
+                                                Bank Details
                                             </th>
                                             <th scope="col"
                                                 className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                Vendor $ Product Price
+                                                Amount
                                             </th>
                                             <th scope="col"
                                                 className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
@@ -1311,76 +1004,54 @@ const TransactionsContent = ({setCurrentTab}) => {
 
                                             <th scope="col"
                                                 className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                Order Status
+                                                Status
                                             </th>
 
                                         </tr>
                                         </thead>
                                         <tbody className="divide-y divide-gray-200">
-                                        {payments
-                                            .filter(payment => {
-                                                // Modify this condition to match your search criteria
-                                                return (
-                                                    payment.product_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                                                    payment.user_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                                                    payment.id.toString().includes(searchTerm) ||
-                                                    payment.store_name.toLowerCase().includes(searchTerm.toLowerCase())
-                                                );
-                                            })
-                                            .sort((a, b) => {
-                                                // Modify this switch statement to match your sort options
-                                                switch (selectedSort) {
-                                                    case 'Latest':
-                                                        return new Date(b.created_at) - new Date(a.created_at);
-                                                    case 'Paid':
-                                                        return a.payment_status === 'Paid' ? -1 : 1;
-                                                    case 'Unpaid':
-                                                        return a.payment_status === 'Unpaid' ? -1 : 1;
-                                                    case 'Highest':
-                                                        return b.product_cost - a.product_cost;
-                                                    case 'Lowest':
-                                                        return a.product_cost - b.product_cost;
-                                                    default:
-                                                        return 0;
-                                                }
-                                            })
-                                            .map((payment) => (
-                                                <tr key={payment.id}>
-                                                    <td className="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0">
-                                                        <div className="flex items-center">
+                                        {sortPayments(payments.filter(payment => payment.product_name.toLowerCase().includes(searchTerm.toLowerCase()) || payment.id.toString().includes(searchTerm) || payment.user_name.toLowerCase().includes(searchTerm.toLowerCase()))).map((payment) => (
+                                            <tr key={payment.id}>
+                                                <td className="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0">
+                                                    <div className="flex items-center">
 
-                                                            <div className="ml-4">
-                                                                <div
-                                                                    className="font-medium text-gray-900">{payment.product_name}</div>
-                                                                <div
-                                                                    className="mt-1 text-gray-500">#{payment.id}</div>
-                                                            </div>
+                                                        <div className="ml-4">
+                                                            {/*<div*/}
+                                                            {/*    className="font-medium text-gray-900">{payment.product_name}</div>*/}
+                                                            <div
+                                                                className="mt-1 text-gray-500">#{payment.id}</div>
                                                         </div>
-                                                    </td>
-                                                    <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                                        <div className="text-gray-900"> $ {payment.total_cost}</div>
+                                                    </div>
+                                                </td>
+                                                <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                                                    <div className="text-gray-900">{payment.bank_name}</div>
+                                                    <div className="mt-1 text-gray-500">
+                                                        {payment.account_name}
+                                                    </div>
+                                                    <div className="mt-1 text-gray-500">
+                                                        {payment.account_number}
+                                                    </div>
+                                                </td>
 
-                                                    </td>
-
-                                                    <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                                        <div className="text-gray-900">{payment.store_name}</div>
-                                                        <div
-                                                            className="mt-1 text-gray-500">#{payment.product_cost}
-                                                        </div>
-                                                    </td>
-                                                    <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                                                <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                                                    <div className="text-gray-900">{payment.amount}</div>
+                                                    {/*<div*/}
+                                                    {/*    className="mt-1 text-gray-500">#{payment.product_cost}*/}
+                                                    {/*</div>*/}
+                                                </td>
+                                                <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
                                                                 <span
                                                                     className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
                                                                     {payment.payment_status}
                                                                 </span>
-                                                    </td>
-                                                    <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                                        <div
-                                                            className="text-gray-900">{payment.order_status}</div>
+                                                </td>
+                                                <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                                                    <div
+                                                        className="text-gray-900">{new Date(payment.created_at).toLocaleDateString()}</div>
 
-                                                    </td>
-                                                </tr>
-                                            ))}
+                                                </td>
+                                            </tr>
+                                        ))}
                                         </tbody>
                                     </table>
                                 </div>
@@ -1396,6 +1067,7 @@ const TransactionsContent = ({setCurrentTab}) => {
 const SettingsContent = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const [vendorDetails, setVendorDetails] = useState(null);
 
     const [user, setUser] = useState(null);
 
@@ -1404,13 +1076,16 @@ const SettingsContent = () => {
     const [phone, setPhone] = useState('');
     const [image, setImage] = useState('');
 
+    const [store_name, setStore_name] = useState();
+    const [store_description, setStore_description] = useState();
+
     const {id} = useParams();
 
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                const response = await axios.get(`${server}/admin/all-user-details/${id}`); // replace with your API endpoint
-                const user = response.data;
+                const response = await axios.get(`${server}/admin/delivery/${id}/details`); // replace with your API endpoint
+                const user = response.data.user;
                 setUser(user);
                 // setEmail(user.email);
                 // setName(user.name);
@@ -1423,6 +1098,19 @@ const SettingsContent = () => {
 
         fetchUser();
     }, []);
+
+    useEffect(() => {
+        const fetchVendorDetails = async () => {
+            try {
+                const response = await axios.get(`${server}/admin/all-vendor-details/${id}`);
+                setVendorDetails(response.data);
+            } catch (error) {
+                console.error('Failed to fetch vendor details:', error);
+            }
+        };
+
+        fetchVendorDetails();
+    }, [id]);
 
 
 
@@ -1454,6 +1142,36 @@ const SettingsContent = () => {
             }));
 
             toast.success('Profile updated successfully!');
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const handleStoreUpdate = async (event) => {
+        event.preventDefault();
+
+        let storeData = {};
+
+        if (store_name) storeData.store_name = store_name;
+        if (store_description) storeData.store_description = store_description;
+
+        try {
+            const response = await axios.put(`${server}/user/vendor/${id}`, storeData);
+            console.log(response.data);
+
+            // Update user data in the state
+            setUser({
+                ...user,
+                vendor_info: response.data
+            });
+
+            // Update user data in the localStorage
+            localStorage.setItem('user', JSON.stringify({
+                ...user,
+                vendor_info: response.data
+            }));
+
+            toast.success('Store information updated successfully!');
         } catch (error) {
             console.error(error);
         }
@@ -1496,7 +1214,7 @@ const SettingsContent = () => {
                                 <h2 className="text-base font-semibold leading-7 text-black">Personal
                                     Information</h2>
                                 <p className="mt-1 text-sm leading-6 text-gray-400">
-                                    User information.
+                                    User Information
                                 </p>
                             </div>
 
@@ -1504,7 +1222,7 @@ const SettingsContent = () => {
                                 <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:max-w-xl sm:grid-cols-6">
                                     <div className="col-span-full flex items-center gap-x-8">
                                         <img
-                                            src={`${assetServer}/images/users/${image}`}
+                                            src={`${assetServer}/images/users/${user ? user.image : ''}`}
                                             alt=""
                                             className="h-24 w-24 flex-none rounded-lg bg-gray-800 object-cover"
                                         />
@@ -1600,6 +1318,92 @@ const SettingsContent = () => {
                         </div>
                     </form>
 
+                    <form onSubmit={handleStoreUpdate}>
+                        <div
+                            className="grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 px-4 py-16 sm:px-6 md:grid-cols-3 lg:px-8">
+                            <div>
+                                <h2 className="text-base font-semibold leading-7 text-black">
+                                    Vehicle</h2>
+                                <p className="mt-1 text-sm leading-6 text-gray-400">
+                                    Deliverer Vehicle Details
+                                </p>
+                            </div>
+
+                            <div className="md:col-span-2">
+                                <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:max-w-xl sm:grid-cols-6">
+
+                                    <div className="sm:col-span-3">
+                                        <label htmlFor="first-name"
+                                               className="block text-sm font-medium leading-6 text-black">
+                                            Car Type
+                                        </label>
+                                        <div className="mt-2">
+                                            <input
+                                                type="text"
+                                                name="store_name"
+                                                id="store_name"
+                                                autoComplete="store_name"
+                                                value={store_name}
+                                                onChange={e => setStore_name(e.target.value)}
+                                                placeholder={user ? user.deliverer.type : ''}
+                                                className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-black shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="sm:col-span-3">
+                                        <label htmlFor="last-name"
+                                               className="block text-sm font-medium leading-6 text-black">
+                                            Vehicle
+                                        </label>
+                                        <div className="mt-2">
+                                                    <textarea
+                                                        name="store_description"
+                                                        id="store_description"
+                                                        autoComplete="store_description"
+                                                        value={store_description}
+                                                        onChange={e => setStore_description(e.target.value)}
+                                                        placeholder={user ? user.deliverer.vehicle : ''}
+                                                        className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-black shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6"
+                                                    />
+                                        </div>
+                                    </div>
+
+                                    <div className="sm:col-span-3">
+                                        <label htmlFor="last-name"
+                                               className="block text-sm font-medium leading-6 text-black">
+                                            Registration
+                                        </label>
+                                        <div className="mt-2">
+                                                    <textarea
+                                                        name="store_description"
+                                                        id="store_description"
+                                                        autoComplete="store_description"
+                                                        value={store_description}
+                                                        onChange={e => setStore_description(e.target.value)}
+                                                        placeholder={user ? user.deliverer.registration : ''}
+                                                        className="block w-full rounded-md border-0 bg-white/5 py-1.5 text-black shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6"
+                                                    />
+                                        </div>
+                                    </div>
+
+                                    {/*<div className="md:col-span-2">*/}
+                                    {/*    <div className="mt-8 flex">*/}
+                                    {/*        <button*/}
+                                    {/*            type="submit"*/}
+                                    {/*            className="rounded-md bg-primary px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-secondary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"*/}
+                                    {/*        >*/}
+                                    {/*            Save*/}
+                                    {/*        </button>*/}
+                                    {/*    </div>*/}
+                                    {/*</div>*/}
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </form>
+
 
                     <div
                         className="grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 px-4 py-16 sm:px-6 md:grid-cols-3 lg:px-8">
@@ -1626,4 +1430,4 @@ const SettingsContent = () => {
     );
 };
 
-export default UserEdit
+export default DelivererEdit

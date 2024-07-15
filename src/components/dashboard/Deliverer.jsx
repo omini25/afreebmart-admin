@@ -40,7 +40,7 @@ const navigation = [
     { name: 'Messages', href: '/messages', icon: InboxStackIcon, current: false },
     { name: 'Users', href: '/users', icon: UserGroupIcon, current: false },
     { name: 'Vendors', href: '/vendors', icon: BuildingStorefrontIcon, current: false },
-    { name: 'Delivers', href: '/deliverers', icon: BackspaceIcon, current: true },
+    { name: 'Deliverers', href: '/deliverers', icon: BackspaceIcon, current: true },
     { name: 'Admins', href: '/admins', icon: IdentificationIcon, current: false },
     { name: 'Coupons', href: '/coupons', icon: TagIcon, current: false },
     { name: 'Reviews', href: '/reviews', icon: StarIcon, current:false},
@@ -67,7 +67,7 @@ export const Deliverer = () => {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const response = await axios.get(`${server}/admin/delivery/users`);
+                const response = await axios.get(`${server}/admin/deliverers`);
                 // Flatten the array structure
                 const flattenedUsers = response.data.flat();
                 setUsers(flattenedUsers);
@@ -314,7 +314,7 @@ export const Deliverer = () => {
                                 <div className="px-4 sm:px-6 lg:px-8">
                                     <div
                                         className="border-b border-gray-200 pb-5 sm:flex sm:items-center sm:justify-between">
-                                        <h3 className="text-base font-semibold leading-6 text-gray-900">Vendors</h3>
+                                        <h3 className="text-base font-semibold leading-6 text-gray-900">Deliverers</h3>
                                         <div className="mt-3 sm:ml-4 sm:mt-0">
                                             <label htmlFor="mobile-search-candidate" className="sr-only">
                                                 Search
@@ -444,39 +444,39 @@ export const Deliverer = () => {
                                                                 <div className="flex items-center">
                                                                     <div className="h-11 w-11 flex-shrink-0">
                                                                         <img className="h-11 w-11 rounded-full"
-                                                                             src={`${assetServer}/images/users/${users.image}`}
+                                                                             src={`${assetServer}/images/users/${users.user.image}`}
                                                                              alt=""/>
                                                                     </div>
                                                                     <div className="ml-4">
                                                                         <div
-                                                                            className="font-medium text-gray-900">{users.name}</div>
+                                                                            className="font-medium text-gray-900">{users.user.name}</div>
                                                                         <div
-                                                                            className="text-gray-900">{users.store_name}</div>
+                                                                            className="text-gray-900">{users.location}</div>
                                                                         <div
-                                                                            className="mt-1 text-gray-500">#{users.id}</div>
+                                                                            className="mt-1 text-gray-500">#{users.user.id}</div>
                                                                     </div>
                                                                 </div>
                                                             </td>
                                                             <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                                                                <div className="text-gray-900">{users.email}</div>
+                                                                <div className="text-gray-900">{users.user.email}</div>
                                                                 <div
-                                                                    className="mt-1 text-gray-500">{users.phone}
+                                                                    className="mt-1 text-gray-500">{users.user.phone}
                                                                 </div>
                                                             </td>
 
                                                             <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
                                                               <span
                                                                   className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
-                                                                {users.status}
+                                                                {users.user.status}
                                                               </span>
                                                             </td>
                                                             <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
                                                                 {new Date(users.created_at).toLocaleDateString()}
                                                             </td>
                                                             <td className="relative whitespace-nowrap py-5 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-                                                                <a href={`/edit-vendor/${users.id}`}
+                                                                <a href={`/edit-deliverer/${users.user_id}`}
                                                                    className="text-indigo-600 hover:text-indigo-900">
-                                                                    View<span className="sr-only">, {users.id}</span>
+                                                                    View<span className="sr-only">, {users.user_id}</span>
                                                                 </a>
                                                             </td>
 
@@ -485,12 +485,12 @@ export const Deliverer = () => {
                                                                     onClick={async (e) => {
                                                                         e.preventDefault();
                                                                         try {
-                                                                            const response = await axios.put(`${server}/admin/users/${users.id}/suspend`);
+                                                                            const response = await axios.put(`${server}/admin/users/${users.user.id}/suspend`);
                                                                             console.log(response.data);
-                                                                            toast('Vendor Suspended')
+                                                                            toast('Deliverer Suspended')
                                                                             // You might want to update the users list or show a notification here
                                                                         } catch (error) {
-                                                                            console.error('Failed to suspend user:', error);
+                                                                            console.error('Failed to suspend deliverer:', error);
                                                                         }
                                                                     }}
                                                                     className="text-red-600 hover:text-secondary"

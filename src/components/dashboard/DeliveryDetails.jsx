@@ -27,11 +27,11 @@ import {ArrowRightStartOnRectangleIcon, BackspaceIcon, StarIcon} from "@heroicon
 
 const navigation = [
     { name: 'Overview', href: '/dashboard', icon: FolderIcon, current: false },
-    { name: 'Orders', href: '/orders', icon: ShoppingCartIcon, current: true },
+    { name: 'Orders', href: '/orders', icon: ShoppingCartIcon, current: false },
     { name: 'Products', href: '/products', icon: ShoppingBagIcon, current: false },
     { name: 'Categories', href: '/categories', icon: ListBulletIcon, current: false },
     { name: 'Ads', href: '/ads', icon: GlobeAltIcon, current: false },
-    { name: 'Deliveries', href: '/deliveries', icon: TruckIcon, current: false },
+    { name: 'Deliveries', href: '/deliveries', icon: TruckIcon, current: true },
     { name: 'Payment History', href: '/payments', icon: banknotesIcon, current: false },
     { name: 'Payment Request', href: '/payments-requests', icon: WalletIcon, current: false },
     { name: 'Messages', href: '/messages', icon: InboxStackIcon, current: false },
@@ -51,7 +51,7 @@ function classNames(...classes) {
 }
 
 
-export const OrderDetails = () => {
+export const DeliveryDetails = () => {
     const dispatch = useDispatch();
     const [sidebarOpen, setSidebarOpen] = useState(false)
     const userItem = localStorage.getItem('user');
@@ -64,9 +64,9 @@ export const OrderDetails = () => {
     useEffect(() => {
         const fetchOrder = async () => {
             try {
-                const response = await axios.get(`${server}/admin/orders/${id}`);
+                const response = await axios.get(`${server}/admin/delivery/${id}`);
                 // Flatten the array structure
-                const flattenedOrders = response.data.flat()[0];
+                const flattenedOrders = response.data;
                 setOrder(flattenedOrders);
             } catch (error) {
                 console.error('Failed to fetch orders:', error);
@@ -75,6 +75,8 @@ export const OrderDetails = () => {
 
         fetchOrder();
     }, []);
+
+    console.log('order:', order);
 
     const statusToStep = {
         'pending': 1,
@@ -189,10 +191,10 @@ export const OrderDetails = () => {
                                                         className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-secondary hover:secondary"
                                                     >
                                                         <img
-    className="h-8 w-8 rounded-full bg-gray-800"
-    src={user && user.user && user.user.image ? `${assetServer}/images/users/${user.user.image}` : 'defaultImageURL'}
-    alt=""
-/>
+                                                            className="h-8 w-8 rounded-full bg-gray-800"
+                                                            src={user && user.user && user.user.image ? `${assetServer}/images/users/${user.user.image}` : 'defaultImageURL'}
+                                                            alt=""
+                                                        />
                                                         <span className="sr-only">Your profile</span>
                                                         <span aria-hidden="true">{user && user.user ? user.user.name : 'Default Name'}</span>
                                                     </a>
@@ -247,8 +249,8 @@ export const OrderDetails = () => {
                                         href="#"
                                         onClick={(e) => {
                                             e.preventDefault();
-        dispatch(logout());
-        navigate('/');// dispatch the logout action when the link is clicked
+                                            dispatch(logout());
+                                            navigate('/');// dispatch the logout action when the link is clicked
                                         }}
                                         className={classNames(
                                             'text-gray-400 hover:bg-red-800 hover:secondary',
@@ -267,10 +269,10 @@ export const OrderDetails = () => {
                                         className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-secondary hover:secondary"
                                     >
                                         <img
-    className="h-8 w-8 rounded-full bg-gray-800"
-    src={user && user.user && user.user.image ? `${assetServer}/images/users/${user.user.image}` : 'defaultImageURL'}
-    alt=""
-/>
+                                            className="h-8 w-8 rounded-full bg-gray-800"
+                                            src={user && user.user && user.user.image ? `${assetServer}/images/users/${user.user.image}` : 'defaultImageURL'}
+                                            alt=""
+                                        />
                                         <span className="sr-only">Your profile</span>
                                         <span aria-hidden="true">{user && user.user ? user.user.name : 'Default Name'}</span>
                                     </a>
@@ -322,12 +324,12 @@ export const OrderDetails = () => {
                                         <div
                                             className="space-y-2 px-4 sm:flex sm:items-baseline sm:justify-between sm:space-y-0 sm:px-0">
                                             <div className="flex sm:items-baseline sm:space-x-4">
-                                                <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">Order
+                                                <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">Delivery
                                                     #{id}</h1>
 
                                             </div>
                                             <p className="text-sm text-gray-600">
-                                                Order placed{' '}
+                                                Delivery Started On{' '}
                                                 <time dateTime="2021-03-22" className="font-medium text-gray-900">
                                                     {order && new Date(order.created_at).toLocaleDateString()}
                                                 </time>
@@ -358,44 +360,75 @@ export const OrderDetails = () => {
                                                                     <h3 className="text-base font-medium text-gray-900">
                                                                         <a href="#">{order.product_name}</a>
                                                                     </h3>
-                                                                    <p className="mt-2 text-sm font-medium text-gray-900">Price - ${order.price}</p>
-                                                                    <p className="mt-3 text-sm text-gray-500">Vendor - {order.store_name}</p>
+                                                                    <dd className="mt-1 text-gray-500">
+                                                                            <span
+                                                                                className="block">{order.order_id}
+                                                                            </span>
+                                                                    </dd>
+
+                                                                    <p className="mt-2 text-sm font-medium text-gray-900">Delivery
+                                                                        Amount - ${order.delivery_amount}</p>
+                                                                    <dt className="mt-2 font-medium text-gray-900">Delivery
+                                                                        Person
+                                                                    </dt>
+                                                                    <dd className="mt-1 text-gray-500">
+                                                                            <span
+                                                                                className="block">{order.deliverer}
+                                                                            </span>
+                                                                    </dd>
+
+                                                                    <dt className="mt-2 font-medium text-gray-900">Delivery
+                                                                        Person Location
+                                                                    </dt>
+                                                                    <dd className="mt-1 text-gray-500">
+                                                                            <span
+                                                                                className="block">{order.current_location}
+                                                                            </span>
+                                                                    </dd>
                                                                 </div>
                                                             </div>
 
                                                             <div className="mt-6 lg:col-span-5 lg:mt-0">
                                                                 <dl className="grid grid-cols-2 gap-x-6 text-sm">
                                                                     <div>
-                                                                        <dt className="font-medium text-gray-900">Delivery
-                                                                            address
+                                                                    <dt className="font-medium text-gray-900 underline">Customer
+                                                                            Details
                                                                         </dt>
-                                                                        <dd className="mt-3 text-gray-500">
+                                                                        <dt className="font-medium text-gray-900 mt-2">Customer Name</dt>
+                                                                        <dd className="mt-1 text-gray-500">
                                                                             <span
-                                                                                className="block">{order.shipping_address}
+                                                                                className="block">{order.product_owner}
                                                                             </span>
-
                                                                         </dd>
-                                                                        <dt className="mt-3 font-medium text-gray-900">Delivery
-                                                                            Person
-                                                                        </dt>
-                                                                        <dd className="mt-3 text-gray-500">
+
+                                                                        <dt className="font-medium text-gray-900 mt-2">Delivery address</dt>
+                                                                        <dd className="mt-1 text-gray-500">
                                                                             <span
-                                                                                className="block">{order.deliverer}
+                                                                                className="block">{order.delivery_location}
                                                                             </span>
-
                                                                         </dd>
+
                                                                     </div>
                                                                     <div>
-                                                                        <dt className="font-medium text-gray-900">Customer Details
+                                                                        <dt className="font-medium text-gray-900 underline">Vendor
+                                                                            Details
                                                                         </dt>
-                                                                        <dd className="mt-3 space-y-3 text-gray-500">
-                                                                            <p>{order.name}</p>
-                                                                            <p>{order.phone}</p>
-                                                                            <p>{order.email}</p>
-                                                                            {/*<button type="button"*/}
-                                                                            {/*        className="font-medium text-primary hover:text-indigo-500">*/}
-                                                                            {/*    Edit*/}
-                                                                            {/*</button>*/}
+                                                                        <dt className="font-medium text-gray-900 mt-2">Store
+                                                                            Name
+                                                                        </dt>
+                                                                        <dd className="mt-1 text-gray-500">
+                                                                            <span
+                                                                                className="block">{order.store_name}
+                                                                            </span>
+                                                                        </dd>
+
+                                                                        <dt className="font-medium text-gray-900 mt-2">Pickup
+                                                                            address
+                                                                        </dt>
+                                                                        <dd className="mt-1 text-gray-500">
+                                                                            <span
+                                                                                className="block">{order.pickup_location}
+                                                                            </span>
                                                                         </dd>
                                                                     </div>
                                                                 </dl>
@@ -408,9 +441,9 @@ export const OrderDetails = () => {
                                                             <p className="text-sm font-medium text-gray-900">
                                                                 {order.status} on -
                                                                 <time dateTime="2021-03-22"
-                                                                                        className="font-medium text-gray-900">
-                                                                 {new Date(order.updated_at).toLocaleDateString()}
-                                                            </time>
+                                                                      className="font-medium text-gray-900">
+                                                                    {new Date(order.updated_at).toLocaleDateString()}
+                                                                </time>
                                                             </p>
                                                             <div className="mt-6" aria-hidden="true">
                                                                 <div
@@ -443,62 +476,98 @@ export const OrderDetails = () => {
                                             </div>
                                         </div>
 
-                                        {/*/!* Billing *!/*/}
-                                        {/*<div className="mt-16">*/}
-                                        {/*    <h2 className="sr-only">Billing Summary</h2>*/}
+                                        {/* Billing */}
+                                        <div className="mt-16">
+                                            <h2 className="sr-only">Delivery Summary</h2>
 
-                                        {/*    <div*/}
-                                        {/*        className="bg-gray-100 px-4 py-6 sm:rounded-lg sm:px-6 lg:grid lg:grid-cols-12 lg:gap-x-8 lg:px-8 lg:py-8">*/}
-                                        {/*        <table*/}
-                                        {/*            className="table-auto text-sm sm:grid-cols-2 md:gap-x-8 lg:col-span-7">*/}
-                                        {/*            <tbody>*/}
-                                        {/*            <tr>*/}
-                                        {/*                <td className="font-medium text-gray-900">Billing address</td>*/}
-                                        {/*                <td className="mt-3 text-gray-500">*/}
-                                        {/*                    <div>Floyd Miles</div>*/}
-                                        {/*                    <div>7363 Cynthia Pass</div>*/}
-                                        {/*                    <div>Toronto, ON N3Y 4H8</div>*/}
-                                        {/*                </td>*/}
-                                        {/*            </tr>*/}
-                                        {/*            <tr>*/}
-                                        {/*                <td className="font-medium text-gray-900">Payment information*/}
-                                        {/*                </td>*/}
-                                        {/*                <td className="-ml-4 -mt-1 flex flex-wrap">*/}
-                                        {/*                    <div className="ml-4 mt-4 flex-shrink-0">*/}
-                                        {/*                        /!* SVG for Visa logo *!/*/}
-                                        {/*                    </div>*/}
-                                        {/*                    <div className="ml-4 mt-4">*/}
-                                        {/*                        <div className="text-gray-900">Ending with 4242</div>*/}
-                                        {/*                        <div className="text-gray-600">Expires 02 / 24</div>*/}
-                                        {/*                    </div>*/}
-                                        {/*                </td>*/}
-                                        {/*            </tr>*/}
-                                        {/*            </tbody>*/}
-                                        {/*        </table>*/}
+                                            <div
+                                                className="bg-gray-100 px-4 py-6 sm:rounded-lg sm:px-6 lg:grid lg:grid-cols-12 lg:gap-x-8 lg:px-8 lg:py-8">
+                                                <table
+                                                    className="table-auto text-sm sm:grid-cols-2 md:gap-x-8 lg:col-span-7">
+                                                    <tbody>
+                                                    <tr>
+                                                        <td className="font-bold text-gray-900"><h2>Pickup Information:</h2></td>
+                                                        <td className="mt-3 text-gray-500">
+                                                            <div>
+                                                                <dt className="font-medium text-gray-900 mt-2">Pickup
+                                                                    address
+                                                                </dt>
+                                                                <dd className="mt-1 text-gray-500">
+                                                                            <span
+                                                                                className="block">{order.pickup_location}
+                                                                            </span>
+                                                                </dd>
+                                                            </div>
+                                                        </td>
+                                                        <td className="mt-3 text-gray-500">
 
-                                        {/*        <table*/}
-                                        {/*            className="mt-8 divide-y divide-gray-200 text-sm lg:col-span-5 lg:mt-0">*/}
-                                        {/*            <tbody>*/}
-                                        {/*            <tr>*/}
-                                        {/*                <td className="text-gray-600">Subtotal</td>*/}
-                                        {/*                <td className="font-medium text-gray-900">$72</td>*/}
-                                        {/*            </tr>*/}
-                                        {/*            <tr>*/}
-                                        {/*                <td className="text-gray-600">Shipping</td>*/}
-                                        {/*                <td className="font-medium text-gray-900">$5</td>*/}
-                                        {/*            </tr>*/}
-                                        {/*            <tr>*/}
-                                        {/*                <td className="text-gray-600">Tax</td>*/}
-                                        {/*                <td className="font-medium text-gray-900">$6.16</td>*/}
-                                        {/*            </tr>*/}
-                                        {/*            <tr>*/}
-                                        {/*                <td className="font-medium text-gray-900">Order total</td>*/}
-                                        {/*                <td className="font-medium text-primary">$83.16</td>*/}
-                                        {/*            </tr>*/}
-                                        {/*            </tbody>*/}
-                                        {/*        </table>*/}
-                                        {/*    </div>*/}
-                                        {/*</div>*/}
+                                                            <div>
+                                                                <dt className="font-medium text-gray-900 mt-2">Pickup
+                                                                    time
+                                                                </dt>
+                                                                <dd className="mt-1 text-gray-500">
+                                                                            <span
+                                                                                className="block">{order.picked_up_time}
+                                                                            </span>
+                                                                </dd>
+                                                            </div>
+                                                        </td>
+
+                                                        <td className="mt-3 text-gray-500">
+                                                            <div
+                                                                className="aspect-h-1 aspect-w-1 w-full flex-shrink-0 overflow-hidden rounded-lg sm:aspect-none sm:h-40 sm:w-40">
+                                                                <img
+                                                                    src={`${assetServer}/images/pickup/${order.pick_up_image}`}
+                                                                    className="h-full w-full object-cover object-center sm:h-full sm:w-full"
+                                                                />
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+
+
+                                                    <tr>
+                                                        <td className="font-bold text-gray-900"><h2>Delivery Information:</h2></td>
+                                                        <td className="mt-3 text-gray-500">
+                                                            <div>
+                                                                <dt className="font-medium text-gray-900 mt-2">Delivery
+                                                                    address
+                                                                </dt>
+                                                                <dd className="mt-1 text-gray-500">
+                                                                            <span
+                                                                                className="block">{order.delivery_location}
+                                                                            </span>
+                                                                </dd>
+                                                            </div>
+                                                        </td>
+                                                        <td className="mt-3 text-gray-500">
+
+                                                            <div>
+                                                                <dt className="font-medium text-gray-900 mt-2">Delivery
+                                                                    time
+                                                                </dt>
+                                                                <dd className="mt-1 text-gray-500">
+                                                                            <span
+                                                                                className="block">{order.delivery_time}
+                                                                            </span>
+                                                                </dd>
+                                                            </div>
+                                                        </td>
+
+                                                        <td className="mt-3 text-gray-500">
+                                                            <div
+                                                                className="aspect-h-1 aspect-w-1 w-full flex-shrink-0 overflow-hidden rounded-lg sm:aspect-none sm:h-40 sm:w-40">
+                                                                <img
+                                                                    src={`${assetServer}/images/delivery/${order.delivery_image}`}
+                                                                    className="h-full w-full object-cover object-center sm:h-full sm:w-full"
+                                                                />
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -513,4 +582,4 @@ export const OrderDetails = () => {
     )
 }
 
-export default OrderDetails
+export default DeliveryDetails

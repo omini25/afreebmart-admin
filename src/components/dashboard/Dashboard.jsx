@@ -46,7 +46,7 @@ const navigation = [
     { name: 'Messages', href: '/messages', icon: InboxStackIcon, current: false },
     { name: 'Users', href: '/users', icon: UserGroupIcon, current: false },
     { name: 'Vendors', href: '/vendors', icon: BuildingStorefrontIcon, current: false },
-    { name: 'Delivers', href: '/deliverers', icon: BackspaceIcon, current: false },
+    { name: 'Deliverers', href: '/deliverers', icon: BackspaceIcon, current: false },
     { name: 'Admins', href: '/admins', icon: IdentificationIcon, current: false },
     { name: 'Coupons', href: '/coupons', icon: TagIcon, current: false },
     { name: 'Reviews', href: '/reviews', icon: StarIcon, current:false},
@@ -75,6 +75,7 @@ export const Dashboard = () => {
     const [totalRevenue, setTotalRevenue] = useState(0);
     const navigate = useNavigate();
     const [activityItems, setActivityItems] = useState([]);
+
 
 
     useEffect(() => {
@@ -474,17 +475,17 @@ export const Dashboard = () => {
                                                                         <p className="mt-1 truncate text-xs leading-5 text-gray-500">{new Date(order.created_at).toLocaleString()}</p>
                                                                     </div>
                                                                 </div>
-                                                                <a
-                                                                    href={order.href}
+                                                                <button
+                                                                    onClick={() => navigate(`/order-details/${order.id}`)}
                                                                     className="rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
                                                                 >
                                                                     View
-                                                                </a>
+                                                                </button>
                                                             </li>
                                                         ))}
                                                     </ul>
                                                     <a
-                                                        href="#"
+                                                        href="/orders"
                                                         className="flex w-full items-center justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline-offset-0"
                                                     >
                                                         View all

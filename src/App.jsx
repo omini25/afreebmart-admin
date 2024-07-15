@@ -26,12 +26,13 @@ import {
     DeliveryPage,
     ReviewPage,
     UserEditPage,
-    VendorEditPage, DeliveryUsersPage
+    VendorEditPage, DeliveryUsersPage, DeliveryDetailsPage, DelivererEditPage
 } from "./routes/Routes.js";
 import {ToastContainer} from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import {CartPreview} from "./components/CartPreview.jsx";
 import {Switch} from "@headlessui/react";
+import DelivererEdit from "./components/dashboard/DelivererEdit.jsx";
 
 
 function App() {
@@ -69,6 +70,8 @@ function App() {
                         <Route path="/edit-user/:id" element={<UserEditPage />} />
                         <Route path="/edit-vendor/:id" element={<VendorEditPage />}/>
                         <Route path="/deliverers" element={<DeliveryUsersPage />}/>
+                        <Route path="/delivery-details/:id" element={<DeliveryDetailsPage />} />
+                        <Route path="/edit-deliverer/:id" element={<DelivererEditPage />} />
                     </Routes>
                 {/*</Switch>*/}
             </Router>

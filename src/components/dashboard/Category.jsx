@@ -36,7 +36,7 @@ const navigation = [
     { name: 'Messages', href: '/messages', icon: InboxStackIcon, current: false },
     { name: 'Users', href: '/users', icon: UserGroupIcon, current: false },
     { name: 'Vendors', href: '/vendors', icon: BuildingStorefrontIcon, current: false },
-    { name: 'Delivers', href: '/deliverers', icon: BackspaceIcon, current: false },
+    { name: 'Deliverers', href: '/deliverers', icon: BackspaceIcon, current: false },
     { name: 'Admins', href: '/admins', icon: IdentificationIcon, current: false },
     { name: 'Coupons', href: '/coupons', icon: TagIcon, current: false },
     {name: 'Reviews', href: '/reviews', icon: StarIcon, current:false},
@@ -310,9 +310,7 @@ const user = userItem ? JSON.parse(userItem) : null;
                                         className="border-b border-white/5 px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
                                         <div className="md:flex md:items-center md:justify-between">
                                             <div className="min-w-0 flex-1">
-                                                <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
-                                                    All Categories
-                                                </h2>
+                                                <h3 className="text-base font-semibold leading-6 text-gray-900">Categories</h3>
                                             </div>
                                             <div className="mt-4 flex md:ml-4 md:mt-0">
                                                 <button

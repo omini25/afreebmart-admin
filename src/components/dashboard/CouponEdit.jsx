@@ -39,7 +39,7 @@ const navigation = [
     { name: 'Messages', href: '/messages', icon: InboxStackIcon, current: false },
     { name: 'Users', href: '/users', icon: UserGroupIcon, current: false },
     { name: 'Vendors', href: '/vendors', icon: BuildingStorefrontIcon, current: false },
-    { name: 'Delivers', href: '/deliverers', icon: BackspaceIcon, current: false },
+    { name: 'Deliverers', href: '/deliverers', icon: BackspaceIcon, current: false },
     { name: 'Admins', href: '/admins', icon: IdentificationIcon, current: false },
     { name: 'Coupons', href: '/coupons', icon: TagIcon, current: false },
     { name: 'Reviews', href: '/reviews', icon: StarIcon, current:false},
@@ -421,7 +421,7 @@ export const CouponEdit = () => {
                                                                 type="text"
                                                                 name="project-name"
                                                                 id="project-name"
-                                                                value={title}
+                                                                value={coupons.title}
                                                                 onChange={(e) => setTitle(e.target.value)}
                                                                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                                             />
@@ -443,7 +443,7 @@ export const CouponEdit = () => {
                                                                 type="text"
                                                                 name="project-name"
                                                                 id="project-name"
-                                                                value={code}
+                                                                value={coupons.code}
                                                                 onChange={(e) => setCode(e.target.value)}
                                                                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                                             />
@@ -464,7 +464,7 @@ export const CouponEdit = () => {
                                                             <select
                                                                 name="discount_type"
                                                                 id="discount_type"
-                                                                value={discount_type}
+                                                                value={coupons.discount_type}
                                                                 onChange={(e) => setDiscountType(e.target.value)}
                                                                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                                             >
@@ -489,7 +489,7 @@ export const CouponEdit = () => {
                                                                 type="text"
                                                                 name="discount"
                                                                 id="discount"
-                                                                value={discount}
+                                                                value={coupons.discount}
                                                                 onChange={(e) => setDiscount(e.target.value)}
                                                                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                                             />
@@ -511,7 +511,7 @@ export const CouponEdit = () => {
                                                                 type="text"
                                                                 name="project-name"
                                                                 id="project-name"
-                                                                value={quantity}
+                                                                value={coupons.quantity}
                                                                 onChange={(e) => setQuantity(e.target.value)}
                                                                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                                             />
@@ -533,7 +533,7 @@ export const CouponEdit = () => {
                                                                 type="text"
                                                                 name="project-name"
                                                                 id="project-name"
-                                                                value={limits}
+                                                                value={coupons.limits}
                                                                 onChange={(e) => setLimits(e.target.value)}
                                                                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                                             />
@@ -555,7 +555,7 @@ export const CouponEdit = () => {
                                                                 type="date"
                                                                 name="project-name"
                                                                 id="project-name"
-                                                                value={start_date}
+                                                                value={coupons.start_date}
                                                                 onChange={(e) => setStartDate(e.target.value)}
                                                                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                                             />
@@ -578,7 +578,7 @@ export const CouponEdit = () => {
                                                                 type="date"
                                                                 name="project-name"
                                                                 id="project-name"
-                                                                value={end_date}
+                                                                value={coupons.end_date}
                                                                 onChange={(e) => setEndDate(e.target.value)}
                                                                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                                             />

@@ -23,7 +23,9 @@ import {DeliveryPage} from "../pages/account/DeliveryPage.jsx";
 import {ReviewPage} from "../pages/account/ReviewPage.jsx";
 import {UserEditPage} from "../pages/account/UserEditPage.jsx";
 import {VendorEditPage} from "../pages/account/VendorEditPage.jsx";
-import {DeliveryUsersPage} from "../pages/account/DeliveryUsersPage.jsx"
+import {DeliveryUsersPage} from "../pages/account/DeliveryUsersPage.jsx";
+import {DeliveryDetailsPage} from "../pages/account/DeliveryDetailsPage.jsx";
+import {DelivererEditPage} from "../pages/account/DelivererEditPage.jsx";
 
 export {
     HomePage,
@@ -53,5 +55,7 @@ export {
     UserEditPage,
     VendorEditPage,
     DeliveryUsersPage,
+    DeliveryDetailsPage,
+    DelivererEditPage,
 };
 

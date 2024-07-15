@@ -1,1 +1,1 @@
-export const server = "https://afreebmart.com/api";
+export const server = "https://api.afreebmart.com/api";
