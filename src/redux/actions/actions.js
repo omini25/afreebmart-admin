@@ -33,8 +33,8 @@ export const signup = (name, email, password) => {
             dispatch({ type: SIGNUP_SUCCESS, payload: data });
 
             // Save user's details and isLoggedIn state in localStorage
-            localStorage.setItem('user', JSON.stringify(data));
-            localStorage.setItem('isLoggedIn', true);
+            // localStorage.setItem('user', JSON.stringify(data));
+            // localStorage.setItem('isLoggedIn', true);
 
             // Display the toast message here, after the signup request is successful
             toast.success('Signup successful!');

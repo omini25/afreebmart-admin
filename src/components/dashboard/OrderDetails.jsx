@@ -389,9 +389,9 @@ export const OrderDetails = () => {
                                                                         <dt className="font-medium text-gray-900">Customer Details
                                                                         </dt>
                                                                         <dd className="mt-3 space-y-3 text-gray-500">
-                                                                            <p>{order.name}</p>
-                                                                            <p>{order.phone}</p>
-                                                                            <p>{order.email}</p>
+                                                                            <p>{order.user && order.user.name}</p>
+                                                                            <p>{order.user && order.user.phone}</p>
+                                                                            <p>{order.user && order.user.email}</p>
                                                                             {/*<button type="button"*/}
                                                                             {/*        className="font-medium text-primary hover:text-indigo-500">*/}
                                                                             {/*    Edit*/}

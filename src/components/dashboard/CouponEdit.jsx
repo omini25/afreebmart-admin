@@ -111,9 +111,13 @@ export const CouponEdit = () => {
             // Check if the request was successful
             if (response.status === 200) {
                 // The coupon was successfully updated
+                toast.success('Coupon updated successfully');
+                // You can add any additional logic here, such as redirecting the user
+                // navigate('/coupons');
                 // You can add any additional logic here, such as redirecting the user
             } else {
                 // The request completed, but the status code is not 200
+
                 // This could indicate an error
                 console.error('Failed to update coupon:', response);
             }

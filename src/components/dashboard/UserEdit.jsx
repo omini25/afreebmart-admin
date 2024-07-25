@@ -1120,7 +1120,7 @@ const OrdersContent = ({ setCurrentTab }) => {
                                                     <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
                                                         {/* Check if `order.vendor` is an object and access a specific property, e.g., `name` */}
                                                         <div
-                                                            className="mt-1 text-gray-500">{order.vendor.store_name || 'Vendor info not available'}</div>
+                                                            className="mt-1 text-gray-500">{order.vendor && order.vendor.store_name || 'Vendor info not available'}</div>
                                                     </td>
                                                     <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
                                                         <span
@@ -1182,6 +1182,8 @@ const TransactionsContent = ({setCurrentTab}) => {
 
         fetchPayments();
     }, []);
+
+    console.log(payments);
 
     return (
         <>
@@ -1321,8 +1323,8 @@ const TransactionsContent = ({setCurrentTab}) => {
                                             .filter(payment => {
                                                 // Modify this condition to match your search criteria
                                                 return (
-                                                    payment.product_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                                                    payment.user_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                                                    // payment && payment.product_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                                                    // payment.user_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                                                     payment.id.toString().includes(searchTerm) ||
                                                     payment.store_name.toLowerCase().includes(searchTerm.toLowerCase())
                                                 );
