@@ -2,7 +2,7 @@
 
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8000/api';
+const API_URL = 'https://api.afreebmart.com/api';
 // Correctly parsing and accessing the user ID from localStorage
 const storedUserData = JSON.parse(localStorage.getItem('user')); // Assuming 'user' is the key where user data is stored
 const userId = storedUserData?.user?.id; // Accessing the user ID // Assuming you have a user_id stored in localStorage

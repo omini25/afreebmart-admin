@@ -3,6 +3,9 @@ import { signup } from '../../redux/actions/actions.js';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useState } from 'react';
+import axios from "axios";
+import {server} from "../../server.js";
+import logo from '../../assets/afreemart-logo.png'
 
 export const Signup = () => {
     const [name, setName] = useState('');
@@ -15,12 +18,24 @@ export const Signup = () => {
 
     const handleSignup = async (event) => {
         event.preventDefault();
-        await dispatch(signup(name, email, password));
-        if (!error) {
-            // toast.success('Signup successful!');
-            navigate('/');
-        } else {
+
+        try {
+            const response = await axios.post(`${server}/admin-register`, {
+                name,
+                email,
+                password
+            });
+
+            if (response.status === 201) { // Check for successful creation status code
+                // toast.success('Signup successful!');
+                navigate('/');
+            } else {
+                toast.error('Signup failed!');
+                console.error('Signup request failed:', response);
+            }
+        } catch (error) {
             toast.error('Signup failed!');
+            console.error('Error during signup:', error);
         }
     };
 
@@ -31,7 +46,7 @@ export const Signup = () => {
                 <div className="sm:mx-auto sm:w-full sm:max-w-md">
                     <img
                         className="mx-auto h-10 w-auto"
-                        src="src/assets/afreemart-logo.png"
+                        src={logo}
                         alt="Afreebmart"
                     />
                     <h2 className="mt-6 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">

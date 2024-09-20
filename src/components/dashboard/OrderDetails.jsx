@@ -25,6 +25,7 @@ import {ArrowRightStartOnRectangleIcon, BackspaceIcon, StarIcon} from "@heroicon
 
 
 
+import logo from '../../assets/afreemart-logo.png'
 const navigation = [
     { name: 'Overview', href: '/dashboard', icon: FolderIcon, current: false },
     { name: 'Orders', href: '/orders', icon: ShoppingCartIcon, current: true },
@@ -38,7 +39,7 @@ const navigation = [
     { name: 'Users', href: '/users', icon: UserGroupIcon, current: false },
     { name: 'Vendors', href: '/vendors', icon: BuildingStorefrontIcon, current: false },
     { name: 'Deliverers', href: '/deliverers', icon: BackspaceIcon, current: false },
-    { name: 'Admins', href: '/admins', icon: IdentificationIcon, current: false },
+    // { name: 'Admins', href: '/admins', icon: IdentificationIcon, current: false },
     { name: 'Coupons', href: '/coupons', icon: TagIcon, current: false },
     {name: 'Reviews', href: '/reviews', icon: StarIcon, current:false},
     { name: 'Profile', href: '/profile', icon: UserCircleIcon, current: false },
@@ -60,6 +61,8 @@ export const OrderDetails = () => {
 
     const { id } = useParams();
     const [order, setOrder] = useState(null);
+
+    console.log(order)
 
     useEffect(() => {
         const fetchOrder = async () => {
@@ -136,7 +139,7 @@ export const OrderDetails = () => {
                                             <a href="/dashboard">
                                                 <img
                                                     className="h-8 w-auto"
-                                                    src="src/assets/afreemart-logo.png"
+                                                    src={logo}
                                                     alt="Afreebmart Admin"
                                                 />
                                             </a>
@@ -215,7 +218,7 @@ export const OrderDetails = () => {
                             <a href="/">
                                 <img
                                     className="h-8 w-auto"
-                                    src="src/assets/afreemart-logo.png"
+                                    src={logo}
                                     alt="Afreebmart Admin"
                                 />
                             </a>
@@ -332,6 +335,7 @@ export const OrderDetails = () => {
                                                     {order && new Date(order.created_at).toLocaleDateString()}
                                                 </time>
                                             </p>
+
                                         </div>
 
                                         {/* Products */}
@@ -359,7 +363,7 @@ export const OrderDetails = () => {
                                                                         <a href="#">{order.product_name}</a>
                                                                     </h3>
                                                                     <p className="mt-2 text-sm font-medium text-gray-900">Price - ${order.price}</p>
-                                                                    <p className="mt-3 text-sm text-gray-500">Vendor - {order.store_name}</p>
+                                                                    <p className="mt-3 text-sm text-gray-500">Vendor - {order.vendor.store_name}</p>
                                                                 </div>
                                                             </div>
 
@@ -389,13 +393,10 @@ export const OrderDetails = () => {
                                                                         <dt className="font-medium text-gray-900">Customer Details
                                                                         </dt>
                                                                         <dd className="mt-3 space-y-3 text-gray-500">
-                                                                            <p>{order.user && order.user.name}</p>
-                                                                            <p>{order.user && order.user.phone}</p>
-                                                                            <p>{order.user && order.user.email}</p>
-                                                                            {/*<button type="button"*/}
-                                                                            {/*        className="font-medium text-primary hover:text-indigo-500">*/}
-                                                                            {/*    Edit*/}
-                                                                            {/*</button>*/}
+                                                                            <p>Name: {order.user_name}</p>
+                                                                            <p>Phone: {order.user_phone}</p>
+                                                                            <p>Id: {order.user_id}</p>
+
                                                                         </dd>
                                                                     </div>
                                                                 </dl>

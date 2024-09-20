@@ -25,6 +25,7 @@ import {BackspaceIcon, ChevronDownIcon, StarIcon} from "@heroicons/react/20/soli
 
 
 
+import logo from '../../assets/afreemart-logo.png'
 const navigation = [
     { name: 'Overview', href: '/dashboard', icon: FolderIcon, current: false },
     { name: 'Orders', href: '/orders', icon: ShoppingCartIcon, current: false },
@@ -38,7 +39,7 @@ const navigation = [
     { name: 'Users', href: '/users', icon: UserGroupIcon, current: false },
     { name: 'Vendors', href: '/vendors', icon: BuildingStorefrontIcon, current: false },
     { name: 'Deliverers', href: '/deliverers', icon: BackspaceIcon, current: false },
-    { name: 'Admins', href: '/admins', icon: IdentificationIcon, current: true },
+    // { name: 'Admins', href: '/admins', icon: IdentificationIcon, current: false },
     { name: 'Coupons', href: '/coupons', icon: TagIcon, current: false },
     { name: 'Reviews', href: '/reviews', icon: StarIcon, current:false},
     { name: 'Profile', href: '/profile', icon: UserCircleIcon, current: false },
@@ -59,6 +60,15 @@ export const AdminUsers = () => {
     const navigate = useNavigate();
     const [selectedSort, setSelectedSort] = useState('Latest');
     const [searchTerm, setSearchTerm] = useState('');
+
+    useEffect(() => {
+        // Check user role after component mounts and user data is fetched
+        if (user && user.user && user.user.role !== 'super-admin') {
+            // If not super-admin, display error or redirect
+            toast.error('You do not have permission to access this page.');
+            navigate('/dashboard'); // Redirect to dashboard or another authorized page
+        }
+    }, [user, navigate]); //
 
 
     const [users, setUsers] = useState([]);
@@ -129,7 +139,7 @@ export const AdminUsers = () => {
                                             <a href="/dashboard">
                                                 <img
                                                     className="h-8 w-auto"
-                                                    src="src/assets/afreemart-logo.png"
+                                                    src={logo}
                                                     alt="Afreebmart Admin"
                                                 />
                                             </a>
@@ -208,7 +218,7 @@ export const AdminUsers = () => {
                             <a href="/">
                                 <img
                                     className="h-8 w-auto"
-                                    src="src/assets/afreemart-logo.png"
+                                    src={logo}
                                     alt="Afreebmart Admin"
                                 />
                             </a>

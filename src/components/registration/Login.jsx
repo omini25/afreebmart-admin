@@ -4,6 +4,7 @@ import {useLocation} from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import {toast} from "react-toastify";
 import {useState} from "react";
+import logo from '../../assets/afreemart-logo.png'
 
 export const Login = () => {
     const [email, setEmail] = useState('');
@@ -33,7 +34,7 @@ export const Login = () => {
                 <div className="sm:mx-auto sm:w-full sm:max-w-md">
                     <img
                         className="mx-auto h-10 w-auto"
-                        src="src/assets/afreemart-logo.png"
+                        src={logo}
                         alt="Afreebmart"
                     />
                     <h2 className="mt-6 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">

@@ -34,6 +34,7 @@ import { PaperClipIcon } from '@heroicons/react/20/solid'
 
 
 
+import logo from '../../assets/afreemart-logo.png'
 const navigation = [
     { name: 'Overview', href: '/dashboard', icon: FolderIcon, current: true },
     { name: 'Orders', href: '/orders', icon: ShoppingCartIcon, current: false },
@@ -47,7 +48,7 @@ const navigation = [
     { name: 'Users', href: '/users', icon: UserGroupIcon, current: false },
     { name: 'Vendors', href: '/vendors', icon: BuildingStorefrontIcon, current: false },
     { name: 'Deliverers', href: '/deliverers', icon: BackspaceIcon, current: false },
-    { name: 'Admins', href: '/admins', icon: IdentificationIcon, current: false },
+    // { name: 'Admins', href: '/admins', icon: IdentificationIcon, current: false },
     { name: 'Coupons', href: '/coupons', icon: TagIcon, current: false },
     { name: 'Reviews', href: '/reviews', icon: StarIcon, current:false},
     { name: 'Profile', href: '/profile', icon: UserCircleIcon, current: false },
@@ -206,7 +207,7 @@ export const Dashboard = () => {
                                             <a href="/dashboard">
                                                 <img
                                                     className="h-8 w-auto"
-                                                    src="src/assets/afreemart-logo.png"
+                                                    src={logo}
                                                     alt="Afreebmart Admin"
                                                 />
                                             </a>
@@ -285,7 +286,7 @@ export const Dashboard = () => {
                             <a href="/dashboard">
                                 <img
                                     className="h-8 w-auto"
-                                    src="src/assets/afreemart-logo.png"
+                                    src={logo}
                                     alt="Afreebmart Admin"
                                 />
                             </a>

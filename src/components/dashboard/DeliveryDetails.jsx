@@ -25,6 +25,7 @@ import {ArrowRightStartOnRectangleIcon, BackspaceIcon, StarIcon} from "@heroicon
 
 
 
+import logo from '../../assets/afreemart-logo.png'
 const navigation = [
     { name: 'Overview', href: '/dashboard', icon: FolderIcon, current: false },
     { name: 'Orders', href: '/orders', icon: ShoppingCartIcon, current: false },
@@ -38,7 +39,7 @@ const navigation = [
     { name: 'Users', href: '/users', icon: UserGroupIcon, current: false },
     { name: 'Vendors', href: '/vendors', icon: BuildingStorefrontIcon, current: false },
     { name: 'Deliverers', href: '/deliverers', icon: BackspaceIcon, current: false },
-    { name: 'Admins', href: '/admins', icon: IdentificationIcon, current: false },
+    // { name: 'Admins', href: '/admins', icon: IdentificationIcon, current: false },
     { name: 'Coupons', href: '/coupons', icon: TagIcon, current: false },
     {name: 'Reviews', href: '/reviews', icon: StarIcon, current:false},
     { name: 'Profile', href: '/profile', icon: UserCircleIcon, current: false },
@@ -60,23 +61,25 @@ export const DeliveryDetails = () => {
 
     const { id } = useParams();
     const [order, setOrder] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchOrder = async () => {
             try {
+                setLoading(true);
                 const response = await axios.get(`${server}/admin/delivery/${id}`);
-                // Flatten the array structure
-                const flattenedOrders = response.data;
-                setOrder(flattenedOrders);
+                console.log('API Response:', response);
+                setOrder(response.data);
             } catch (error) {
-                console.error('Failed to fetch orders:', error);
+                console.error('Failed to fetch order:', error);
+                setError('Failed to load order details. Please try again.');
+            } finally {
+                setLoading(false);
             }
         };
-
         fetchOrder();
-    }, []);
-
-    console.log('order:', order);
+    }, [id]);
 
     const statusToStep = {
         'pending': 1,
@@ -86,6 +89,18 @@ export const DeliveryDetails = () => {
     };
 
     const step = order ? statusToStep[order.status] || 0 : 0;
+
+    if (loading) {
+        return <div className="flex justify-center items-center h-screen">Loading...</div>;
+    }
+
+    if (error) {
+        return <div className="flex justify-center items-center h-screen text-red-500">{error}</div>;
+    }
+
+    if (!order) {
+        return <div className="flex justify-center items-center h-screen">No order found</div>;
+    }
 
     return (
         <>
@@ -138,7 +153,7 @@ export const DeliveryDetails = () => {
                                             <a href="/dashboard">
                                                 <img
                                                     className="h-8 w-auto"
-                                                    src="src/assets/afreemart-logo.png"
+                                                    src={logo}
                                                     alt="Afreebmart Admin"
                                                 />
                                             </a>
@@ -217,7 +232,7 @@ export const DeliveryDetails = () => {
                             <a href="/">
                                 <img
                                     className="h-8 w-auto"
-                                    src="src/assets/afreemart-logo.png"
+                                    src={logo}
                                     alt="Afreebmart Admin"
                                 />
                             </a>

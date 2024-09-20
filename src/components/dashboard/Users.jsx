@@ -33,6 +33,7 @@ import {useNavigate} from "react-router-dom";
 
 
 
+import logo from '../../assets/afreemart-logo.png'
 const navigation = [
     { name: 'Overview', href: '/dashboard', icon: FolderIcon, current: false },
     { name: 'Orders', href: '/orders', icon: ShoppingCartIcon, current: false },
@@ -46,7 +47,7 @@ const navigation = [
     { name: 'Users', href: '/users', icon: UserGroupIcon, current: true },
     { name: 'Vendors', href: '/vendors', icon: BuildingStorefrontIcon, current: false },
     { name: 'Deliverers', href: '/deliverers', icon: BackspaceIcon, current: false },
-    { name: 'Admins', href: '/admins', icon: IdentificationIcon, current: false },
+    // { name: 'Admins', href: '/admins', icon: IdentificationIcon, current: false },
     { name: 'Coupons', href: '/coupons', icon: TagIcon, current: false },
     { name: 'Reviews', href: '/reviews', icon: StarIcon, current:false},
     { name: 'Profile', href: '/profile', icon: UserCircleIcon, current: false },
@@ -137,7 +138,7 @@ export const Users = () => {
                                             <a href="/dashboard">
                                                 <img
                                                     className="h-8 w-auto"
-                                                    src="src/assets/afreemart-logo.png"
+                                                    src={logo}
                                                     alt="Afreebmart Admin"
                                                 />
                                             </a>
@@ -216,7 +217,7 @@ export const Users = () => {
                             <a href="/">
                                 <img
                                     className="h-8 w-auto"
-                                    src="src/assets/afreemart-logo.png"
+                                    src={logo}
                                     alt="Afreebmart Admin"
                                 />
                             </a>

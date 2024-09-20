@@ -18,6 +18,7 @@ import {useNavigate} from "react-router-dom";
 
 
 
+import logo from '../../assets/afreemart-logo.png'
 const navigation = [
     { name: 'Overview', href: '/dashboard', icon: FolderIcon, current: true },
     { name: 'Orders', href: '/orders', icon: ServerIcon, current: false },
@@ -97,7 +98,7 @@ export const Dashboard = () => {
                                             <a href="/dashboard">
                                                 <img
                                                     className="h-8 w-auto"
-                                                    src="src/assets/afreemart-logo.png"
+                                                    src={logo}
                                                     alt="Afreebmart Admin"
                                                 />
                                             </a>
@@ -175,7 +176,7 @@ export const Dashboard = () => {
                             <a href="/">
                                 <img
                                     className="h-8 w-auto"
-                                    src="src/assets/afreemart-logo.png"
+                                    src={logo}
                                     alt="Afreebmart Admin"
                                 />
                             </a>
